@@ -1,0 +1,548 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ZEROID × 무신사뷰티 성수</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,500..900&family=Noto+Sans+KR:wght@400;500;700;900&display=swap">
+<script src="https://cdn.tailwindcss.com/3.4.17"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        bg: "var(--bg)", ink: "var(--ink)", mute: "var(--mute)", line: "var(--line)", soft: "var(--soft)",
+        zb: { DEFAULT: "var(--zb)", deep: "var(--deep)", tint: "var(--tint)", sky: "var(--sky)" }
+      },
+      fontFamily: {
+        disp: ["Archivo", "Noto Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", "sans-serif"],
+        sans: ["Noto Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", "sans-serif"]
+      },
+      maxWidth: { page: "1180px" }
+    }
+  }
+}
+</script>
+<style>
+/* Layout: 무신사식 흑백 그리드 위에 코발트 한 색. 섹션마다 '굵은 숫자/영문 디스플레이 + 한글 본문' 2단 리듬, 인터랙션은 탭·평면도·시뮬레이터 3곳에만 */
+:root{
+  --bg:#ffffff; --ink:#0d1220; --mute:#5b6478; --line:#e3e7ef; --soft:#f4f6fa;
+  --zb:#1b3fb0; --deep:#0b1f5c; --tint:#eaf0ff; --sky:#9db4ff; --photo:#ffffff; --on-deep:#ffffff;
+  --disp:"Archivo","Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  --body:"Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0b0f19; --ink:#eef2fb; --mute:#9aa4b8; --line:#232a3a; --soft:#121828;
+  --zb:#7c9cff; --deep:#16308f; --tint:#16203d; --sky:#b9c9ff; --photo:#ffffff; --on-deep:#ffffff; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0b0f19; --ink:#eef2fb; --mute:#9aa4b8; --line:#232a3a; --soft:#121828;
+  --zb:#7c9cff; --deep:#16308f; --tint:#16203d; --sky:#b9c9ff; --photo:#ffffff; --on-deep:#ffffff; color-scheme:dark}
+[hidden]{display:none!important}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}*{animation:none!important;transition:none!important}}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);word-break:keep-all;overflow-wrap:anywhere;-webkit-font-smoothing:antialiased;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:60;background:var(--bg)}
+h1,h2,h3{text-wrap:balance}
+.disp{font-family:var(--disp);font-stretch:72%;font-weight:900;letter-spacing:-.01em}
+.kick{font-family:var(--disp);font-stretch:100%;font-weight:700;font-size:12px;letter-spacing:.18em;text-transform:uppercase}
+.num{font-variant-numeric:tabular-nums}
+:focus-visible{outline:2px solid var(--zb);outline-offset:3px}
+/* nav */
+.topbar{position:sticky;top:env(safe-area-inset-top,0px);z-index:50;background:color-mix(in srgb,var(--bg) 92%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.progress{position:absolute;left:0;bottom:-1px;height:2px;background:var(--zb);width:0}
+/* sections */
+.sec{padding-block:88px 0}
+.sec-h{display:grid;grid-template-columns:auto 1fr;gap:6px 18px;align-items:end;border-top:2px solid var(--ink);padding-top:22px;margin-bottom:34px}
+.sec-n{font-family:var(--disp);font-stretch:62%;font-weight:900;font-size:clamp(56px,8vw,96px);line-height:.8;color:var(--zb)}
+.sec-h h2{font-size:clamp(28px,4.2vw,48px);font-weight:900;letter-spacing:-.04em;line-height:1.15}
+.sec-h p{grid-column:2;color:var(--mute);font-size:15px}
+@media(max-width:640px){.sec-h{grid-template-columns:1fr}.sec-h p{grid-column:1}.sec{padding-top:64px}}
+/* hero collage */
+.collage{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));grid-auto-rows:clamp(58px,8vw,92px);gap:8px;
+  grid-template-areas:"a a b b" "a a b b" "a a c d" "e f c d" "e f g h"}
+.tile{position:relative;overflow:hidden;min-width:0}
+.tile.ph{background:var(--photo);border:1px solid var(--line);display:flex;align-items:center;justify-content:center}
+.tile.ph img{max-width:80%;max-height:80%;object-fit:contain;transition:transform .6s cubic-bezier(.2,.7,.2,1)}
+.tile.ph:hover img{transform:scale(1.08) rotate(-3deg)}
+.tile.ph span{position:absolute;left:10px;bottom:8px;font-size:11px;font-weight:700;color:#0d1220}
+.rise{animation:rise .7s cubic-bezier(.2,.7,.2,1) both}
+@keyframes rise{from{transform:translateY(14px)}to{transform:none}}
+/* persona */
+.ptab{border:1.5px solid var(--line);border-top:4px solid var(--zb);background:var(--bg);text-align:left;transition:background .15s,color .15s}
+.ptab[aria-selected="true"]{background:var(--zb);border-color:var(--zb);color:var(--bg)}
+.ptab[aria-selected="true"] .pl{color:var(--bg)}
+.ptab.hyp{border-top-style:dashed;border-top-color:var(--ink)}
+.ptab.hyp[aria-selected="true"]{background:var(--ink);border-color:var(--ink)}
+.journey{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:0}
+.jstep{padding:14px 14px 16px 0;border-top:1px solid var(--line)}
+.jstep+.jstep{padding-left:14px;border-left:1px solid var(--line)}
+.jstep.pop{background:var(--tint)}
+.jstep.pop,.jstep.pop+.jstep{padding-left:14px}
+@media(max-width:860px){.journey{grid-template-columns:repeat(3,minmax(0,1fr))}.jstep:nth-child(4){border-left:0;padding-left:0}}
+@media(max-width:520px){.journey{grid-template-columns:repeat(2,minmax(0,1fr))}.jstep:nth-child(odd){border-left:0;padding-left:0}.jstep:nth-child(4){border-left:1px solid var(--line);padding-left:14px}.jstep.pop{padding-left:14px}}
+.curve{height:96px;position:relative}
+.curve svg{width:100%;height:100%;overflow:visible}
+.fade-in{animation:fade .4s ease both}@keyframes fade{from{transform:translateY(8px)}to{transform:none}}
+/* MLE bricks */
+.bricks{display:grid;grid-template-columns:repeat(6,1fr);gap:5px;padding:6px;transition:background .5s}
+.bricks i{height:24px;background:var(--bg);border:1px solid var(--line);transition:opacity .5s,transform .5s}
+.mle-off .bricks{background:transparent;outline:1.5px dashed var(--mute)}
+.mle-off .bricks i.g{opacity:0;transform:translateY(6px) rotate(8deg)}
+.mle-on .bricks{background:var(--zb)}
+.mle-on .bricks i{border-color:transparent}
+.drop{transition:transform .6s,opacity .6s}
+.mle-off .drop{transform:translateY(-26px);opacity:.25}
+.switch{position:relative;width:56px;height:30px;border-radius:30px;background:var(--line);transition:background .2s;flex:none}
+.switch::after{content:"";position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:50%;background:var(--bg);transition:transform .2s}
+.switch[aria-checked="true"]{background:var(--zb)}
+.switch[aria-checked="true"]::after{transform:translateX(26px)}
+/* floor plan */
+.floor{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));grid-template-rows:repeat(3,minmax(104px,auto));gap:8px;padding:12px 12px 36px;border:2px solid var(--ink);background:var(--soft);position:relative;
+  grid-template-areas:"z1 z2 z3" "z0 ph z4" "z0 ph z5"}
+@media(max-width:560px){.floor{grid-template-columns:1fr 1fr;grid-template-areas:"z0 z1" "z2 z3" "z4 z5" "ph ph";grid-template-rows:none}}
+.zc{background:var(--bg);border:1.5px solid var(--line);border-left:5px solid var(--zb);text-align:left;padding:12px;display:flex;flex-direction:column;gap:4px;transition:transform .15s,background .15s,color .15s}
+.zc:hover{transform:translateY(-2px)}
+.zc[aria-pressed="true"]{background:var(--zb);border-color:var(--zb);color:var(--bg)}
+.zc[aria-pressed="true"] .zm{color:var(--bg)}
+.zc.ends{border-left-color:var(--ink)}
+.zc.ends[aria-pressed="true"]{background:var(--ink);border-color:var(--ink)}
+.zc.walk{animation:pulse 1s ease}
+@keyframes pulse{0%{box-shadow:0 0 0 0 var(--sky)}100%{box-shadow:0 0 0 12px transparent}}
+/* simulator */
+.seg{display:inline-grid;grid-auto-flow:column;border:1.5px solid var(--ink)}
+.seg button{padding:10px 18px;font-weight:700;font-size:14px;transition:background .15s,color .15s}
+.seg button+button{border-left:1.5px solid var(--ink)}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+input[type=range]{width:100%;accent-color:var(--zb)}
+.fbar{height:30px;background:var(--line);transition:width .45s cubic-bezier(.2,.7,.2,1);min-width:3px}
+.kpi b{transition:color .2s}
+.gate-ok{background:var(--tint);color:var(--zb)}
+.gate-no{background:var(--soft);color:var(--mute)}
+/* timeline */
+.tl{display:grid;grid-template-columns:repeat(5,minmax(0,1fr))}
+.tl li{position:relative;padding-top:30px;padding-right:12px}
+.tl li::before{content:"";position:absolute;top:8px;left:0;width:14px;height:14px;border-radius:50%;border:2px solid var(--zb);background:var(--bg)}
+.tl li:not(:last-child)::after{content:"";position:absolute;top:15px;left:16px;right:2px;height:1.5px;background:var(--line)}
+.tl li.on::before{background:var(--zb)}
+@media(max-width:700px){.tl{grid-template-columns:1fr;gap:18px}.tl li{padding:0 0 0 30px}.tl li::before{top:4px}.tl li:not(:last-child)::after{top:22px;left:7px;right:auto;width:1.5px;height:calc(100% + 0px)}}
+/* accordion */
+.acc summary{list-style:none;cursor:pointer}
+.acc summary::-webkit-details-marker{display:none}
+.acc .pm{transition:transform .2s}
+.acc[open] .pm{transform:rotate(45deg)}
+.band{background:var(--deep);color:var(--on-deep)}
+</style>
+</head>
+<body>
+
+<!-- 상단 바 -->
+<header class="topbar -mx-4 px-4">
+  <div class="max-w-page mx-auto flex items-center gap-6 h-14">
+    <a href="#top" class="disp text-[17px] tracking-tight whitespace-nowrap" style="font-stretch:90%">ZEROID <span class="text-zb">×</span> MUSINSA BEAUTY</a>
+    <nav class="ml-auto hidden md:flex gap-6 text-[13px] font-medium text-mute" aria-label="섹션">
+      <a href="#persona" class="hover:text-ink">페르소나</a><a href="#efficacy" class="hover:text-ink">효능</a><a href="#popup" class="hover:text-ink">팝업 공간</a><a href="#sim" class="hover:text-ink">입점 시뮬레이션</a><a href="#appendix" class="hover:text-ink">부록</a>
+    </nav>
+    <a href="#sim" class="ml-auto md:ml-0 text-[13px] font-bold bg-ink text-bg px-4 h-9 inline-flex items-center whitespace-nowrap">시뮬레이션 해보기</a>
+  </div>
+  <div class="progress" id="progress"></div>
+</header>
+
+<main class="max-w-page mx-auto" id="top">
+  <p class="text-[12px] text-mute py-3 border-b border-line">교육 실습 과제로 작성한 가상 입점 제안서입니다. 제로이드(네오팜)·무신사와 무관하며 실제 제안이 아닙니다. 수치와 리뷰는 공개된 공식 홈페이지·올리브영 페이지에서 수집했습니다(2026.10.28).</p>
+
+  <!-- ① HERO -->
+  <section class="grid lg:grid-cols-[1fr_1.05fr] gap-10 lg:gap-14 pt-12 md:pt-16" aria-labelledby="hero-t">
+    <div class="min-w-0 rise">
+      <div class="flex flex-wrap gap-x-5 gap-y-1 text-[12px] text-mute mb-7"><span>입점 제안서 · 무신사뷰티 성수 팝업스토어</span><span>2026. 10</span><span>실습 과제 · 영업 MD 직무 실습</span></div>
+      <span class="kick text-zb border-b-2 border-zb pb-1">Barrier fit · Seongsu</span>
+      <h1 id="hero-t" class="mt-5 font-black tracking-[-0.05em] leading-[1.02] text-[clamp(44px,7vw,92px)]">옷은 핏으로,<br>크림은 <span class="text-zb">장벽</span>으로<br>고릅니다.</h1>
+      <p class="mt-6 text-[17px] leading-relaxed text-mute max-w-[30em]">무신사 고객이 옷의 핏을 입어 보고 고르듯, 성수 팝업에서 ‘내 장벽에 맞는 크림’을 발라 보고 고르게 하겠습니다.</p>
+      <div class="mt-7 flex flex-wrap gap-2">
+        <a href="#popup" class="h-12 px-6 inline-flex items-center font-bold bg-ink text-bg hover:bg-zb transition-colors">팝업 공간 둘러보기</a>
+        <a href="#sim" class="h-12 px-6 inline-flex items-center font-bold border-[1.5px] border-ink hover:bg-ink hover:text-bg transition-colors">기대효과 계산하기</a>
+      </div>
+      <p class="mt-6 text-[15px] font-medium"><b class="text-zb mr-2">제안</b>① 성수 팝업·온라인 동시 테스트 &nbsp;② 성과 확인 후 온라인 상시 운영 확대</p>
+    </div>
+    <div class="collage min-w-0" aria-hidden="true">
+      <div class="tile ph rise" style="grid-area:a"><img src="img/intensive_cream.jpg" alt=""><span>인텐시브 크림</span></div>
+      <div class="tile band rise p-5 flex flex-col justify-between" style="grid-area:b;animation-delay:.08s"><span class="kick text-zb-sky">2 weeks pop-up</span><b class="disp text-[clamp(34px,4.6vw,60px)] leading-[.9]">SEONG<br>SU</b></div>
+      <div class="tile ph rise" style="grid-area:c;animation-delay:.12s"><img src="img/soothing_cream.jpg" alt=""><span>수딩 크림</span></div>
+      <div class="tile bg-soft flex items-center justify-center rise" style="grid-area:d;animation-delay:.16s"><b class="w-[88%] aspect-square rounded-full border-2 border-ink flex items-center justify-center text-center text-[14px] leading-tight">장벽 핏<br>찾기</b></div>
+      <div class="tile ph rise" style="grid-area:e;animation-delay:.2s"><img src="img/cream_mist.jpg" alt=""><span>크림 미스트</span></div>
+      <div class="tile bg-ink text-bg p-3 flex flex-col justify-end rise" style="grid-area:f;animation-delay:.24s"><b class="disp text-[30px] leading-none">49K</b><span class="text-[11px] mt-1">올리브영 리뷰</span></div>
+      <div class="tile ph rise" style="grid-area:g;animation-delay:.28s"><img src="img/red_control.jpg" alt=""><span>레드 컨트롤</span></div>
+      <div class="tile ph rise" style="grid-area:h;animation-delay:.32s"><img src="img/daily_sun.jpg" alt=""><span>데일리 선크림</span></div>
+    </div>
+    <div class="lg:col-span-2 grid grid-cols-2 md:grid-cols-4 border-t-2 border-ink">
+      <div class="py-5 pr-4"><b class="disp num text-[clamp(36px,4.4vw,56px)] leading-none"><span data-count="1600">1,600</span><small class="font-sans text-[16px] font-bold ml-1">만 개</small></b><p class="text-[13px] text-mute mt-2">누적 판매량 · 2013~2024.03</p></div>
+      <div class="py-5 px-4 border-l border-line"><b class="disp num text-[clamp(36px,4.4vw,56px)] leading-none"><span data-count="4.9" data-dec="1">4.9</span><small class="font-sans text-[16px] font-bold ml-1">만 건</small></b><p class="text-[13px] text-mute mt-2">올리브영 리뷰 · 17개 제품</p></div>
+      <div class="py-5 pr-4 md:px-4 md:border-l border-line border-t md:border-t-0"><b class="disp num text-[clamp(36px,4.4vw,56px)] leading-none"><span data-count="4.7" data-dec="1">4.7</span><small class="font-sans text-[16px] font-bold ml-1">점 이상</small></b><p class="text-[13px] text-mute mt-2">올리브영 평점 · 17개 제품 전부</p></div>
+      <div class="py-5 px-4 border-l border-line border-t md:border-t-0"><b class="disp num text-[clamp(36px,4.4vw,56px)] leading-none text-zb">0<small class="font-sans text-[16px] font-bold ml-1">개</small></b><p class="text-[13px] text-mute mt-2">무신사 내 제로이드 판매 상품</p></div>
+    </div>
+  </section>
+
+  <!-- ② PERSONA -->
+  <section id="persona" class="sec" aria-labelledby="persona-t">
+    <div class="sec-h"><span class="sec-n">01</span><h2 id="persona-t">제로이드가 필요한 5개의 순간</h2><p>고민 → 성수 팝업에서 첫 만남 → 무신사뷰티 온라인 재구매. 탭을 눌러 고객을 바꿔 보세요.</p></div>
+    <div class="flex gap-2 overflow-x-auto pb-1" role="tablist" aria-label="페르소나" id="ptabs"></div>
+    <article id="ppanel" class="mt-6" role="tabpanel" aria-live="polite"></article>
+    <p class="mt-6 text-[12px] text-mute">A~D는 올리브영 리뷰 패턴으로 만든 가상 인물, E는 리뷰 근거가 없는 확장 가설입니다. 시간·감정 곡선은 체험 설계용 시나리오입니다. 남성 고객은 리뷰 샘플 3,280건 중 관련 언급 2%로 1차 타깃에서 제외하고 온라인 이후 확장 대상으로 봅니다.</p>
+  </section>
+
+  <!-- ③ EFFICACY -->
+  <section id="efficacy" class="sec" aria-labelledby="eff-t">
+    <div class="sec-h"><span class="sec-n">02</span><h2 id="eff-t">순한데, 숫자로 증명합니다</h2><p>제품 상세페이지에 공개된 자사 인체적용시험 결과</p></div>
+    <div class="grid grid-cols-2 lg:grid-cols-4 border-t border-line">
+      <div class="p-5 pl-0 border-b border-line"><div class="h-24 flex items-end"><img src="img/intensive_cream.jpg" alt="인텐시브 크림" class="h-24 w-auto"></div><p class="mt-3 font-bold text-[14px]">인텐시브 크림</p><b class="disp num text-zb text-[clamp(44px,5vw,64px)] leading-none block mt-1"><span data-count="2.5" data-dec="1">2.5</span>배</b><p class="text-[13px] text-mute mt-2">1회 사용 · 손상 피부장벽 개선</p></div>
+      <div class="p-5 border-b border-l border-line"><div class="h-24 flex items-end"><img src="img/soothing_cream.jpg" alt="수딩 크림" class="h-24 w-auto"></div><p class="mt-3 font-bold text-[14px]">수딩 크림</p><b class="disp num text-zb text-[clamp(44px,5vw,64px)] leading-none block mt-1"><span data-count="54">54</span>%</b><p class="text-[13px] text-mute mt-2">1회 사용 · 피부 민감도 개선</p></div>
+      <div class="p-5 pl-0 lg:pl-5 border-b lg:border-l border-line"><div class="h-24 flex items-end"><img src="img/red_control.jpg" alt="레드 컨트롤 크림" class="h-24 w-auto"></div><p class="mt-3 font-bold text-[14px]">레드 컨트롤 크림 pH4</p><b class="disp num text-zb text-[clamp(44px,5vw,64px)] leading-none block mt-1"><span data-count="89.36" data-dec="2">89.36</span>%</b><p class="text-[13px] text-mute mt-2">1주 사용 · 붉은기 진정</p></div>
+      <div class="p-5 border-b border-l border-line"><div class="h-24 flex items-end"><img src="img/calming_ampoule.jpg" alt="카밍 앰플" class="h-24 w-auto"></div><p class="mt-3 font-bold text-[14px]">핌프로브 카밍 앰플</p><b class="disp num text-zb text-[clamp(44px,5vw,64px)] leading-none block mt-1"><span data-count="111">111</span>%</b><p class="text-[13px] text-mute mt-2">1주 사용 · 손상 피부장벽 개선(사용 전 대비)</p></div>
+    </div>
+
+    <div class="mt-8 grid lg:grid-cols-[1.1fr_1fr] gap-8 items-center bg-soft p-6 md:p-8">
+      <div id="mle" class="mle-on min-w-0">
+        <div class="flex items-center gap-3 mb-5">
+          <button type="button" id="mleSw" class="switch" role="switch" aria-checked="true" aria-labelledby="mleLab"></button>
+          <span id="mleLab" class="font-bold text-[15px]">MLE® 장벽 구조 <span id="mleState" class="text-zb">채움</span></span>
+        </div>
+        <div class="relative">
+          <div class="drop text-right text-zb text-[13px] font-bold h-5" aria-hidden="true">● 수분</div>
+          <div class="bricks mt-2" aria-hidden="true">
+            <i></i><i></i><i class="g"></i><i></i><i></i><i></i><i></i><i class="g"></i><i></i><i></i><i class="g"></i><i></i><i></i><i></i><i></i><i class="g"></i><i></i><i></i>
+          </div>
+        </div>
+        <p id="mleCap" class="mt-3 text-[13px] text-mute">지질(시멘트)이 각질세포(벽돌) 사이를 채워 수분이 머무는 상태</p>
+      </div>
+      <div class="min-w-0">
+        <span class="kick text-zb">MLE® barrier tech</span>
+        <h3 class="mt-2 text-[clamp(21px,2.4vw,28px)] font-black tracking-[-0.03em] leading-snug">각질세포는 벽돌, 지질은 시멘트.<br>제로이드는 <span class="text-zb">시멘트</span>를 닮게 만듭니다.</h3>
+        <p class="mt-3 text-[14px] text-mute leading-relaxed">스위치를 꺼 보면 장벽이 무너진 피부, 켜면 지질 구조를 채운 피부입니다. 피부 지질과 닮은 구조로 장벽을 채우는 것이 제로이드 전 라인의 출발점입니다. 도식은 이해를 돕기 위한 개념 그림입니다.</p>
+        <div class="mt-5 grid sm:grid-cols-3 gap-3 text-[13px]">
+          <div class="border-t border-ink pt-2"><b class="block">독자 성분</b><span class="text-mute">디펜사마이드 · 레스토마이드</span></div>
+          <div class="border-t border-ink pt-2"><b class="block">저자극</b><span class="text-mute">10가지 유해성분 무첨가</span></div>
+          <div class="border-t border-ink pt-2"><b class="block">테스트</b><span class="text-mute">하이포알러제닉 테스트 완료</span></div>
+        </div>
+      </div>
+    </div>
+    <p class="mt-3 text-[12px] text-mute">출처: 제로이드 공식 홈페이지 제품 상세페이지(자사 인체적용시험). 시험 개요는 미팅 시 별도 제공.</p>
+  </section>
+
+  <!-- ④ POPUP -->
+  <section id="popup" class="sec" aria-labelledby="pop-t">
+    <div class="sec-h"><span class="sec-n">03</span><h2 id="pop-t">성수 팝업: 내 장벽에 맞는 루틴 찾기</h2><p>4분 공통 안내 + 8분 선택 체험 1곳 → 구매·온라인 연결. 존을 누르거나 동선을 따라가 보세요.</p></div>
+    <div class="grid lg:grid-cols-[1.6fr_1fr] gap-6">
+      <div class="min-w-0">
+        <div class="floor" role="group" aria-label="팝업 공간 구성도" id="floor">
+          <button type="button" class="zc ends" style="grid-area:z0" data-z="0" aria-pressed="true"><span class="zm disp text-[26px] leading-none">0</span><b class="text-[14px] leading-snug">배리어 체크</b><span class="zm text-[11px] font-bold text-mute">입구 · 모두</span></button>
+          <button type="button" class="zc" style="grid-area:z1" data-z="1" aria-pressed="false"><span class="zm disp text-[26px] leading-none text-zb">1</span><b class="text-[14px] leading-snug">배리어 리커버리 라운지</b><span class="zm text-[11px] font-bold text-mute">A 장벽 회복러</span></button>
+          <button type="button" class="zc" style="grid-area:z2" data-z="2" aria-pressed="false"><span class="zm disp text-[26px] leading-none text-zb">2</span><b class="text-[14px] leading-snug">레드 SOS 바</b><span class="zm text-[11px] font-bold text-mute">B 트러블러</span></button>
+          <button type="button" class="zc" style="grid-area:z3" data-z="3" aria-pressed="false"><span class="zm disp text-[26px] leading-none text-zb">3</span><b class="text-[14px] leading-snug">베이스 테스트 미러</b><span class="zm text-[11px] font-bold text-mute">C 메이크업</span></button>
+          <button type="button" class="zc" style="grid-area:z4" data-z="4" aria-pressed="false"><span class="zm disp text-[26px] leading-none text-zb">4</span><b class="text-[14px] leading-snug">미스트 스테이션</b><span class="zm text-[11px] font-bold text-mute">D 투어러 · E 러너</span></button>
+          <button type="button" class="zc ends" style="grid-area:z5" data-z="5" aria-pressed="false"><span class="zm disp text-[26px] leading-none">5</span><b class="text-[14px] leading-snug">구매 · 온라인 연결</b><span class="zm text-[11px] font-bold text-mute">출구 · 모두</span></button>
+          <div style="grid-area:ph" class="border-[1.5px] border-dashed border-mute flex flex-col items-center justify-center text-center min-h-[56px]"><b class="text-[15px]">A~E 루틴 포토월</b><span class="text-[12px] text-mute">협찬 표기 인증 이벤트</span></div>
+          <span class="absolute left-3 bottom-2 text-[12px] font-bold">입구 ↑</span><span class="absolute right-3 bottom-2 text-[12px] font-bold text-zb">출구 ↓</span>
+        </div>
+        <div class="mt-3 flex flex-wrap items-center gap-3">
+          <button type="button" id="walk" class="h-10 px-4 font-bold text-[14px] bg-ink text-bg hover:bg-zb transition-colors">▶ 동선 따라가기</button>
+          <span class="text-[12px] text-mute">개념 배치도 · 약 15평 가정 · 실제 면적·피난 동선 확인 후 확정</span>
+        </div>
+      </div>
+      <aside class="border-t-4 border-zb pt-5 min-w-0" aria-live="polite" id="zpanel">
+        <span class="kick text-zb" id="zpN">Zone 0 · 입구</span>
+        <h3 class="mt-2 text-[26px] font-black tracking-[-0.03em] leading-tight" id="zpT">배리어 체크</h3>
+        <p class="mt-3 text-[15px] leading-relaxed" id="zpD">피부 고민 3문항으로 내 상황에 맞는 체험 1곳을 안내합니다. 진단·측정은 하지 않습니다.</p>
+        <dl class="mt-5 grid grid-cols-[auto_1fr] gap-x-4 gap-y-2 text-[14px] border-t border-line pt-4">
+          <dt class="text-mute">대상</dt><dd class="font-medium" id="zpW">모든 방문객</dd>
+          <dt class="text-mute">체험 제품</dt><dd class="font-medium" id="zpP">–</dd>
+          <dt class="text-mute">머무는 시간</dt><dd class="font-medium" id="zpM">약 4분</dd>
+        </dl>
+        <div class="mt-5 flex gap-2" id="zpImg"></div>
+      </aside>
+    </div>
+
+    <div class="mt-10 grid sm:grid-cols-2 lg:grid-cols-4 border-t border-ink">
+      <div class="py-4 pr-4"><span class="text-[12px] font-bold text-zb">주력 · 체험·패키지</span><p class="mt-2 font-bold">인텐시브 크림 · 수딩 크림</p><p class="text-[12px] text-mute">리뷰 14,336 · 10,452건</p></div>
+      <div class="py-4 sm:px-4 sm:border-l border-line"><span class="text-[12px] font-bold text-mute">루틴 · 고민별 짝</span><p class="mt-2 font-bold">클렌저 · 선크림 · 레드 컨트롤 · 앰플</p><p class="text-[12px] text-mute">리뷰 405~7,617건</p></div>
+      <div class="py-4 lg:px-4 lg:border-l border-line"><span class="text-[12px] font-bold text-mute">테스트 · 샘플 위주</span><p class="mt-2 font-bold">크림 미스트 · 크림 마스크</p><p class="text-[12px] text-mute">리뷰 86 · 202건으로 반응만 확인</p></div>
+      <div class="py-4 sm:px-4 sm:border-l border-line"><span class="text-[12px] font-bold text-mute">제외 · 혼동 방지</span><p class="mt-2 font-bold">의료기기(MD) 라인</p><p class="text-[12px] text-mute">화장품과 판매·광고 기준이 달라 팝업 제외</p></div>
+    </div>
+  </section>
+
+  <!-- ⑤ SIMULATOR -->
+  <section id="sim" class="sec" aria-labelledby="sim-t">
+    <div class="sec-h"><span class="sec-n">04</span><h2 id="sim-t">입점 시뮬레이션</h2><p>시나리오와 운영 방식을 바꾸면 2주 팝업과 90일 온라인 성과가 다시 계산됩니다. 모든 값은 기획 가정입니다.</p></div>
+
+    <div class="flex flex-wrap items-center gap-x-8 gap-y-4">
+      <div><span class="block text-[12px] font-bold text-mute mb-2">시나리오</span>
+        <div class="seg" id="scen"><button type="button" data-s="low" aria-pressed="false">보수</button><button type="button" data-s="base" aria-pressed="true">기준</button><button type="button" data-s="high" aria-pressed="false">확장</button></div></div>
+      <div><span class="block text-[12px] font-bold text-mute mb-2">운영 방식</span>
+        <div class="seg" id="mode"><button type="button" data-m="popup" aria-pressed="false">팝업만</button><button type="button" data-m="both" aria-pressed="true">팝업 + 온라인 동시</button></div></div>
+      <div class="flex items-center gap-3 self-end h-[44px]"><button type="button" id="advSw" class="switch" role="switch" aria-checked="false" aria-labelledby="advLab"></button><span id="advLab" class="text-[14px] font-bold">가정 직접 조절</span></div>
+    </div>
+
+    <div class="mt-6 grid grid-cols-2 lg:grid-cols-4 gap-2">
+      <div class="kpi bg-soft p-5"><span class="text-[13px] font-bold text-mute">2주 현장 매출</span><b class="disp num block text-[clamp(30px,3.6vw,44px)] leading-none mt-3" id="kRev">3,675만</b><span class="text-[12px] text-mute">객단가 35,000원 · 원</span></div>
+      <div class="kpi bg-soft p-5"><span class="text-[13px] font-bold text-mute">현장 구매자</span><b class="disp num block text-[clamp(30px,3.6vw,44px)] leading-none mt-3" id="kBuy">1,050</b><span class="text-[12px] text-mute">명 · 1인 1건 가정</span></div>
+      <div class="kpi band p-5"><span class="text-[13px] font-bold text-zb-sky">첫 온라인 구매자</span><b class="disp num block text-[clamp(30px,3.6vw,44px)] leading-none mt-3" id="kOnl">525</b><span class="text-[12px] text-zb-sky" id="kOnlU">명 · QR 유입 고객 중</span></div>
+      <div class="kpi bg-soft p-5"><span class="text-[13px] font-bold text-mute">90일 재구매</span><b class="disp num block text-[clamp(30px,3.6vw,44px)] leading-none mt-3" id="kRep">158</b><span class="text-[12px] text-mute" id="kRepU">명 · 첫 온라인 구매자 중</span></div>
+    </div>
+
+    <div class="mt-4 grid lg:grid-cols-[1fr_1.35fr] gap-8 border-t border-ink pt-6">
+      <div class="min-w-0">
+        <div id="adv" hidden class="grid gap-4 mb-6">
+          <label class="grid grid-cols-[1fr_auto] gap-1 text-[14px] font-medium">팝업 방문<output id="oVis" class="font-black text-zb num">7,000명</output><input id="rVis" type="range" min="3000" max="12000" step="500" value="7000" class="col-span-2"></label>
+          <label class="grid grid-cols-[1fr_auto] gap-1 text-[14px] font-medium">구매 전환<output id="oCv" class="font-black text-zb num">15%</output><input id="rCv" type="range" min="5" max="30" step="1" value="15" class="col-span-2"></label>
+          <label class="grid grid-cols-[1fr_auto] gap-1 text-[14px] font-medium">온라인 전환<output id="oOn" class="font-black text-zb num">50%</output><input id="rOn" type="range" min="20" max="70" step="5" value="50" class="col-span-2"></label>
+          <label class="grid grid-cols-[1fr_auto] gap-1 text-[14px] font-medium">90일 재구매<output id="oRp" class="font-black text-zb num">30%</output><input id="rRp" type="range" min="10" max="50" step="5" value="30" class="col-span-2"></label>
+        </div>
+        <div id="gate" class="p-5 gate-ok">
+          <span class="text-[12px] font-bold">확대 판단</span>
+          <b class="block text-[22px] font-black mt-1" id="gateT">확대 검토 기준 충족</b>
+          <p class="text-[13px] mt-2 leading-relaxed" id="gateD">구매 전환 15% 이상, 90일 재구매 30% 이상(기준 시나리오)을 판단선으로 가정합니다. 비용·반품 반영 후 최종 결정합니다.</p>
+        </div>
+        <p class="mt-4 text-[12px] text-mute leading-relaxed" id="scenNote">기준: 방문 7,000명 · 구매 전환 15% · 온라인 전환 50% · 재구매 30%</p>
+      </div>
+      <div class="min-w-0 grid gap-4 content-center" role="img" aria-label="방문에서 재구매까지 퍼널" id="funnel">
+        <div class="grid grid-cols-[96px_minmax(0,1fr)_64px] items-center gap-3 text-[14px]"><span>방문</span><div class="fbar" style="background:var(--mute);width:100%" id="fbVis"></div><b class="num text-right" id="fVis">7,000</b></div>
+        <div class="grid grid-cols-[96px_minmax(0,1fr)_64px] items-center gap-3 text-[14px]"><span>현장 구매</span><div class="fbar" style="background:var(--sky)" id="fbBuy"></div><b class="num text-right" id="fBuy">1,050</b></div>
+        <div class="grid grid-cols-[96px_minmax(0,1fr)_64px] items-center gap-3 text-[14px]"><span>첫 온라인</span><div class="fbar" style="background:var(--sky)" id="fbOnl"></div><b class="num text-right" id="fOnl">525</b></div>
+        <div class="grid grid-cols-[96px_minmax(0,1fr)_64px] items-center gap-3 text-[14px] text-zb font-bold"><span>90일 재구매</span><div class="fbar" style="background:var(--zb)" id="fbRep"></div><b class="num text-right" id="fRep">158</b></div>
+        <p class="text-[12px] text-mute">막대 길이는 방문 대비 비율 · 실적이 아닌 목표 시나리오</p>
+      </div>
+    </div>
+
+    <!-- 일정 -->
+    <div class="mt-14">
+      <div class="flex flex-wrap items-baseline justify-between gap-2 mb-5"><h3 class="text-[20px] font-black">제안 일정</h3><span class="text-[12px] text-mute">가정 일정 · 협의 후 확정</span></div>
+      <ol class="tl">
+        <li><b class="disp text-[26px] leading-none">D-12W</b><p class="text-[11px] text-mute mt-2">공동</p><p class="font-bold text-[14px]">조건·예산·KPI 합의</p></li>
+        <li><b class="disp text-[26px] leading-none">D-8W</b><p class="text-[11px] text-mute mt-2">제로이드</p><p class="font-bold text-[14px]">패키지·굿즈 확정</p></li>
+        <li><b class="disp text-[26px] leading-none">D-4W</b><p class="text-[11px] text-mute mt-2">공동</p><p class="font-bold text-[14px]">리허설·온라인 판매 준비</p></li>
+        <li class="on"><b class="disp text-[26px] leading-none text-zb">D-DAY</b><p class="text-[11px] text-mute mt-2">공동</p><p class="font-bold text-[14px] text-zb">팝업·온라인 동시 운영</p></li>
+        <li><b class="disp text-[26px] leading-none">+90D</b><p class="text-[11px] text-mute mt-2">무신사뷰티</p><p class="font-bold text-[14px]">재구매 평가·확대 결정</p></li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- 부록 -->
+  <section id="appendix" class="sec" aria-labelledby="apx-t">
+    <div class="sec-h"><span class="sec-n">+</span><h2 id="apx-t">MD 검토용 부록</h2><p>경쟁 비교 · 예상 질문 · 약점과 대응 · 데이터 한계</p></div>
+
+    <details class="acc border-t border-ink" open>
+      <summary class="grid grid-cols-[72px_1fr_auto] items-center gap-3 py-5"><span class="text-[13px] font-bold text-zb">부록 A</span><b class="text-[clamp(17px,2vw,21px)]">경쟁 장벽 크림 비교 · 올리브영 리뷰 수</b><span class="pm text-[26px] leading-none" aria-hidden="true">+</span></summary>
+      <div class="pb-8 overflow-x-auto">
+        <div class="min-w-[520px] grid gap-2" id="comp"></div>
+        <p class="mt-4 text-[14px]">순함과 평점은 경쟁 크림과 비슷합니다. 차이는 <b class="text-zb">복합성에 맞는 수딩 크림</b>, 보습·트러블·선케어로 이어지는 <b class="text-zb">라인 루틴</b>, 그리고 <b class="text-zb">무신사 첫 입점</b>입니다.</p>
+        <p class="mt-2 text-[12px] text-mute">2026.10.29 기준 · 용량·구성은 제품마다 다름 · 무신사 입점 여부는 무신사 브랜드 노출 기준 · 무신사뷰티 거래액 2024년 2배 이상, 2025년 1분기 +130%(ZDNet Korea 2025.05.23, 바이라인네트워크 2025.05, 무신사 발표 인용)</p>
+      </div>
+    </details>
+
+    <details class="acc border-t border-ink">
+      <summary class="grid grid-cols-[72px_1fr_auto] items-center gap-3 py-5"><span class="text-[13px] font-bold text-zb">부록 B</span><b class="text-[clamp(17px,2vw,21px)]">결정 전에 물으실 6가지</b><span class="pm text-[26px] leading-none" aria-hidden="true">+</span></summary>
+      <div class="pb-8 grid md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-6" id="qa"></div>
+    </details>
+
+    <details class="acc border-t border-ink">
+      <summary class="grid grid-cols-[72px_1fr_auto] items-center gap-3 py-5"><span class="text-[13px] font-bold text-zb">부록 C</span><b class="text-[clamp(17px,2vw,21px)]">고객이 말한 아쉬움과 대응</b><span class="pm text-[26px] leading-none" aria-hidden="true">+</span></summary>
+      <div class="pb-8 grid md:grid-cols-3 gap-4">
+        <div class="bg-soft p-5"><b>세정 기대치의 차이</b><div class="flex h-6 mt-3 text-[11px] font-bold"><i class="not-italic bg-zb text-bg flex items-center px-2" style="flex:50">만족 50%</i><i class="not-italic bg-line flex items-center px-2" style="flex:48">보통 48%</i><i style="flex:2" class="bg-mute"></i></div><p class="text-[12px] text-mute mt-2">포밍 클렌저 세정력 응답 · 보통≠불만</p><p class="mt-3 text-[14px] font-bold text-zb">메이크업·선크림 사용 여부를 묻고 세안 순서 안내</p></div>
+        <div class="bg-soft p-5"><b>“향이 별로예요”</b><p class="mt-3 text-[13px]">원료 향 체험 → 취향 확인</p><p class="text-[12px] text-mute mt-2">향 선호에 대한 정량 근거 없음</p><p class="mt-3 text-[14px] font-bold text-zb">구매 전에 향을 맡고 고를 수 있게 안내</p></div>
+        <div class="bg-soft p-5"><b>“가격만 조금 더 착하면”</b><p class="mt-3 disp text-[26px] leading-none"><s class="text-mute text-[16px] font-sans">63,000원</s> → <span class="text-zb">49,000원</span></p><p class="text-[12px] text-mute mt-2">한정 패키지(크림+미스트+파우치) 가정 · 원가 확인 전</p><p class="mt-3 text-[14px] font-bold text-zb">할인 대신 팝업 한정 구성 · 정가 유지</p></div>
+      </div>
+    </details>
+
+    <details class="acc border-y border-ink">
+      <summary class="grid grid-cols-[72px_1fr_auto] items-center gap-3 py-5"><span class="text-[13px] font-bold text-zb">부록 D</span><b class="text-[clamp(17px,2vw,21px)]">데이터 한계와 출처</b><span class="pm text-[26px] leading-none" aria-hidden="true">+</span></summary>
+      <div class="pb-8 grid md:grid-cols-2 gap-6 text-[14px] leading-relaxed">
+        <div><b class="block mb-1">확인하지 못한 것</b><p class="text-mute">올리브영 리뷰에는 연령 정보가 없고, 무신사 고객과 얼마나 겹치는지도 공개 데이터로는 알 수 없습니다. 팝업 입구 질문에 ‘연령대·주로 쇼핑하는 채널·주로 하는 활동’ 3문항(선택 응답)을 넣어 처음으로 측정합니다.</p></div>
+        <div><b class="block mb-1">출처</b><ul class="text-mute list-disc pl-5"><li>제로이드 공식 홈페이지 제품 상세페이지(성분·시험 결과 표기), 브랜드 연혁</li><li>올리브영 제로이드 17개 제품 구매자 통계 · 리뷰 샘플 3,280건(2026.10.28 수집, 작성자 정보 제외)</li><li>무신사·무신사뷰티 명칭은 제안 대상을 밝히기 위한 표기이며, 로고·상표 사용은 계약 시 승인받습니다.</li></ul></div>
+      </div>
+    </details>
+  </section>
+
+  <!-- 피날레 -->
+  <section class="band mt-24 px-6 md:px-12 py-14 relative overflow-hidden" aria-labelledby="fin-t">
+    <span class="kick text-zb-sky">One page summary</span>
+    <h2 id="fin-t" class="mt-3 font-black tracking-[-0.045em] leading-[1.08] text-[clamp(34px,5.6vw,72px)]">옷은 핏으로,<br>크림은 <span class="text-zb-sky">장벽</span>으로 고릅니다.</h2>
+    <ol class="mt-10 grid sm:grid-cols-2 lg:grid-cols-4 border-t border-white/30">
+      <li class="py-6 pr-5"><span class="text-[13px] font-bold text-zb-sky">왜</span><b class="disp num block text-[clamp(52px,6vw,84px)] leading-none mt-3">0<small class="font-sans text-[18px] ml-1">개</small></b><p class="text-[14px] mt-3 opacity-90">거래액 2배 성장한 무신사뷰티에 제로이드 판매 상품은 아직 0개</p></li>
+      <li class="py-6 sm:px-5 sm:border-l border-white/20"><span class="text-[13px] font-bold text-zb-sky">무엇을</span><b class="disp num block text-[clamp(52px,6vw,84px)] leading-none mt-3">4.9<small class="font-sans text-[18px] ml-1">만 건</small></b><p class="text-[14px] mt-3 opacity-90">리뷰로 이미 검증된 장벽 크림을</p></li>
+      <li class="py-6 lg:px-5 lg:border-l border-white/20"><span class="text-[13px] font-bold text-zb-sky">어떻게</span><b class="disp num block text-[clamp(52px,6vw,84px)] leading-none mt-3">2<small class="font-sans text-[18px] ml-1">주</small></b><p class="text-[14px] mt-3 opacity-90">성수 팝업에서 발라 보고 고르고, 온라인에서 바로 산다</p></li>
+      <li class="py-6 px-5 bg-[var(--photo)] text-[#0b1f5c]"><span class="text-[13px] font-bold text-[#1b3fb0]">그래서</span><b class="disp num block text-[clamp(52px,6vw,84px)] leading-none mt-3">525<small class="font-sans text-[18px] ml-1">명</small></b><p class="text-[14px] mt-3">첫 온라인 구매 고객 · 현장 매출 3,675만 원(목표)</p></li>
+    </ol>
+    <div class="mt-8 flex flex-wrap items-center gap-3 border border-white/50 px-5 py-4"><span class="bg-[var(--photo)] text-[#0b1f5c] text-[12px] font-bold px-2 py-1">제안</span><b>① 성수 팝업·온라인 동시 테스트</b><span class="text-zb-sky">→</span><b>② 성과 확인 후 온라인 상시 운영 확대</b></div>
+  </section>
+
+  <footer class="py-10 text-[13px] text-mute grid gap-2">
+    <p class="text-ink font-medium">㈜네오팜 제로이드 영업 MD · 담당자 ○○○ · 연락처 ○○○-○○○○-○○○○ · 이메일 ○○○@○○○</p>
+    <p>제로이드: 2011년 디펜사마이드 개발 · 2014년 MD(의료기기) 라인 인증 · 해외 12개국 판매(2020, 공식 홈페이지 브랜드 연혁)</p>
+    <p>본 문서는 교육 실습용 가상 제안서로, 언급된 기업의 공식 문서가 아닙니다.</p>
+  </footer>
+</main>
+
+<script>
+/* ---------- 데이터 ---------- */
+var IMG = {ic:"img/intensive_cream.jpg", sc:"img/soothing_cream.jpg", rc:"img/red_control.jpg", ca:"img/calming_ampoule.jpg", fc:"img/foaming_cleanser.jpg", ds:"img/daily_sun.jpg", cm:"img/cream_mist.jpg", mk:"img/cream_mask.jpg"};
+var P = [
+  {k:"A", n:"장벽 회복러", who:"29세 · 성수동 IT 마케터 · 건성·민감 · 홈 각질 관리를 자주 함", prods:["fc","ic","ds"], stat:"74%", sd:"포밍 클렌저 ‘자극 없이 순해요’ 응답(올리브영 구매자 설문)",
+   steps:[["고민","토 11:00","집에서 각질 관리",-1],["고민 심화","토 23:00","당김과 열감",-2],["성수 팝업","일 15:00","배리어 리커버리 라운지",1],["제로이드 루틴","일 23:00","거품 세안 + 크림",1],["만족","월 08:00","다음 날 사용감 확인",2],["무신사뷰티","소진 시점","사용량에 맞춰 재구매",2]]},
+  {k:"B", n:"마감 주간 트러블러", who:"24세 · 프리랜서 디자이너 · 복합성 · 마감마다 턱 트러블", prods:["ca","rc"], stat:"18%", sd:"도움순 리뷰 샘플의 트러블·붉은기 키워드 언급 · 재구매율과 구분",
+   steps:[["고민","월 · 마감 주간","야근과 수면 부족",-1],["고민 심화","수","강한 제품 역효과",-2],["성수 팝업","토 14:00","레드 SOS 바",1],["제로이드 루틴","토 23:00","핌프로브 2-step",1],["만족","다음 주 금","클라이언트 미팅",2],["무신사뷰티","사용 후 판단","맞는 루틴만 재구매",2]]},
+  {k:"C", n:"메이크업 베이스 민감러", who:"26세 · 패션 브랜드 MD · 수분 부족 지성 · 크림 유목민", prods:["sc","ds"], stat:"15%", sd:"도움순 리뷰 샘플의 산뜻·안 끈적 언급 · 메이크업 적합성은 체험으로 확인",
+   steps:[["고민","평일 07:30","들뜨는 아침 화장",-1],["고민 심화","평일 13:00","점심 이후 밀림",-2],["성수 팝업","토 16:00","베이스 테스트 미러",1],["제로이드 루틴","월 07:30","수딩 크림 → 선크림",1],["만족","월 19:00","성수 저녁 약속",2],["무신사뷰티","다음 쇼핑","메이크업 구매 때 함께 탐색",2]]},
+  {k:"D", n:"성수 투어러 · 환절기 건조러", who:"23세 · 대학생 · 건성 · 주말마다 팝업 투어", prods:["cm","mk"], stat:"21%", sd:"도움순 리뷰 샘플의 건조·환절기 언급 · 굿즈 구매 유도 효과는 미확인",
+   steps:[["고민","토 14:00","성수 팝업 투어",-1],["고민 심화","토 16:00","화장 위 각질",-2],["성수 팝업","토 16:30","미스트 스테이션",1],["제로이드 루틴","토 18:00","투어 중 수시로",1],["만족","토 22:00","집에서 크림 마스크",2],["무신사뷰티","체험 후 판단","사용감 확인 뒤 본품 탐색",2]]},
+  {k:"E", n:"주말 러너 · 야외활동러", hyp:true, who:"27세 · 직장인 · 건성·민감 · 주말 아침 한강 러닝과 러닝 크루 활동", prods:["ds","cm","ic"], stat:"가설", sd:"러닝·야외활동 관련 리뷰 근거 없음. 팝업 입구 질문으로 비중을 처음 측정한 뒤 타깃 여부 결정",
+   steps:[["고민","토 07:00","바람·햇빛 속 10km",0],["고민 심화","토 09:00","러닝 후 당김·화끈거림",-2],["성수 팝업","토 13:00","미스트 스테이션 · 선크림 비교",1],["제로이드 루틴","다음 러닝","선크림 → 러닝 후 미스트·크림",1],["만족","일 08:00","러닝 크루에 공유",2],["무신사뷰티","사용 후 판단","러닝 기어와 함께 장바구니",2]]}
+];
+var Z = [
+  ["Zone 0 · 입구","배리어 체크","피부 고민 3문항으로 내 상황에 맞는 체험 1곳을 안내합니다. 진단·측정은 하지 않습니다.","모든 방문객","–","약 4분 (공통 안내)",[]],
+  ["Zone 1","배리어 리커버리 라운지","거품 세안 시연을 보고 크림을 손등에 발라 봅니다.","A 장벽 회복러","포밍 클렌저 · 인텐시브 크림","약 8분",["fc","ic"]],
+  ["Zone 2","레드 SOS 바","앰플과 크림 2단계를 차례로 발라 보고 루틴 카드를 받습니다.","B 마감 주간 트러블러","카밍 앰플 · 레드 컨트롤 크림","약 8분",["ca","rc"]],
+  ["Zone 3","베이스 테스트 미러","크림과 선크림을 바른 뒤 사용감을 비교합니다. 쿠션 협업은 별도 협의.","C 메이크업 베이스 민감러","수딩 크림 · 데일리 선크림","약 8분",["sc","ds"]],
+  ["Zone 4","미스트 스테이션","분사감과 손등 사용감을 체험합니다. 샘플은 준비 수량 안에서 제공합니다.","D 성수 투어러 · E 주말 러너(가설)","크림 미스트 · 데일리 선크림","약 8분",["cm","ds"]],
+  ["Zone 5 · 출구","구매 · 온라인 연결","한정 구성 구매 시 파우치를 드리고, QR로 무신사뷰티 온라인 상품에 연결합니다.","모든 방문객","한정 패키지(크림+미스트+파우치)","약 3분",["ic","cm"]]
+];
+var COMP = [["일리윤 세라마이드 아토 집중크림",38553,"–","입점"],["피지오겔 DMT 페이셜 크림",23347,"76%","입점"],["제로이드 인텐시브 크림",14350,"75%","미입점",1],["제로이드 수딩 크림",10476,"75%","미입점",1],["아벤느 시칼파트 플러스 크림",9945,"70%","입점"],["에스트라 아토베리어365 크림",8780,"79%","입점"],["아토팜 MLE 크림(같은 네오팜)",1379,"–","입점"]];
+var QA = [["같은 네오팜의 아토팜과 겹치지 않나요?","아토팜은 유아·가족 보습, 제로이드는 2030 민감 피부의 데일리 장벽 케어입니다. 기술(MLE)은 같아도 고객과 사용 상황이 다릅니다."],
+  ["올리브영보다 비싸 보이지 않을까요?","정가는 같게 두고, 할인 대신 무신사 전용 구성(패키지·파우치)으로 차별합니다. 세일 기간 실구매가는 사전에 함께 점검합니다."],
+  ["비용은 누가 부담하나요?","BA 4명·샘플 3,000개·파우치 제작은 브랜드 부담으로 제안합니다. 임대·시공·수수료(30% 가정)는 견적 후 협의합니다."],
+  ["왜 지금인가요?","건조가 시작되는 환절기는 리뷰에서 가장 많이 언급된 고민(건조·환절기)과 맞닿습니다. 겨울 전 운영을 희망하며 시기는 협의합니다."],
+  ["성과가 안 나오면요?","2주 뒤 구매 전환·온라인 유입으로 1차 판단하고, 목표에 못 미치면 확대를 보류합니다. 상시 입점을 먼저 요구하지 않습니다."],
+  ["무신사뷰티에는 무엇이 남나요?","아직 무신사에 없는 장벽 크림 라인, 목표 기준 첫 온라인 구매자 525명·리뷰 260건, 그리고 성수 팝업 콘텐츠입니다."]];
+var SC = {low:{vis:5000,cv:10,on:40,rp:20,t:"보수"}, base:{vis:7000,cv:15,on:50,rp:30,t:"기준"}, high:{vis:9000,cv:20,on:60,rp:35,t:"확장"}};
+
+/* ---------- 유틸 ---------- */
+function $(id){return document.getElementById(id)}
+function fmt(n,d){return Number(n).toLocaleString("ko-KR",{minimumFractionDigits:d||0,maximumFractionDigits:d||0})}
+function esc(s){return String(s).replace(/[&<>]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;"}[c]})}
+
+/* ---------- 페르소나 탭 ---------- */
+(function(){
+  var tabs=$("ptabs"), panel=$("ppanel");
+  P.forEach(function(p,i){
+    var b=document.createElement("button");
+    b.type="button"; b.role="tab"; b.id="tab-"+p.k; b.className="ptab flex-1 min-w-[150px] px-4 py-3 flex items-center gap-3"+(p.hyp?" hyp":"");
+    b.setAttribute("aria-controls","ppanel");
+    b.innerHTML='<b class="pl disp text-[32px] leading-none '+(p.hyp?"":"text-zb")+'">'+p.k+'</b><span class="text-[13px] font-bold leading-tight">'+esc(p.n.split(" · ")[0])+(p.hyp?' <em class="not-italic text-[10px] border border-dashed border-current px-1 ml-1 whitespace-nowrap">가설</em>':"")+'</span>';
+    b.addEventListener("click",function(){show(i)});
+    b.addEventListener("keydown",function(e){var d=e.key==="ArrowRight"?1:e.key==="ArrowLeft"?-1:0;if(!d)return;var j=(i+d+P.length)%P.length;show(j);tabs.children[j].focus();e.preventDefault()});
+    tabs.appendChild(b);
+  });
+  function curve(steps){
+    var n=steps.length, pts=steps.map(function(s,i){return [((i+.5)/n*100),(50-s[3]*20)]});
+    var poly=pts.map(function(p){return p[0]+","+p[1]}).join(" ");
+    var dots=pts.map(function(p,i){var up=steps[i][3]>0;return '<span aria-hidden="true" style="position:absolute;left:'+p[0]+'%;top:'+p[1]+'%;width:11px;height:11px;margin:-5.5px 0 0 -5.5px;border-radius:50%;border:2px solid var(--zb);background:'+(up?"var(--zb)":"var(--bg)")+'"></span>'}).join("");
+    return '<svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><line x1="0" x2="100" y1="50" y2="50" stroke="var(--line)" stroke-dasharray="3 3" vector-effect="non-scaling-stroke"/><polyline points="'+poly+'" fill="none" stroke="var(--zb)" stroke-width="2" vector-effect="non-scaling-stroke"/></svg>'+dots+'<span class="absolute left-0 top-0 text-[11px] text-mute">만족</span><span class="absolute left-0 bottom-0 text-[11px] text-mute">불편</span>';
+  }
+  function show(i){
+    var p=P[i];
+    [].forEach.call(tabs.children,function(t,j){t.setAttribute("aria-selected",j===i?"true":"false");t.tabIndex=j===i?0:-1});
+    panel.setAttribute("aria-labelledby","tab-"+p.k);
+    panel.innerHTML=
+      '<div class="fade-in grid gap-5 '+(p.hyp?"border-t-2 border-dashed border-ink":"border-t-2 border-zb")+' pt-6">'+
+      '<div class="grid md:grid-cols-[auto_1fr_auto] gap-x-6 gap-y-3 items-center">'+
+        '<span class="disp text-[clamp(72px,9vw,120px)] leading-[.8] '+(p.hyp?"":"text-zb")+'">'+p.k+'</span>'+
+        '<div class="min-w-0"><h3 class="text-[clamp(22px,2.6vw,30px)] font-black tracking-[-0.03em]">'+esc(p.n)+(p.hyp?' <span class="align-middle text-[12px] font-bold border border-dashed border-ink px-2 py-0.5 ml-1">확장 가설</span>':"")+'</h3><p class="text-mute text-[14px] mt-1">'+esc(p.who)+'</p></div>'+
+        '<div class="flex gap-2">'+p.prods.map(function(k){return '<div class="w-[72px] h-[88px] bg-[var(--photo)] border border-line flex items-center justify-center"><img src="'+IMG[k]+'" alt="" class="max-h-[78px] w-auto"></div>'}).join("")+'</div>'+
+      '</div>'+
+      '<div class="curve px-0">'+curve(p.steps)+'</div>'+
+      '<div class="journey">'+p.steps.map(function(s,j){var pop=s[0]==="성수 팝업", on=s[0]==="무신사뷰티";
+        return '<div class="jstep'+(pop?" pop":"")+'"><span class="text-[11px] font-bold '+(pop||on?"text-zb":"text-mute")+'">'+esc(s[0])+'</span><p class="text-[12px] text-mute num">'+esc(s[1])+'</p><p class="font-bold text-[15px] leading-snug mt-1">'+esc(s[2])+'</p></div>'}).join("")+'</div>'+
+      '<div class="flex flex-wrap items-baseline gap-x-4 gap-y-1 border-t border-line pt-4"><b class="disp text-[40px] leading-none '+(p.hyp?"":"text-zb")+'">'+esc(p.stat)+'</b><p class="text-[13px] text-mute min-w-0 flex-1">'+esc(p.sd)+'</p></div>'+
+      '</div>';
+  }
+  show(0);
+})();
+
+/* ---------- MLE 토글 ---------- */
+(function(){
+  var sw=$("mleSw"), box=$("mle");
+  sw.addEventListener("click",function(){
+    var on=sw.getAttribute("aria-checked")!=="true";
+    sw.setAttribute("aria-checked",on?"true":"false");
+    box.className=(on?"mle-on":"mle-off")+" min-w-0";
+    $("mleState").textContent=on?"채움":"무너짐";
+    $("mleCap").textContent=on?"지질(시멘트)이 각질세포(벽돌) 사이를 채워 수분이 머무는 상태":"지질이 비어 틈이 생기고 수분이 빠져나가는 상태";
+  });
+})();
+
+/* ---------- 팝업 평면도 ---------- */
+(function(){
+  var btns=[].slice.call(document.querySelectorAll("#floor .zc")), timer=null, walkBtn=$("walk");
+  function pick(i,fromWalk){
+    var z=Z[i];
+    btns.forEach(function(b){b.setAttribute("aria-pressed",+b.dataset.z===i?"true":"false");b.classList.remove("walk")});
+    if(fromWalk){var b=btns.filter(function(b){return +b.dataset.z===i})[0];void b.offsetWidth;b.classList.add("walk")}
+    $("zpN").textContent=z[0];$("zpT").textContent=z[1];$("zpD").textContent=z[2];$("zpW").textContent=z[3];$("zpP").textContent=z[4];$("zpM").textContent=z[5];
+    $("zpImg").innerHTML=z[6].map(function(k){return '<div class="w-[64px] h-[76px] bg-[var(--photo)] border border-line flex items-center justify-center fade-in"><img src="'+IMG[k]+'" alt="" class="max-h-[66px] w-auto"></div>'}).join("");
+  }
+  function stop(){clearInterval(timer);timer=null;walkBtn.textContent="▶ 동선 따라가기"}
+  btns.forEach(function(b){b.addEventListener("click",function(){stop();pick(+b.dataset.z)})});
+  walkBtn.addEventListener("click",function(){
+    if(timer){stop();return}
+    var i=0; pick(0,true); walkBtn.textContent="■ 멈추기";
+    timer=setInterval(function(){i++; if(i>5){stop();return} pick(i,true)},1600);
+  });
+})();
+
+/* ---------- 입점 시뮬레이션 ---------- */
+(function(){
+  var st={s:"base",m:"both"}, R={vis:$("rVis"),cv:$("rCv"),on:$("rOn"),rp:$("rRp")};
+  function setSeg(id,attr,val){[].forEach.call($(id).children,function(b){b.setAttribute("aria-pressed",b.dataset[attr]===val?"true":"false")})}
+  function load(s){var v=SC[s];R.vis.value=v.vis;R.cv.value=v.cv;R.on.value=v.on;R.rp.value=v.rp}
+  function calc(){
+    var vis=+R.vis.value, cv=+R.cv.value, on=+R.on.value, rp=+R.rp.value, both=st.m==="both";
+    var buy=vis*cv/100, onl=both?buy*on/100:0, rep=onl*rp/100, rev=buy*35000/10000;
+    $("oVis").textContent=fmt(vis)+"명";$("oCv").textContent=cv+"%";$("oOn").textContent=on+"%";$("oRp").textContent=rp+"%";
+    $("kRev").textContent=fmt(rev)+"만";$("kBuy").textContent=fmt(buy);
+    $("kOnl").textContent=both?fmt(onl):"측정 불가";$("kRep").textContent=both?fmt(rep):"측정 불가";
+    $("kOnlU").textContent=both?"명 · QR 유입 고객 중":"온라인 판매가 없으면 유입만 남음";
+    $("kRepU").textContent=both?"명 · 첫 온라인 구매자 중":"재구매를 추적할 주문 이력이 없음";
+    $("fVis").textContent=fmt(vis);$("fBuy").textContent=fmt(buy);$("fOnl").textContent=both?fmt(onl):"–";$("fRep").textContent=both?fmt(rep):"–";
+    $("fbBuy").style.width=cv+"%";$("fbOnl").style.width=(both?cv*on/100:0)+"%";$("fbRep").style.width=(both?cv*on*rp/10000:0)+"%";
+    var ok=both&&cv>=15&&rp>=30, g=$("gate");
+    g.className="p-5 "+(ok?"gate-ok":"gate-no");
+    $("gateT").textContent=!both?"판단 불가: 재구매를 볼 수 없음":ok?"확대 검토 기준 충족":"확대 보류 · 원인 점검";
+    $("gateD").textContent=!both?"팝업만 운영하면 2주 뒤 온라인 재구매를 측정할 수 없어, 상시 입점 여부를 데이터로 판단하기 어렵습니다. 그래서 동시 운영을 제안합니다.":
+      "구매 전환 15% 이상, 90일 재구매 30% 이상(기준 시나리오)을 판단선으로 가정합니다. 현재 "+cv+"% · "+rp+"%. 비용·반품 반영 후 최종 결정합니다.";
+    var custom=!(SC[st.s].vis==vis&&SC[st.s].cv==cv&&SC[st.s].on==on&&SC[st.s].rp==rp);
+    $("scenNote").textContent=(custom?"직접 조절":SC[st.s].t)+": 방문 "+fmt(vis)+"명 · 구매 전환 "+cv+"% · 온라인 전환 "+on+"% · 재구매 "+rp+"%";
+  }
+  $("scen").addEventListener("click",function(e){var b=e.target.closest("button");if(!b)return;st.s=b.dataset.s;setSeg("scen","s",st.s);load(st.s);calc()});
+  $("mode").addEventListener("click",function(e){var b=e.target.closest("button");if(!b)return;st.m=b.dataset.m;setSeg("mode","m",st.m);calc()});
+  $("advSw").addEventListener("click",function(){var on=this.getAttribute("aria-checked")!=="true";this.setAttribute("aria-checked",on?"true":"false");$("adv").hidden=!on});
+  Object.keys(R).forEach(function(k){R[k].addEventListener("input",calc)});
+  calc();
+})();
+
+/* ---------- 부록 렌더 ---------- */
+(function(){
+  var max=COMP[0][1];
+  $("comp").innerHTML='<div class="grid grid-cols-[minmax(0,1.4fr)_minmax(0,1.6fr)_56px_56px] gap-3 text-[12px] text-mute border-b border-line pb-2"><span>제품</span><span>올리브영 리뷰 수</span><span class="text-right">순해요</span><span class="text-right">무신사</span></div>'+
+    COMP.map(function(c){return '<div class="grid grid-cols-[minmax(0,1.4fr)_minmax(0,1.6fr)_56px_56px] gap-3 items-center text-[14px] py-1 '+(c[4]?"font-bold text-zb":"")+'"><span>'+esc(c[0])+'</span><span class="flex items-center gap-2"><i class="block h-4" style="width:'+(c[1]/max*100*.8)+'%;background:'+(c[4]?"var(--zb)":"var(--line)")+'"></i><b class="num text-[13px] '+(c[4]?"":"text-ink")+'">'+fmt(c[1])+'</b></span><span class="text-right num">'+c[2]+'</span><span class="text-right">'+c[3]+'</span></div>'}).join("");
+  $("qa").innerHTML=QA.map(function(q,i){return '<div class="border-t border-line pt-4"><span class="text-[12px] font-bold text-zb">Q'+(i+1)+'</span><h4 class="font-bold text-[17px] mt-1 leading-snug">'+esc(q[0])+'</h4><p class="text-[14px] text-mute mt-2 leading-relaxed">'+esc(q[1])+'</p></div>'}).join("");
+})();
+
+/* ---------- 스크롤 진행 바 · 숫자 카운트업 ---------- */
+(function(){
+  var bar=$("progress");
+  function prog(){var h=document.documentElement;bar.style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight||1)*100)+"%"}
+  addEventListener("scroll",prog,{passive:true});prog();
+  var els=[].slice.call(document.querySelectorAll("[data-count]"));
+  if(!("IntersectionObserver" in window)||(window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches))return;
+  var io=new IntersectionObserver(function(es){es.forEach(function(e){
+    if(!e.isIntersecting)return; io.unobserve(e.target);
+    var el=e.target,to=+el.dataset.count,dec=+(el.dataset.dec||0),t0=null;
+    function step(t){t0=t0||t;var k=Math.min(1,(t-t0)/900);k=1-Math.pow(1-k,3);el.textContent=fmt(to*k,dec);if(k<1)requestAnimationFrame(step);else el.textContent=fmt(to,dec)}
+    requestAnimationFrame(step);
+  })},{threshold:.5});
+  els.forEach(function(el){io.observe(el)});
+})();
+</script>
+</body>
+</html>

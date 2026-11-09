@@ -1,0 +1,172 @@
+[
+  {
+    "width": 1280,
+    "scrollWidth": 1280,
+    "overflow": [],
+    "sections": [
+      "summary",
+      "why",
+      "strength",
+      "data",
+      "persona",
+      "popup",
+      "risk",
+      "next"
+    ],
+    "brokenImages": 0,
+    "branches": 2,
+    "lastLine": "none",
+    "visibleOverflow": [],
+    "errors": []
+  },
+  {
+    "width": 760,
+    "scrollWidth": 760,
+    "overflow": [
+      {
+        "tag": "A",
+        "cls": "",
+        "text": "06 팝업 운영안",
+        "right": 763.09375
+      },
+      {
+        "tag": "A",
+        "cls": "",
+        "text": "07 리스크",
+        "right": 843.203125
+      },
+      {
+        "tag": "A",
+        "cls": "",
+        "text": "08 다음 단계",
+        "right": 940.109375
+      }
+    ],
+    "sections": [
+      "summary",
+      "why",
+      "strength",
+      "data",
+      "persona",
+      "popup",
+      "risk",
+      "next"
+    ],
+    "brokenImages": 0,
+    "branches": 2,
+    "lastLine": "none",
+    "visibleOverflow": [],
+    "errors": []
+  },
+  {
+    "width": 390,
+    "scrollWidth": 396,
+    "overflow": [
+      {
+        "tag": "TD",
+        "cls": "r",
+        "text": "75%",
+        "right": 534.859375
+      },
+      {
+        "tag": "TD",
+        "cls": "",
+        "text": "복합성 57%",
+        "right": 734
+      },
+      {
+        "tag": "B",
+        "cls": "",
+        "text": "복합성 57%",
+        "right": 615.53125
+      },
+      {
+        "tag": "TR",
+        "cls": "",
+        "text": "아벤느 시칼파트 플러스 크림9,9454.770%복합성 51%",
+        "right": 734
+      },
+      {
+        "tag": "TD",
+        "cls": "r",
+        "text": "4.7",
+        "right": 395.96875
+      },
+      {
+        "tag": "TD",
+        "cls": "r",
+        "text": "70%",
+        "right": 534.859375
+      },
+      {
+        "tag": "TD",
+        "cls": "",
+        "text": "복합성 51%",
+        "right": 734
+      },
+      {
+        "tag": "TR",
+        "cls": "",
+        "text": "에스트라 아토베리어365 크림8,7804.879%건성 55%",
+        "right": 734
+      },
+      {
+        "tag": "TD",
+        "cls": "r",
+        "text": "4.8",
+        "right": 395.96875
+      },
+      {
+        "tag": "TD",
+        "cls": "r",
+        "text": "79%",
+        "right": 534.859375
+      },
+      {
+        "tag": "TD",
+        "cls": "",
+        "text": "건성 55%",
+        "right": 734
+      },
+      {
+        "tag": "TR",
+        "cls": "",
+        "text": "아토팜 MLE 크림 (같은 네오팜)1,3794.8––",
+        "right": 734
+      },
+      {
+        "tag": "TD",
+        "cls": "r",
+        "text": "4.8",
+        "right": 395.96875
+      },
+      {
+        "tag": "TD",
+        "cls": "r",
+        "text": "–",
+        "right": 534.859375
+      },
+      {
+        "tag": "TD",
+        "cls": "",
+        "text": "–",
+        "right": 734
+      }
+    ],
+    "sections": [
+      "summary",
+      "why",
+      "strength",
+      "data",
+      "persona",
+      "popup",
+      "risk",
+      "next"
+    ],
+    "brokenImages": 0,
+    "branches": 2,
+    "lastLine": "none",
+    "visibleOverflow": [],
+    "errors": []
+  }
+]

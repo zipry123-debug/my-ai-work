@@ -1,0 +1,981 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PLATZ Eve Night 제안서</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600&family=Noto+Sans+KR:wght@400;500;700;900&family=Noto+Serif+KR:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --wine:#9e2a55; --wine-dark:#6e1a3b; --wine-soft:#f7e9ef; --wine-line:#e7c3d2;
+  --ink:#2a2a2a; --muted:#6f6f6f; --line:#ececec; --bg:#eef0f3; --paper:#fff; --black:#0c0c0c;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Noto Sans KR",system-ui,sans-serif;line-height:1.65;font-size:15px}
+.deck{max-width:1080px;margin:0 auto;padding:24px 16px 48px;display:flex;flex-direction:column;gap:24px}
+.slide{position:relative;overflow:hidden;background:var(--paper);border-radius:6px;box-shadow:0 2px 10px rgba(0,0,0,.06);padding:48px 56px}
+.slide > *{position:relative;z-index:1}
+.stain{position:absolute;z-index:0;pointer-events:none;color:var(--wine)}
+.stain.tr{top:-40px;right:-40px;width:200px}
+.stain.bl{bottom:-60px;left:-50px;width:230px}
+.stain.br{bottom:-50px;right:-30px;width:170px}
+.stain.tl{top:-50px;left:-40px;width:190px}
+.sec{display:inline-block;font-family:"Oswald",sans-serif;font-size:12px;letter-spacing:.14em;color:#fff;background:var(--wine);padding:2px 10px;border-radius:2px;margin-bottom:10px}
+.sec.dark{background:var(--black)}
+.title{font-family:"Oswald","Noto Sans KR",sans-serif;font-weight:600;text-transform:uppercase;color:var(--wine);font-size:30px;letter-spacing:.02em;line-height:1.15;margin:0 0 4px}
+.title.center{text-align:center}
+.kr{font-size:14px;color:var(--muted);margin:0 0 28px}
+.kr.center{text-align:center}
+.center-wrap{text-align:center}
+.headline{font-family:"Noto Serif KR",serif;font-size:26px;line-height:1.45;margin:0 0 22px;color:var(--ink)}
+.headline em{font-style:normal;color:var(--wine)}
+
+/* section divider */
+.divider{background:var(--black);color:#fff;padding:36px 56px;display:flex;align-items:baseline;gap:22px;flex-wrap:wrap}
+.divider .big{font-family:"Oswald",sans-serif;font-size:56px;font-weight:500;color:#e46c9a;line-height:1}
+.divider .q{font-family:"Noto Serif KR",serif;font-size:22px}
+.divider .stain{color:#b0346a;opacity:.6}
+
+/* cover */
+.cover{background:var(--black);color:#fff;min-height:480px;display:grid;grid-template-columns:1fr 1.15fr;align-items:center;padding:48px 56px}
+.cover .glass{width:100%;max-width:340px;justify-self:center}
+.cover h1{font-family:"Oswald",sans-serif;font-weight:500;font-size:76px;line-height:1;margin:0 0 16px;letter-spacing:.01em}
+.cover .copy{font-family:"Noto Serif KR",serif;font-size:26px;margin:0 0 6px;color:#f3c6d8}
+.cover .sub{font-size:15px;opacity:.85;margin:0 0 22px}
+.cover .meta{display:flex;flex-wrap:wrap;gap:8px}
+.cover .meta span{font-size:12px;border:1px solid rgba(255,255,255,.35);border-radius:999px;padding:3px 12px}
+.cover .stain{color:#b0346a;opacity:.85}
+
+/* one page */
+.onepage{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border:2px solid var(--wine)}
+.onepage > div{padding:18px 16px;border-right:1px solid var(--wine-line);position:relative}
+.onepage > div:last-child{border-right:0}
+.onepage .k{font-family:"Oswald",sans-serif;font-size:20px;color:var(--wine);letter-spacing:.04em}
+.onepage .k small{display:block;font-family:"Noto Sans KR",sans-serif;font-size:12px;color:var(--muted);letter-spacing:0}
+.onepage p{margin:8px 0 0;font-size:13.5px}
+.onepage .n{font-family:"Oswald",sans-serif;font-size:30px;color:var(--ink);line-height:1.1;margin-top:8px}
+.onepage > div:not(:last-child)::after{content:"▶";position:absolute;right:-9px;top:22px;color:var(--wine);font-size:14px;background:#fff;line-height:1}
+.fearbox{margin-top:18px;background:var(--black);color:#fff;border-radius:6px;padding:20px 24px}
+.fearbox .q{font-family:"Noto Serif KR",serif;font-size:20px;margin:0 0 12px;color:#f3c6d8}
+.fearbox .row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.fearbox .row div span{display:block;font-size:12px;opacity:.75}
+.fearbox .row div b{font-family:"Oswald",sans-serif;font-size:26px;font-weight:500;color:#e46c9a}
+.fearbox .row div b.neg{color:#ff9aa9}
+
+/* cost */
+.cost{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start}
+.cost-list{display:grid;gap:10px}
+.ci{display:grid;grid-template-columns:1fr auto;gap:4px 12px;border:1px solid var(--wine-line);border-radius:6px;padding:12px 14px}
+.ci b{color:var(--wine-dark)}
+.ci .amt{font-family:"Oswald",sans-serif;font-size:20px;color:var(--ink);text-align:right}
+.ci small{grid-column:1/-1;color:var(--muted);font-size:12px}
+.range{display:flex;flex-direction:column;gap:10px}
+.range .row{display:grid;grid-template-columns:70px 1fr 110px;gap:10px;align-items:center;font-size:13px}
+.range .track{height:24px;background:#f4f4f4;position:relative;border-radius:2px}
+.range .zero{position:absolute;top:-4px;bottom:-4px;width:2px;background:var(--ink)}
+.range .fill{position:absolute;top:0;bottom:0;border-radius:2px}
+.range .row b{font-family:"Oswald",sans-serif;font-size:16px;font-weight:500;text-align:right}
+.quote-box{margin-top:16px;border-left:4px solid var(--wine);padding:8px 14px;font-family:"Noto Serif KR",serif;font-size:16px;background:var(--wine-soft)}
+
+/* approval */
+.approve{display:grid;gap:10px}
+.ap{display:grid;grid-template-columns:44px 170px 1fr;gap:14px;align-items:start;border:1px solid var(--wine-line);border-radius:6px;padding:14px 16px}
+.ap .n{width:34px;height:34px;border-radius:50%;background:var(--wine);color:#fff;display:grid;place-items:center;font-family:"Oswald",sans-serif;font-size:16px}
+.ap h3{margin:4px 0 0;font-size:15px;color:var(--wine-dark)}
+.ap p{margin:0;font-size:14px}
+.ap small{display:block;color:var(--muted);font-size:12px;margin-top:2px}
+
+/* why numbers */
+.tables{display:grid;grid-template-columns:repeat(13,1fr);gap:6px;max-width:620px;margin:0 auto 18px}
+.tables i{aspect-ratio:1;border-radius:50%;background:#e7e7e7;display:block}
+.tables i.w{background:var(--wine)}
+.tables i.x{background:transparent;border:1.5px dashed #cfcfcf}
+.legend{display:flex;justify-content:center;flex-wrap:wrap;gap:16px;font-size:12.5px;color:var(--muted)}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:5px;vertical-align:-1px;background:#e7e7e7}
+.legend i.w{background:var(--wine)}
+.legend i.x{background:transparent;border:1.5px dashed #cfcfcf}
+
+/* 5why */
+.chain{display:grid;gap:8px;max-width:820px}
+.why{display:grid;grid-template-columns:70px 1fr;gap:14px;align-items:start}
+.why .lv{font-family:"Oswald",sans-serif;color:var(--wine);font-size:18px;padding-top:6px}
+.why .qa{border:1px solid var(--wine-line);border-radius:6px;padding:10px 14px}
+.why .qa .q{font-weight:700;color:var(--wine-dark)}
+.why .qa .a{font-size:14px;margin-top:2px}
+.why.real .qa{background:var(--wine);color:#fff;border-color:var(--wine)}
+.why.real .qa .q{color:#ffd3e3}
+.why.real .lv{color:var(--black)}
+
+/* groups */
+.groups{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.grp{border:1px solid var(--wine-line);border-radius:8px;overflow:hidden}
+.grp .h{padding:14px 16px;background:var(--wine-soft)}
+.grp .h .nm{font-family:"Noto Serif KR",serif;font-size:20px;color:var(--wine-dark)}
+.grp .h .sz{font-family:"Oswald",sans-serif;font-size:14px;color:var(--wine)}
+.grp .b{padding:12px 16px;font-size:13.5px}
+.grp .b p{margin:0 0 8px}
+.grp .b .sol{border-top:1px dashed var(--wine-line);padding-top:8px}
+.grp .b .sol b{color:var(--wine)}
+.grp.g2{border:2px solid var(--wine)}
+.grp.g2 .h{background:var(--wine);color:#fff}
+.grp.g2 .h .nm,.grp.g2 .h .sz{color:#fff}
+
+/* concept */
+.concept{text-align:center;padding:10px 0 24px}
+.concept .c{font-family:"Noto Serif KR",serif;font-size:40px;color:var(--wine-dark);line-height:1.35;margin:6px 0 10px}
+.concept .vs{font-size:16px}
+.concept .vs s{color:var(--muted)}
+.six{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.six div{border:1px solid var(--wine-line);border-radius:6px;padding:12px 14px;font-size:13.5px}
+.six b{display:block;color:var(--wine);font-size:13px}
+.six span:not(.fact){display:block;font-family:"Noto Serif KR",serif;font-size:15px;color:var(--ink);margin:2px 0}
+.copies{margin-top:18px;display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
+.copies span{border:1px solid var(--wine);color:var(--wine-dark);border-radius:999px;padding:6px 16px;font-family:"Noto Serif KR",serif}
+
+/* icon services grid */
+.services{display:grid;grid-template-columns:1fr 1fr;gap:26px 36px}
+.svc{display:flex;gap:14px}
+.ic{flex:0 0 52px;height:52px;border-radius:50%;border:1.5px solid var(--wine);display:grid;place-items:center;color:var(--wine)}
+.ic svg{width:26px;height:26px}
+.svc h3{margin:0 0 2px;font-size:16px;color:var(--wine)}
+.svc p{margin:0;font-size:13.5px;color:var(--muted)}
+.svc .basis{font-size:11.5px;margin-top:4px;color:#555}
+
+/* pairing */
+.pairs{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+.pair{text-align:center}
+.pair .ring{width:110px;height:110px;margin:0 auto 12px;border-radius:50%;border:3px solid var(--wine);display:grid;place-items:center;background:#fff}
+.pair .ring svg{width:56px;height:56px}
+.pair h3{margin:0;font-size:16px;color:var(--wine)}
+.pair .st{font-size:12px;color:var(--muted);margin-bottom:6px}
+.pair ul{list-style:none;margin:0;padding:0;font-size:13px}
+
+/* table */
+.tbl-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th{background:var(--wine);color:#fff;font-weight:500;font-size:13px;padding:10px 12px;text-align:center;white-space:nowrap}
+td{border:1px solid var(--wine-line);padding:10px 12px;text-align:center;vertical-align:middle}
+td:first-child{text-align:left;font-weight:700;color:var(--wine-dark)}
+td.l{text-align:left}
+td.neg{color:#b3122e}
+tr.hl td{background:var(--wine-soft)}
+#sc-body td,#ops-body td{white-space:nowrap}
+.risk td:nth-child(2),.risk td:nth-child(3){white-space:nowrap}
+.note{font-size:12px;color:var(--muted);margin-top:12px}
+.fact{display:inline-block;font-size:11px;padding:1px 7px;border-radius:3px;background:#e9eef6;color:#244a7a;font-weight:700;margin-right:4px}
+.assume{display:inline-block;font-size:11px;padding:1px 7px;border-radius:3px;background:var(--wine-soft);color:var(--wine-dark);font-weight:700;margin-right:4px}
+
+/* numbers */
+.bars{display:flex;flex-direction:column;gap:12px}
+.bars .cap{font-size:12px;color:var(--muted)}
+.bar-row{display:grid;grid-template-columns:90px 1fr 120px;align-items:center;gap:12px;font-size:13px}
+.bar-track{height:22px;background:#f4f4f4;border-radius:2px}
+.bar-fill{height:100%;background:var(--wine);border-radius:2px}
+.bar-row b{font-family:"Oswald",sans-serif;font-size:16px;font-weight:500;text-align:right}
+.effects{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.eff{border:1px solid var(--wine-line);border-radius:6px;padding:16px;text-align:center}
+.eff .v{font-family:"Oswald",sans-serif;font-size:34px;color:var(--wine);line-height:1.1}
+.eff .v small{font-size:16px;color:var(--muted)}
+.eff p{margin:6px 0 0;font-size:13px}
+.eff2{margin-top:16px;display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.eff2 div{background:var(--wine-soft);border-radius:6px;padding:14px 16px;font-size:13.5px}
+.eff2 b{color:var(--wine-dark)}
+
+.calc{display:grid;grid-template-columns:1fr 1fr;gap:28px;margin-top:8px}
+.calc label{display:block;font-size:13px;margin-bottom:10px}
+.calc label span{display:flex;justify-content:space-between}
+.calc label b{color:var(--wine)}
+.calc input[type=range]{width:100%;accent-color:var(--wine)}
+.calc .grp2{font-size:12px;font-weight:700;color:var(--wine-dark);margin:12px 0 6px;letter-spacing:.04em}
+.out{background:var(--black);color:#fff;border-radius:4px;padding:22px;position:relative;overflow:hidden;align-self:start}
+.out .lbl{font-size:12px;opacity:.75}
+.out .big{font-family:"Oswald",sans-serif;font-size:40px;font-weight:500;color:#e46c9a;line-height:1.15}
+.out dl{display:grid;grid-template-columns:1fr auto;gap:6px 12px;font-size:13px;margin:14px 0 0}
+.out dd{margin:0;text-align:right;font-weight:700}
+.out dt.sep,.out dd.sep{border-top:1px solid rgba(255,255,255,.2);padding-top:6px}
+
+/* ops */
+.ops{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:20px}
+.op{border:1px solid var(--wine-line);border-radius:6px;padding:16px 18px}
+.op h3{margin:0 0 6px;font-size:15px;color:var(--wine)}
+.op ul{margin:0;padding-left:18px;font-size:13.5px}
+
+.pk-name{display:block;font-family:"Oswald",sans-serif;font-size:16px;color:var(--wine);font-weight:500;text-transform:uppercase}
+
+/* personas */
+.persona{border-top:1px solid var(--line);padding:22px 0}
+.persona:first-of-type{border-top:0;padding-top:0}
+.p-head{display:flex;flex-wrap:wrap;align-items:center;gap:14px;margin-bottom:12px}
+.p-head .av{width:56px;height:56px;border-radius:50%;border:3px solid var(--wine);display:grid;place-items:center;color:var(--wine);font-family:"Oswald",sans-serif;font-size:22px}
+.p-head h3{margin:0;font-size:18px;color:var(--wine)}
+.p-head .sub{font-size:13px;color:var(--muted)}
+.p-head .rec{margin-left:auto;font-size:12px;background:var(--wine);color:#fff;padding:4px 12px;border-radius:999px}
+.p-quote{font-family:"Noto Serif KR",serif;color:var(--wine-dark);margin:0 0 12px;font-size:15.5px}
+.journey{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+.step{border:1px solid var(--line);border-radius:4px;padding:10px 12px;font-size:13px;background:#fff}
+.step .st{font-family:"Oswald","Noto Sans KR",sans-serif;font-size:12px;color:var(--wine);letter-spacing:.06em;margin-bottom:2px}
+.step.peak{background:var(--wine);color:#fff;border-color:var(--wine)}
+.step.peak .st{color:#ffd3e3}
+.p-rev{margin-top:10px;font-size:13px;color:var(--wine-dark)}
+.p-rev b{color:var(--wine)}
+.verify{background:var(--wine-soft);border-radius:6px;padding:14px 18px;font-size:13.5px;margin-bottom:22px}
+.verify b{color:var(--wine-dark)}
+
+footer{font-size:12px;color:var(--muted);text-align:center}
+
+@media (max-width:860px){
+  .slide,.cover,.divider{padding:36px 24px}
+  .cover{grid-template-columns:1fr}
+  .cover .glass{max-width:180px}
+  .cover h1{font-size:54px}
+  .onepage{grid-template-columns:1fr 1fr}
+  .onepage > div:nth-child(2){border-right:0}
+  .onepage > div:nth-child(-n+2){border-bottom:1px solid var(--wine-line)}
+  .onepage > div::after{display:none}
+  .fearbox .row,.effects{grid-template-columns:1fr 1fr}
+  .cost,.services,.numbers,.calc,.ops,.eff2{grid-template-columns:1fr}
+  .groups,.six{grid-template-columns:1fr}
+  .pairs{grid-template-columns:1fr 1fr}
+  .journey{grid-template-columns:1fr}
+  .ap{grid-template-columns:40px 1fr}
+  .ap p{grid-column:2}
+  .concept .c{font-size:30px}
+  .headline{font-size:21px}
+  .divider .big{font-size:44px}
+}
+@media (max-width:520px){
+  .onepage,.fearbox .row,.effects{grid-template-columns:1fr}
+  .onepage > div{border-right:0}
+  .tables{grid-template-columns:repeat(9,1fr)}
+  .bar-row,.range .row{grid-template-columns:60px 1fr 90px}
+  .p-head .rec{margin-left:0}
+  .title{font-size:24px}
+}
+@media print{.slide{break-inside:avoid;box-shadow:none}.cover,.divider,.out,th,.step.peak,.ap .n,.fearbox,.why.real .qa,.grp.g2 .h{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <symbol id="stain" viewBox="0 0 200 200">
+      <g fill="none" stroke="currentColor">
+        <circle cx="95" cy="100" r="62" stroke-width="7" opacity=".55"/>
+        <circle cx="98" cy="96" r="56" stroke-width="2" opacity=".35"/>
+        <circle cx="140" cy="140" r="44" stroke-width="5" opacity=".4"/>
+        <circle cx="55" cy="150" r="30" stroke-width="3" opacity=".3"/>
+      </g>
+      <g fill="currentColor" opacity=".55">
+        <circle cx="168" cy="62" r="6"/><circle cx="180" cy="80" r="3"/><circle cx="30" cy="60" r="4"/><circle cx="150" cy="185" r="5"/>
+      </g>
+    </symbol>
+    <symbol id="i-glass" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" d="M7 3h10l-.6 5.2A4.4 4.4 0 0 1 12 12a4.4 4.4 0 0 1-4.4-3.8L7 3Zm5 9v8m-4 0h8M7.4 7h9.2"/></symbol>
+    <symbol id="i-people" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.3"/><path d="M3.5 19c.6-3.2 2.8-5 5.5-5s4.9 1.8 5.5 5M15 14.2c2.6-.4 4.8 1.2 5.4 4.3"/></g></symbol>
+    <symbol id="i-tag" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><path d="M3 12V4h8l10 10-8 8L3 12Z"/><circle cx="8" cy="9" r="1.6"/></g></symbol>
+    <symbol id="i-bottle" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" d="M10 2h4v4.5c0 1 2.5 2.3 2.5 5.5v9a1 1 0 0 1-1 1h-7a1 1 0 0 1-1-1v-9c0-3.2 2.5-4.5 2.5-5.5V2Zm-2.5 12h9"/></symbol>
+    <symbol id="i-wave" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" d="M2 9c2.5 0 2.5-2 5-2s2.5 2 5 2 2.5-2 5-2 2.5 2 5 2M2 14c2.5 0 2.5-2 5-2s2.5 2 5 2 2.5-2 5-2 2.5 2 5 2M2 19c2.5 0 2.5-2 5-2s2.5 2 5 2 2.5-2 5-2 2.5 2 5 2"/></symbol>
+    <symbol id="g-red" viewBox="0 0 60 60"><path d="M18 6h24l-1.4 13A10.8 10.8 0 0 1 30 29a10.8 10.8 0 0 1-10.6-10L18 6Z" fill="none" stroke="#888" stroke-width="1.5"/><path d="M19.1 15h21.8l-.3 4A10.8 10.8 0 0 1 30 29a10.8 10.8 0 0 1-10.6-10Z" fill="#7a1430"/><path d="M30 29v20m-8 0h16" stroke="#888" stroke-width="1.5" stroke-linecap="round"/></symbol>
+    <symbol id="g-white" viewBox="0 0 60 60"><path d="M18 6h24l-1.4 13A10.8 10.8 0 0 1 30 29a10.8 10.8 0 0 1-10.6-10L18 6Z" fill="none" stroke="#888" stroke-width="1.5"/><path d="M19.1 15h21.8l-.3 4A10.8 10.8 0 0 1 30 29a10.8 10.8 0 0 1-10.6-10Z" fill="#e9d48a"/><path d="M30 29v20m-8 0h16" stroke="#888" stroke-width="1.5" stroke-linecap="round"/></symbol>
+    <symbol id="g-spk" viewBox="0 0 60 60"><path d="M24 4h12l-1 20a5 5 0 0 1-10 0L24 4Z" fill="none" stroke="#888" stroke-width="1.5"/><path d="M24.6 12h10.8l-.6 12a4.8 4.8 0 0 1-9.6 0Z" fill="#f0dd9c"/><circle cx="29" cy="18" r="1" fill="#fff"/><circle cx="31.5" cy="21" r=".8" fill="#fff"/><path d="M30 29v20m-7 0h14" stroke="#888" stroke-width="1.5" stroke-linecap="round"/></symbol>
+    <symbol id="g-sweet" viewBox="0 0 60 60"><path d="M18 6h24l-1.4 13A10.8 10.8 0 0 1 30 29a10.8 10.8 0 0 1-10.6-10L18 6Z" fill="none" stroke="#888" stroke-width="1.5"/><path d="M19.1 15h21.8l-.3 4A10.8 10.8 0 0 1 30 29a10.8 10.8 0 0 1-10.6-10Z" fill="#e79bb4"/><path d="M30 29v20m-8 0h16" stroke="#888" stroke-width="1.5" stroke-linecap="round"/></symbol>
+  </defs>
+</svg>
+
+<main class="deck">
+
+<!-- ═══════════ COVER ═══════════ -->
+<section class="slide cover">
+  <svg class="stain br" style="width:300px;bottom:-90px;right:-60px"><use href="#stain"/></svg>
+  <svg class="stain tr" style="width:160px;top:-50px;right:120px;opacity:.5"><use href="#stain"/></svg>
+  <svg class="glass" viewBox="0 0 200 260" aria-hidden="true">
+    <path d="M112 0 C110 40 108 70 106 112" stroke="#8d1530" stroke-width="5" fill="none" stroke-linecap="round"/>
+    <path d="M50 40h100l-6 62a44 44 0 0 1-88 0L50 40Z" fill="none" stroke="#d9d9d9" stroke-width="2.5"/>
+    <path d="M53.5 78h93l-2.5 24a44 44 0 0 1-88 0Z" fill="#7a1430"/>
+    <path d="M62 48c-2 18-1 40 6 56" stroke="#fff" stroke-width="3" opacity=".35" fill="none" stroke-linecap="round"/>
+    <path d="M100 146v86m-36 0h72" stroke="#d9d9d9" stroke-width="2.5" stroke-linecap="round"/>
+  </svg>
+  <div>
+    <h1>PLATZ<br>EVE NIGHT</h1>
+    <p class="copy">바다 앞에서 맞는 이브의 첫 잔</p>
+    <p class="sub">크리스마스이브 PLATZ 디너 뷔페 와인 프로모션 제안서</p>
+    <div class="meta"><span>v0.7</span><span>2026.12.24 (목) 디너</span><span>PLATZ 뷔페</span><span>보고: 베버리지 담당 주임</span></div>
+  </div>
+</section>
+
+<!-- ═══════════ 결론 먼저 ═══════════ -->
+<section class="slide">
+  <svg class="stain tr"><use href="#stain"/></svg>
+  <span class="sec dark">ONE PAGE</span>
+  <h2 class="title">한 장으로 보는 제안</h2>
+  <p class="kr">이 장만 보셔도 무엇을, 왜, 얼마에 하는지 알 수 있게 정리했습니다</p>
+  <div class="onepage">
+    <div><div class="k">WHY<small>왜 하나</small></div><div class="n"><span class="js-nowine"></span>개 테이블</div><p>이브 디너 테이블 <span class="js-used"></span>개 중 <span class="js-nowine"></span>개가 와인 없이 끝납니다. 고객은 건배하고 싶은데, 그 순간을 준비해 주는 사람이 없습니다.</p></div>
+    <div><div class="k">WHAT<small>무엇을</small></div><div class="n" style="font-family:'Noto Serif KR',serif;font-size:20px">바다 앞에서 맞는<br>이브의 첫 잔</div><p>와인을 파는 행사가 아니라, 테이블마다 이브의 건배를 준비해 드리는 서비스입니다.</p></div>
+    <div><div class="k">HOW<small>어떻게</small></div><div class="n">3 그룹</div><p>테이블을 건배 확정 · 망설임 · 불가로 나눠 대응합니다. 정가 유지와 사전 결제 혜택, 페어링 추천과 글라스 와인, 안전 원칙.</p></div>
+    <div><div class="k">WHAT IF<small>그래서 뭐가 달라지나</small></div><div class="n">+<span class="js-goal-profit"></span></div><p>목표 시나리오 기준 순증분 이익입니다(부가세·원가·할인·판촉비 제외). 와인 주문 테이블은 <span class="js-base-wt"></span>개에서 <span class="js-goal-wt"></span>개로 늘어납니다.</p></div>
+  </div>
+  <div class="fearbox">
+    <p class="q">“그래서, 얼마 들어?”</p>
+    <div class="row">
+      <div><span>판촉비 상한 (사내 제작물만)</span><b>150,000원</b></div>
+      <div><span>최악의 경우 손실 (주문이 하나도 안 늘 때)</span><b class="neg js-worst"></b></div>
+      <div><span>목표 시나리오 순증분 이익</span><b class="js-goal-profit2"></b></div>
+      <div><span>손익분기 와인 주문 비율</span><b class="js-be"></b></div>
+    </div>
+  </div>
+  <p class="note">원가는 자료가 없어 업계 통상 원가율(판매가의 30~40%)로 추정했습니다. 추정이 들어간 숫자는 12/3·12/10 파일럿에서 실측해 12/12에 바꿉니다.</p>
+</section>
+
+<!-- ═══════════ 얼마 들어? ═══════════ -->
+<section class="slide">
+  <svg class="stain bl"><use href="#stain"/></svg>
+  <span class="sec dark">FIRST QUESTION</span>
+  <h2 class="title">얼마 들어?</h2>
+  <p class="kr">결재자가 가장 먼저 물을 질문에 먼저 답합니다 · 모든 금액은 부가세 제외</p>
+  <div class="cost">
+    <div>
+      <h3 style="margin:0 0 10px;font-size:16px;color:var(--wine-dark)">드는 돈은 네 가지뿐입니다</h3>
+      <div class="cost-list">
+        <div class="ci"><b>판촉비</b><span class="amt">상한 150,000원</span><small>테이블 POP, 페어링 카드, 메시지 카드를 사내에서 출력. 유료 광고와 테이블 데코는 하지 않습니다.</small></div>
+        <div class="ci"><b>사전 결제 할인</b><span class="amt js-goal-disc"></span><small>미리 결제한 와인에만 10%. 현장 주문은 정가라, 원래 와인을 사던 고객에게 할인이 새어 나가지 않습니다. (목표 시나리오 기준)</small></div>
+        <div class="ci"><b>재방문 카드</b><span class="amt">쓴 만큼만</span><small>1~3월 평일 디너 재방문 시 글라스 와인 1잔. 잔당 원가 약 4,100원이고, 카드를 실제로 쓴 고객에게만 비용이 생깁니다.</small></div>
+        <div class="ci"><b>인력</b><span class="amt">추가 0원 <span class="assume">확인</span></span><small>와인 전담 1명을 기존 이브 근무 인원 중에서 지정합니다. 주문 비율이 30%를 넘을 때만 지원 1명을 추가합니다.</small></div>
+      </div>
+    </div>
+    <div>
+      <h3 style="margin:0 0 10px;font-size:16px;color:var(--wine-dark)">잃을 수 있는 돈과 벌 수 있는 돈</h3>
+      <div class="range" id="range"></div>
+      <div class="quote-box">최악의 경우 잃는 돈은 <b class="js-worst2"></b>, 이브 건배 세트 <b class="js-worst-btl"></b>병 값입니다. 목표대로 되면 <b class="js-goal-profit3"></b>을 법니다.</div>
+      <p class="note">“최악”은 행사를 해도 와인 주문이 평소(10%)에서 하나도 늘지 않고, 판촉비만 쓴 경우입니다.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ APPROVAL ═══════════ -->
+<section class="slide">
+  <svg class="stain tr"><use href="#stain"/></svg>
+  <span class="sec dark">PROPOSITION</span>
+  <h2 class="title">승인 요청</h2>
+  <p class="kr">아래 8가지를 승인받으면 11월 16일부터 판매를 시작합니다</p>
+  <div class="approve">
+    <div class="ap"><div class="n">1</div><h3>판매 방식</h3><p>와인은 <b>메뉴판 정가 그대로</b>. 패키지에는 가격 외 혜택(칠링 웰컴 세팅, 크리스마스 메시지 카드, 창가석 우선 배정)을 붙입니다.<small>와인은 정가로, 혜택은 정성으로. 원래 와인을 사던 고객에게 할인이 새지 않습니다.</small></p></div>
+    <div class="ap"><div class="n">2</div><h3>사전 결제 할인</h3><p>12/22까지 <b>미리 결제한 와인에만 10% 할인</b>. 현장 주문은 정가입니다.<small>12/22까지 전액 환불, 이후 환불 불가 · 인원이 줄면 패키지 변경만 허용</small></p></div>
+    <div class="ap"><div class="n">3</div><h3>글라스 와인</h3><p>스파클링(콘데 데 카랄 브뤼)과 레드(르 트리포터 루즈) <b>잔당 15,000원</b>.<small>1~2명만 마시는 테이블을 위한 장치</small></p></div>
+    <div class="ap"><div class="n">4</div><h3>판촉비 상한</h3><p><b>150,000원 이내</b>, 사내 제작물만. 유료 광고·데코 없음.</p></div>
+    <div class="ap"><div class="n">5</div><h3>와인 전담 인력</h3><p>12/24 디너에 <b>와인 전담 1명</b> 지정(기존 근무 인원 중). 주문 비율 30% 이상이면 지원 1명 추가.</p></div>
+    <div class="ap"><div class="n">6</div><h3>성과 기준 (KPI)</h3><p><b>와인 주문 테이블 비율 20%</b>, <b>순증분 이익 <span class="js-goal-profit4"></span> 이상</b>(부가세 제외).<small>12/12 파일럿 결과로 조정, 12/28 POS 실적으로 보고</small></p></div>
+    <div class="ap"><div class="n">7</div><h3>사전 파일럿</h3><p>12/3, 12/10(목) 평일 디너에 POP·추천·글라스 와인을 시험해 <b>실제 주문 비율을 잽니다</b>.<small>판촉비 15만 원 안에서 진행, 추가 비용 없음</small></p></div>
+    <div class="ap"><div class="n">8</div><h3>재방문 카드</h3><p>와인 주문 테이블에 <b>1~3월 평일 디너 글라스 와인 1잔</b> 카드 + 멤버십 가입 QR.<small>사용률로 재방문을 측정</small></p></div>
+  </div>
+</section>
+
+<!-- ═══════════ WHY ═══════════ -->
+<section class="slide divider">
+  <svg class="stain br" style="width:220px"><use href="#stain"/></svg>
+  <span class="big">WHY</span><span class="q">왜 이 행사를 해야 하나</span>
+</section>
+
+<section class="slide">
+  <svg class="stain tl"><use href="#stain"/></svg>
+  <div class="center-wrap">
+    <span class="sec">WHY · 숫자</span>
+    <p class="headline">이브 디너 테이블 <em class="js-used"></em>개 중<br><em class="js-nowine"></em>개는 건배 없이 이브를 보냅니다</p>
+  </div>
+  <div class="tables" id="tables"></div>
+  <div class="legend"><span><i class="w"></i>와인 주문 테이블 (평소 10% 기준)</span><span><i></i>와인 없이 끝나는 테이블</span><span><i class="x"></i>빈 테이블 (점유율 95%)</span></div>
+  <p class="note" style="text-align:center">52테이블 × 점유율 95% = <span class="js-used"></span>테이블 · 평소 와인 주문 비율 10%는 추정치이며, 파일럿 전 4주 목요일 POS로 실측합니다.</p>
+  <div class="eff2" style="margin-top:22px">
+    <div><b>1년 중 건배가 가장 많은 달</b><br>연간 스파클링 판매의 약 30%가 12월에 팔리고, 12월 와인 구매자 3명 중 1명이 스파클링을 삽니다. <span class="fact">롯데백화점, 2021</span></div>
+    <div><b>그런데 우리 테이블은 평소와 같습니다</b><br>이브라고 해서 와인을 권하거나, 음식과 맞춰 주거나, 한 잔만 팔 장치가 지금은 없습니다. 수요는 있는데 그 수요를 받을 준비가 없습니다.</div>
+  </div>
+</section>
+
+<section class="slide">
+  <svg class="stain br"><use href="#stain"/></svg>
+  <span class="sec">WHY · 5WHY</span>
+  <h2 class="title">왜를 다섯 번 물었습니다</h2>
+  <p class="kr">우리가 팔고 싶은 것(와인)을 고객의 진짜 이유와 연결하기 위해</p>
+  <div class="chain">
+    <div class="why"><div class="lv">WHY 1</div><div class="qa"><div class="q">이 행사를 왜 하나?</div><div class="a">이브 디너 매출을 더 올리기 위해서입니다.</div></div></div>
+    <div class="why"><div class="lv">WHY 2</div><div class="qa"><div class="q">왜 하필 와인인가?</div><div class="a">이브는 좌석이 이미 몰리는 날이라 손님 수로는 더 늘릴 수 없습니다. 늘릴 수 있는 곳은 테이블 위입니다.</div></div></div>
+    <div class="why"><div class="lv">WHY 3</div><div class="qa"><div class="q">왜 지금은 테이블 10개 중 9개가 와인을 안 시키나?</div><div class="a">권하는 사람이 없고, 병으로만 팔아 1~2명이 마시기엔 부담이고, 지금 먹는 음식과 어떤 와인이 맞는지 모르기 때문입니다. <span class="assume">추정 · 파일럿에서 확인</span></div></div></div>
+    <div class="why"><div class="lv">WHY 4</div><div class="qa"><div class="q">그게 왜 이브에 더 아까운가?</div><div class="a">이브 고객은 “오늘은 특별한 날”이라는 기대를 안고 옵니다. 건배할 마음은 있는데, 그 순간을 준비해 주는 사람이 없어 그냥 지나갑니다.</div></div></div>
+    <div class="why real"><div class="lv">REAL WHY</div><div class="qa"><div class="q">그렇다면 고객이 진짜 사고 싶은 것은?</div><div class="a">와인 한 병이 아니라, <b>바다 앞에서 맞는 이브의 첫 잔</b>. 우리는 와인이 아니라 그 순간을 준비해서 팝니다.</div></div></div>
+  </div>
+</section>
+
+<section class="slide">
+  <svg class="stain tr"><use href="#stain"/></svg>
+  <span class="sec">WHY · 쪼개기</span>
+  <h2 class="title">테이블을 세 그룹으로 나눴습니다</h2>
+  <p class="kr">같은 “와인 판매”라도 그룹마다 막힌 곳이 다르고, 그래서 해법도 다릅니다</p>
+  <div class="groups">
+    <div class="grp"><div class="h"><div class="nm">건배 확정</div><div class="sz">평소에도 와인을 시키는 테이블 · 약 <span class="js-base-wt"></span>개</div></div>
+      <div class="b"><p>이미 와인을 살 고객입니다. 막힌 곳은 없지만, 할인을 주면 그대로 이익이 줄어듭니다.</p>
+      <p class="sol"><b>해법</b> 정가 유지 · 사전 결제할 때만 할인 · 상위 와인으로 올리는 제안은 예약 단계에서</p></div></div>
+    <div class="grp g2"><div class="h"><div class="nm">건배 망설임</div><div class="sz">마실 사람은 있는데 안 시키는 테이블 · 이번 행사의 핵심</div></div>
+      <div class="b"><p>권하는 사람이 없거나, 병이 부담스럽거나, 무엇을 골라야 할지 모르는 테이블입니다.</p>
+      <p class="sol"><b>해법</b> 예약 확인 때 미리 안내 · 착석 직후 1회 추천 · 코너별 페어링 카드 · 잔당 15,000원 글라스 와인</p></div></div>
+    <div class="grp"><div class="h"><div class="nm">건배 불가</div><div class="sz">운전자·아이·임산부 등 마실 수 없는 사람</div></div>
+      <div class="b"><p>억지로 팔면 사고와 평판 위험만 커집니다.</p>
+      <p class="sol"><b>해법</b> 팔지 않는 것이 원칙 · 성인 인원만 잔 세팅 · 대리운전 안내 · 무알콜 건배 옵션은 추가 검토</p></div></div>
+  </div>
+  <p class="note">그룹별 테이블 수는 11/13 예약 명단(인원 구성, 아이 동반, 투숙 여부)으로 확정합니다.</p>
+</section>
+
+<!-- ═══════════ WHAT ═══════════ -->
+<section class="slide divider">
+  <svg class="stain br" style="width:220px"><use href="#stain"/></svg>
+  <span class="big">WHAT</span><span class="q">한마디로, 그게 뭔데?</span>
+</section>
+
+<section class="slide">
+  <svg class="stain tl"><use href="#stain"/></svg>
+  <svg class="stain br"><use href="#stain"/></svg>
+  <div class="concept">
+    <span class="sec">WHAT · 컨셉</span>
+    <div class="c">바다 앞에서 맞는<br>이브의 첫 잔</div>
+    <p class="vs"><s>와인 판촉 행사</s> → 테이블마다 <b>이브의 건배를 준비해 드리는 서비스</b></p>
+  </div>
+  <p class="kr center" style="margin-bottom:14px">이 컨셉이 고객의 “왜 거기서?”에 답하는 여섯 가지 이유</p>
+  <div class="six">
+    <div><b>의미가 있잖아</b><span>기념일의 첫 잔</span>연인에게는 이브의 시작, 가족에게는 부모님께 따라 드리는 한 잔</div>
+    <div><b>대세잖아</b><span>12월은 건배의 달</span>연간 스파클링의 약 30%가 12월에 팔림 <span class="fact">자료</span></div>
+    <div><b>내 이야기야</b><span>바다 앞 디자인 호텔</span>영종도 해안가, 통창 너머 바다를 보며 드는 잔 <span class="fact">자료</span></div>
+    <div><b>내 생각과 같아</b><span>코스는 부담, 분위기는 내고 싶어</span>뷔페의 편안함 위에 와인 한 병으로 분위기를 더함</div>
+    <div><b>네 잘못이 아니야</b><span>할증 없는 88,000원</span>뷔페 값을 아낀 만큼 와인 한 병을 더할 여유가 생김</div>
+    <div><b>이거니까 해야 해</b><span>이브엔 건배</span>잔을 부딪치지 않은 이브는 평일 저녁과 다르지 않음</div>
+  </div>
+  <div class="copies"><span>와인은 정가로, 혜택은 정성으로</span><span>한 병이 부담이면, 한 잔부터</span><span>오늘 메뉴에 맞춘 이브 와인</span></div>
+</section>
+
+<section class="slide">
+  <svg class="stain bl"><use href="#stain"/></svg>
+  <span class="sec">WHAT · 왜 PLATZ인가</span>
+  <h2 class="title">우리만 줄 수 있는 것</h2>
+  <p class="kr">고객이 영종도의 이브 디너로 PLATZ를 고를 이유</p>
+  <div class="services">
+    <div class="svc"><div class="ic"><svg><use href="#i-wave"/></svg></div><div><h3>바다 앞 디자인 호텔에서 보내는 이브</h3><p>영종도 해안가, 바다와 소나무 숲 사이의 디자인 호텔. PLATZ는 통창으로 바다가 보입니다. 도심 호텔에서는 할 수 없는 경험입니다.</p><div class="basis"><span class="fact">자료</span>디자인호텔스 멤버 · 인천공항 차로 약 10분 (Allure Korea, Stayfolio) · 통창 바다 전망 (이용 후기)</div></div></div>
+    <div class="svc"><div class="ic"><svg><use href="#i-tag"/></svg></div><div><h3>이브 할증이 없다</h3><p>호텔 뷔페는 연말에 값을 올리는 것이 업계 관행입니다. PLATZ는 이브에도 88,000원, 2인 뷔페에 와인을 더해도 228,000원입니다.</p><div class="basis"><span class="fact">자료</span>2025 연말 서울 4대 호텔 주말 뷔페 평균 218,000원 (서울신문) <span class="assume">확인</span>인근 경쟁 업장 이브 가격은 11/13까지 조사</div></div></div>
+    <div class="svc"><div class="ic"><svg><use href="#i-glass"/></svg></div><div><h3>뷔페 메뉴에 맞는 와인이 다 있다</h3><p>해산물엔 화이트·스파클링, 그릴엔 레드, 디저트엔 스위트. 11종이 4개 스타일, 5개국 산지에 걸쳐 있습니다.</p><div class="basis"><span class="fact">메뉴</span>호텔 와인 메뉴판 11종</div></div></div>
+    <div class="svc"><div class="ic"><svg><use href="#i-bottle"/></svg></div><div><h3>정통 샴페인이 있다</h3><p>떼땅져 리저브 브뤼(프랑스 샹파뉴). 디너의 랍스터, 단새우와 함께 기념일 테이블에 제안합니다.</p><div class="basis"><span class="fact">메뉴</span>250,000원</div></div></div>
+  </div>
+</section>
+
+<section class="slide">
+  <svg class="stain tr"><use href="#stain"/></svg>
+  <svg class="stain bl" style="width:150px"><use href="#stain"/></svg>
+  <div class="center-wrap"><span class="sec">WHAT · 페어링</span></div>
+  <h2 class="title center">Buffet Pairing</h2>
+  <p class="kr center">PLATZ 디너 메뉴 × 와인 · 와인을 몰라도 “지금 먹는 음식”으로 고를 수 있게 <span class="fact">디너 메뉴판</span></p>
+  <div class="pairs">
+    <div class="pair"><div class="ring"><svg><use href="#g-spk"/></svg></div><div class="st">건배 · 튀김 · 초밥 · 랍스터</div><h3>Sparkling</h3><ul><li><b>콘데 데 카랄 브뤼</b> 52,000<br><small>깔라마리 튀김 · 연어/광어 초밥 · 훈제연어 · 치즈·햄 4종</small></li><li style="margin-top:6px"><b>떼땅져 리저브 브뤼</b> 250,000<br><small>랍스터 베샤멜 · 아마에비(단새우) · 방어</small></li></ul></div>
+    <div class="pair"><div class="ring"><svg><use href="#g-white"/></svg></div><div class="st">해산물 · 향신료 요리</div><h3>White</h3><ul><li><b>도멘 데 꺄트르 쎄종 샤블리</b> 160,000<br><small>광어·방어·대포이까 · 멍게 · 해산물 샐러드</small></li><li style="margin-top:6px"><b>르 트리포터 블랑</b> 60,000<br><small>농어구이 · 고르곤졸라 컬리플라워</small></li><li style="margin-top:6px"><b>아벤토</b> 75,000<br><small>푸팟퐁커리 · 탄두리치킨</small></li></ul></div>
+    <div class="pair"><div class="ring"><svg><use href="#g-red"/></svg></div><div class="st">LIVE · 그릴 · HOT</div><h3>Red</h3><ul><li><b>르 트리포터 루즈</b> 60,000<br><small>양갈비 구이</small></li><li style="margin-top:6px"><b>뮈느방, 배드 보이</b> 110,000<br><small>로스트 비프</small></li><li style="margin-top:6px"><b>이터 까베르네 쇼비뇽</b> 70,000<br><small>LA갈비 · 스페어립</small></li><li style="margin-top:6px"><b>레 그랑 슈망</b> 52,000<br><small>이탈리안 볼페떼 · 리가토니 · 소시지</small></li></ul></div>
+    <div class="pair"><div class="ring"><svg><use href="#g-sweet"/></svg></div><div class="st">DESSERTS</div><h3>Sweet</h3><ul><li><b>퓨리타 모스카토 다스티</b> 60,000<br><small>케이크 5종 · 크림브륄레 · 과일 4종</small></li><li style="margin-top:6px"><b>아스코니 우네오리 모스카토 로제</b> 52,000<br><small>마카롱 · 무스</small></li></ul></div>
+  </div>
+  <p class="note" style="text-align:center">와인명은 메뉴판 표기 그대로입니다. 메뉴는 평일 디너 메뉴판 기준이며, 페어링은 일반적인 원칙(해산물엔 산미 있는 화이트·스파클링, 붉은 고기엔 탄닌 있는 레드, 디저트엔 와인이 더 달게)을 적용한 제안이라 11/27까지 소믈리에·주방 검토를 받습니다.</p>
+</section>
+
+<!-- ═══════════ HOW ═══════════ -->
+<section class="slide divider">
+  <svg class="stain br" style="width:220px"><use href="#stain"/></svg>
+  <span class="big">HOW</span><span class="q">그래서, 어떻게 하나</span>
+</section>
+
+<section class="slide">
+  <svg class="stain tr"><use href="#stain"/></svg>
+  <span class="sec">HOW · 상품</span>
+  <h2 class="title">Packages</h2>
+  <p class="kr">와인은 정가, 패키지에는 가격 외 혜택, 사전 결제분만 10% 할인 · 고객용 POP와 POS에는 한글 이름을 앞에 씁니다</p>
+  <div class="tbl-wrap">
+  <table>
+    <thead><tr><th>패키지</th><th>대상 그룹 · 테이블</th><th>와인 구성 (메뉴판 품목)</th><th>현장 정가</th><th>사전 결제가</th><th>가격 외 혜택</th></tr></thead>
+    <tbody id="pkg-body">
+      <tr data-wine="52000"><td>이브 건배 세트<span class="pk-name" style="font-size:13px">Eve Toast</span></td><td>망설임 · 2인석</td><td class="l">콘데 데 카랄 브뤼 1병</td><td></td><td></td><td class="l">칠링 웰컴 세팅 · 메시지 카드</td></tr>
+      <tr data-wine="120000"><td>페어링 2병 세트<span class="pk-name" style="font-size:13px">Seafood &amp; Grill</span></td><td>망설임 · 4인석 (성인 위주)</td><td class="l">르 트리포터 블랑 + 르 트리포터 루즈</td><td></td><td></td><td class="l">코너별 페어링 카드 · 메시지 카드</td></tr>
+      <tr class="hl" data-wine="250000"><td>샴페인 테이블<span class="pk-name" style="font-size:13px">Champagne Table</span></td><td>확정 · 2인석 (기념일)</td><td class="l">떼땅져 리저브 브뤼 1병</td><td></td><td></td><td class="l">창가석 우선 배정 <span class="assume">가용 확인</span> · 칠링 세팅 · 메시지 카드</td></tr>
+      <tr data-wine="15000" data-glass="1"><td>글라스 와인<span class="pk-name" style="font-size:13px">By the Glass</span></td><td>망설임 · 1~2명만 마시는 테이블</td><td class="l">콘데 데 카랄 브뤼 또는 르 트리포터 루즈 1잔</td><td></td><td>—</td><td class="l">—</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p class="note">잔 가격 15,000원은 “1잔 = 병의 매입 원가” 업계 관행(VinePair)을 적용한 값입니다(병 52~60K × 원가율 30% ≈ 15.6~18K). 상위 와인으로 올리는 제안은 현장이 아니라 예약 단계에서 합니다: 이브 건배 세트 → 샴페인 테이블.</p>
+</section>
+
+<section class="slide">
+  <svg class="stain br"><use href="#stain"/></svg>
+  <span class="sec">HOW · 고객</span>
+  <h2 class="title">Personas &amp; Journey</h2>
+  <p class="kr">누가, 언제, 어떻게 만족하는가 · <b style="color:var(--wine)">채워진 칸</b>이 건배가 일어나는 순간</p>
+  <div class="verify"><b>이 퍼소나는 검증 전 가설입니다.</b> 11/13까지 12/24 예약 명단에서 2인석·4인석 비율, 아이 동반, 투숙 여부, 기념일 메모를 집계해 확정합니다. <b>배분 가설</b>: 2인석 15 → A · 4인석 37 → B 15, C 15, D 7. 외부 고객은 운전 때문에 주문 비율이 낮을 수 있어(추정), 투숙객과 나눠 계산합니다.</div>
+
+  <div class="persona">
+    <div class="p-head"><div class="av">A</div><div><h3>기념일 디너를 찾는 연인</h3><div class="sub">20대 후반~30대 · 2인석 · 건배 확정~망설임</div></div><span class="rec">이브 건배 세트 → 샴페인 테이블</span></div>
+    <p class="p-quote">“레스토랑 코스는 비싸고 예약도 끝났어. 그래도 분위기는 내고 싶어.”</p>
+    <div class="journey">
+      <div class="step"><div class="st">인지</div>디너를 예약한 뒤, 예약 확인 문자에서 이브 와인 안내를 받음</div>
+      <div class="step"><div class="st">고려</div>미리 결제하면 10% 할인에 창가석 우선 배정까지</div>
+      <div class="step"><div class="st">예약</div>이브 건배 세트나 샴페인 테이블을 사전 결제</div>
+      <div class="step peak"><div class="st">현장 ★</div>창가석에 칠링 세팅과 메시지 카드. 앉자마자 오픈해 바다 앞에서 첫 잔</div>
+      <div class="step"><div class="st">이후</div>건배 사진을 SNS에 올림 · 재방문 카드로 다음 기념일 안내</div>
+    </div>
+  </div>
+
+  <div class="persona">
+    <div class="p-head"><div class="av">B</div><div><h3>성인 위주 가족·지인</h3><div class="sub">부모님 + 자녀 부부 등 성인 3~4명 · 4인석 · 건배 망설임</div></div><span class="rec">페어링 2병 세트</span></div>
+    <p class="p-quote">“부모님 모시고 이브 저녁 한 끼. 술은 어른들끼리 적당히.”</p>
+    <div class="journey">
+      <div class="step"><div class="st">인지</div>예약 확인 전화에서 4인석용 페어링 세트 안내</div>
+      <div class="step"><div class="st">고려</div>‘초밥·농어엔 화이트, 양갈비·LA갈비엔 레드’라 고르기 쉬움</div>
+      <div class="step"><div class="st">예약</div>사전 결제하거나 현장에서 주문하기로 함</div>
+      <div class="step peak"><div class="st">현장 ★</div>페어링 카드를 보며 부모님께 와인을 따라 드림. 어른 대접을 제대로 했다는 만족</div>
+      <div class="step"><div class="st">이후</div>설·생신 등 가족 행사 때 재방문</div>
+    </div>
+  </div>
+
+  <div class="persona">
+    <div class="p-head"><div class="av">C</div><div><h3>아이 동반 가족</h3><div class="sub">부부 + 아이 1~2명 · 4인석 · 건배 망설임 (마실 사람 1~2명)</div></div><span class="rec">글라스 와인 → 이브 건배 세트</span></div>
+    <p class="p-quote">“애들 챙기느라 한 병은 부담인데, 한 잔 정도는 하고 싶어.”</p>
+    <div class="journey">
+      <div class="step"><div class="st">인지</div>착석 직후 전담 직원의 추천과 테이블 POP</div>
+      <div class="step"><div class="st">고려</div>한 잔 15,000원이면 병을 안 따도 됨 · 운전하는 사람은 안 마셔도 됨</div>
+      <div class="step"><div class="st">주문</div>스파클링이나 레드 한 잔 · 두 잔째부터는 병이 낫다는 안내</div>
+      <div class="step peak"><div class="st">현장 ★</div>아이들 디저트 시간에 부모끼리 잔을 부딪침. 이브 기분은 냈다는 만족</div>
+      <div class="step"><div class="st">이후</div>가족 외식 장소로 다시 고려</div>
+    </div>
+  </div>
+
+  <div class="persona">
+    <div class="p-head"><div class="av">D</div><div><h3>이브 호캉스 투숙객</h3><div class="sub">커플·가족 · 투숙하며 호텔 안에서 디너 · 건배 확정</div></div><span class="rec">이브 건배 세트 / 페어링 2병 세트</span></div>
+    <p class="p-quote">“나가기 귀찮아. 호텔 안에서 저녁까지 다 해결하자.”</p>
+    <div class="journey">
+      <div class="step"><div class="st">인지</div>체크인 전 객실 예약 확인 안내에서 디너와 와인을 함께 봄</div>
+      <div class="step"><div class="st">고려</div>운전할 일이 없으니 마시는 데 부담이 없음</div>
+      <div class="step"><div class="st">예약</div>디너 예약과 와인 사전 결제를 함께</div>
+      <div class="step peak"><div class="st">현장 ★</div>운전 걱정 없이 한 병 더. 남은 와인은 객실로</div>
+      <div class="step"><div class="st">이후</div>호텔 리뷰에 디너 경험을 언급</div>
+    </div>
+  </div>
+</section>
+
+<section class="slide">
+  <svg class="stain br"><use href="#stain"/></svg>
+  <span class="sec">HOW · 채널</span>
+  <h2 class="title">Touchpoints</h2>
+  <p class="kr">1순위는 <b>이미 예약한 고객</b> · 유료 광고 없음</p>
+  <div class="tbl-wrap">
+  <table>
+    <thead><tr><th>채널</th><th>시점</th><th>대상</th><th>움직이는 레버</th><th>메시지</th><th>담당 (안)</th></tr></thead>
+    <tbody>
+      <tr class="hl"><td>예약 확인 문자·전화</td><td>11/16~12/22</td><td>A, B, D</td><td>주문 비율 (사전 결제)</td><td class="l">“바다 앞에서 맞는 이브의 첫 잔, 미리 준비해 두세요 · 사전 결제 시 10%”</td><td>PLATZ 예약</td></tr>
+      <tr><td>신규 예약 시 안내</td><td>예약 시점</td><td>A, B</td><td>주문 비율</td><td class="l">예약 스크립트에 이브 와인 안내 한 줄</td><td>PLATZ 예약</td></tr>
+      <tr><td>객실 예약 확인 안내</td><td>체크인 전</td><td>D</td><td>주문 비율</td><td class="l">“이브 디너와 첫 잔, 미리 예약하세요”</td><td>객실 예약</td></tr>
+      <tr><td>자체 SNS (무료)</td><td>11월 말~12월 중순</td><td>A</td><td>인지</td><td class="l">통창 너머 바다와 와인잔 이미지 · “바다 앞에서 맞는 이브의 첫 잔”</td><td>마케팅</td></tr>
+      <tr class="hl"><td>테이블 POP + 전담 추천</td><td>12/24 현장</td><td>전체 (특히 C)</td><td>세 가지 모두</td><td class="l">“오늘 메뉴에 맞춘 이브 와인” · “한 병이 부담이면, 한 잔부터”</td><td>베버리지 · 홀</td></tr>
+      <tr><td>재방문 카드</td><td>12/24 → 1~3월</td><td>와인 주문 테이블</td><td>재방문</td><td class="l">“1~3월 평일 디너에 다시 오시면 글라스 와인 1잔” + 멤버십 QR</td><td>베버리지 · CRM</td></tr>
+    </tbody>
+  </table>
+  </div>
+</section>
+
+<section class="slide">
+  <svg class="stain tr"><use href="#stain"/></svg>
+  <span class="sec">HOW · 현장</span>
+  <h2 class="title">인력과 기물</h2>
+  <p class="kr">시나리오별 판매량에서 거꾸로 계산 <span class="assume">근사</span> 실제 근무 인원과 기물 보유량은 11/13까지 확인</p>
+  <div class="tbl-wrap">
+  <table>
+    <thead><tr><th>시나리오</th><th>병 오픈 수 (3시간)</th><th>잔 판매 수</th><th>필요 와인잔 (여유 30%)</th><th>필요 플루트 (여유 30%)</th><th>와인 전담 인원</th></tr></thead>
+    <tbody id="ops-body"></tbody>
+  </table>
+  </div>
+  <div class="ops">
+    <div class="op"><h3>와인 전담 1명의 역할</h3><ul><li>사전 결제 테이블은 착석을 확인한 뒤 오픈 (미리 따지 않음)</li><li>착석 직후 테이블마다 1회 추천</li><li>리필과 디저트 시간 스위트 와인 추천</li><li>병 오픈 기록 → 마감 후 POS와 대조</li></ul></div>
+    <div class="op"><h3>교육 (12/17, 1시간)</h3><ul><li>대상: 전담 1명 + 지원 대기 1명 + 홀 서버 전원(추천 멘트만)</li><li>스파클링 안전 오픈 실습, 실습 확인표로 점검</li><li>추천 멘트: “오늘 메뉴에 맞춘 이브 와인이 있습니다”</li><li>3시간에 20병 이하면 전담 1명으로 감당 (10분에 1병 미만)</li></ul></div>
+  </div>
+</section>
+
+<section class="slide">
+  <svg class="stain br"><use href="#stain"/></svg>
+  <span class="sec">HOW · 원칙</span>
+  <h2 class="title">Operating Rules</h2>
+  <p class="kr">“진행이 돼?”에 대한 답 · 예약·결제, 재고, 장비, 주류 안전 (안)</p>
+  <div class="ops" style="margin-top:0">
+    <div class="op"><h3>예약 · 사전 결제 · POS</h3><ul>
+      <li>예약 메모에 패키지명과 결제 번호를 남기고, 당일 오픈 전에 POS 테이블 오더로 미리 입력</li>
+      <li>마감 후 오픈 기록, 예약 메모, POS를 3자 대조</li>
+      <li>POS 코드: 패키지 3종(정가·사전 결제가), 글라스 와인 2종, 재방문 카드 사용분을 따로 등록</li>
+      <li>와인만 파는 패키지라 뷔페와 매출 배분 문제가 없음</li>
+      <li>사전 결제금은 행사일까지 선수금, 12/24에 매출 전환 (재무 확인)</li>
+    </ul></div>
+    <div class="op"><h3>재고 · 칠링</h3><ul>
+      <li>확보량 = 도전 시나리오 예상 판매 × 1.5 (아래 표)</li>
+      <li>품절 시 같은 스타일 안에서 대체 (레드는 레드끼리, 화이트는 화이트끼리)</li>
+      <li>콘데 데 카랄은 같은 가격대 스파클링 대체 품목이 없어 넉넉히 확보</li>
+      <li>룸서비스 재고와 나눠 12/23에 PLATZ로 이관 기록</li>
+      <li>레드는 백바 서늘한 곳에 보관, 디캔팅은 하지 않음</li>
+    </ul></div>
+    <div class="op"><h3>주류 안전</h3><ul>
+      <li>미성년자 동반 테이블은 성인 인원만큼만 잔 세팅, 의심 시 신분 확인</li>
+      <li>외부 고객은 계산·주차 정산 때 대리운전 안내 카드</li>
+      <li>과음 고객은 추가 판매 중단, 홀 매니저 호출</li>
+      <li>남은 와인은 리코르크해 포장 반출, 투숙객은 객실로</li>
+    </ul></div>
+    <div class="op"><h3>품질</h3><ul>
+      <li>코르크 오염 등 불량은 전담 직원이 판단해 같은 품목으로 교환</li>
+      <li>스파클링·화이트·스위트는 칠링, 레드는 서늘한 상온</li>
+    </ul></div>
+  </div>
+  <div class="tbl-wrap" style="margin-top:20px">
+  <table>
+    <thead><tr><th>가격대 (해당 품목)</th><th>도전 예상 판매</th><th>확보량 (×1.5)</th></tr></thead>
+    <tbody id="stock-body"></tbody>
+  </table>
+  </div>
+  <p class="note">아이스버킷 필요 수: <b id="bucket"></b> · 글라스 와인은 1병에 5잔 기준으로 환산했습니다.</p>
+</section>
+
+<section class="slide">
+  <svg class="stain tr"><use href="#stain"/></svg>
+  <span class="sec">HOW · 리스크</span>
+  <h2 class="title">Risks</h2>
+  <p class="kr">가능성과 영향은 작성자 판단입니다</p>
+  <div class="tbl-wrap">
+  <table class="risk">
+    <thead><tr><th>리스크</th><th>가능성</th><th>영향</th><th>대응</th><th>담당 (안)</th></tr></thead>
+    <colgroup><col style="width:22%"><col style="width:9%"><col style="width:9%"><col><col style="width:16%"></colgroup>
+    <tbody>
+      <tr><td>주요 품목 품절</td><td>중</td><td>높음</td><td class="l">도전 기준 1.5배 확보, 같은 스타일 대체표</td><td>베버리지</td></tr>
+      <tr><td>와인 전담 인력 공백</td><td>중</td><td>높음</td><td class="l">지원 1명 대기, 2명 모두 교육</td><td>PLATZ 지배인</td></tr>
+      <tr><td>노쇼·취소 분쟁</td><td>중</td><td>중간</td><td class="l">환불 기한 사전 고지, 착석 확인 후 오픈</td><td>예약</td></tr>
+      <tr><td>미성년자 음주</td><td>낮음</td><td>높음</td><td class="l">성인 인원만 잔 세팅, 의심 시 신분 확인</td><td>홀</td></tr>
+      <tr><td>음주운전</td><td>중</td><td>높음</td><td class="l">대리운전 안내 카드, 주차 정산 시 안내</td><td>홀 · 프런트</td></tr>
+      <tr><td>과음·소란</td><td>낮음</td><td>중간</td><td class="l">판매 중단 기준, 매니저 호출</td><td>홀 매니저</td></tr>
+      <tr><td>품질 불량</td><td>낮음</td><td>중간</td><td class="l">전담 직원이 판단해 같은 품목으로 교환</td><td>베버리지</td></tr>
+      <tr><td>수신 동의 없는 광고 문자</td><td>중</td><td>중간</td><td class="l">예약 확인은 거래 안내에 한 줄만, 광고성 발송은 동의 고객만 (법무 확인)</td><td>마케팅</td></tr>
+      <tr><td>주류 사전 결제 규정</td><td>낮음</td><td>높음</td><td class="l">식사 예약에 딸린 결제인지 재무·법무 확인 (추정 리스크)</td><td>재무</td></tr>
+      <tr><td>증분 이익 미달</td><td>중</td><td>낮음</td><td class="l">판촉비 15만 원 상한, 파일럿 결과로 범위 축소 판단</td><td>베버리지</td></tr>
+    </tbody>
+  </table>
+  </div>
+</section>
+
+<section class="slide">
+  <svg class="stain tl"><use href="#stain"/></svg>
+  <span class="sec">HOW · 검증</span>
+  <h2 class="title">Pilot</h2>
+  <p class="kr">“진짜 괜찮아?”에 대한 답 · 외부 자료로 잡은 숫자를 이브 전에 우리 업장에서 직접 잽니다</p>
+  <div class="tbl-wrap">
+  <table>
+    <thead><tr><th>항목</th><th>내용</th></tr></thead>
+    <tbody>
+      <tr><td>일정</td><td class="l">12/3(목), 12/10(목) 평일 디너 18:00~21:00</td></tr>
+      <tr><td>하는 것</td><td class="l">테이블 POP·페어링 카드 시안, 착석 직후 추천 1회, 글라스 와인 2종</td></tr>
+      <tr><td>재는 것</td><td class="l">와인 주문 테이블 비율, 잔 판매 수, 병당 평균가, 오픈부터 서빙까지 걸린 시간, 직원 부담</td></tr>
+      <tr><td>비교 기준</td><td class="l">직전 4주 목요일 디너의 POS 와인 주문 비율 (평소 10% 추정값을 실측값으로 교체)</td></tr>
+      <tr class="hl"><td>판단 기준</td><td class="l">평소보다 <b>5%p 이상</b> 오르면 목표 시나리오 유지 · <b>2~5%p</b>면 보수 시나리오로 KPI 하향 · <b>2%p 미만</b>이면 이브는 POP와 글라스 와인만 운영</td></tr>
+      <tr><td>한계</td><td class="l">평일 비수기 고객은 이브와 구성이 다릅니다. 이브는 기념일·가족 고객이 많아 파일럿보다 주문 비율이 높을 가능성이 있어(추정), 파일럿 값은 하한선으로 봅니다.</td></tr>
+    </tbody>
+  </table>
+  </div>
+</section>
+
+<section class="slide">
+  <svg class="stain tr"><use href="#stain"/></svg>
+  <span class="sec">HOW · 일정</span>
+  <h2 class="title">Schedule</h2>
+  <p class="kr">담당은 부서 기준 안이며, 담당자 이름은 승인 후 지정합니다</p>
+  <div class="tbl-wrap">
+  <table>
+    <thead><tr><th>마감</th><th>할 일</th><th>담당 (안)</th><th>선행 조건</th></tr></thead>
+    <tbody>
+      <tr><td>11/13</td><td class="l">12/24 예약 명단 집계 → 그룹·퍼소나별 테이블 수 확정</td><td>PLATZ 예약</td><td>—</td></tr>
+      <tr><td>11/13</td><td class="l">와인 원가(또는 원가율), 최근 4주 목요일 POS 실측값 확보</td><td>베버리지 · 재무</td><td>—</td></tr>
+      <tr><td>11/13</td><td class="l">운영시간, 창가석 수, 와인잔·플루트·아이스버킷 보유량 확인</td><td>PLATZ 지배인</td><td>—</td></tr>
+      <tr><td>11/13</td><td class="l">인근 경쟁 업장 이브 가격·와인 혜택 조사</td><td>베버리지</td><td>—</td></tr>
+      <tr><td>11/13</td><td class="l">선수금 처리, 주류 사전 결제 규정, 문자 수신 동의 확인</td><td>재무 · 법무 · 마케팅</td><td>—</td></tr>
+      <tr class="hl"><td>11/16</td><td class="l">POS 코드 등록, 예약 안내 시작 (판매 개시)</td><td>베버리지 · PLATZ 예약</td><td>승인</td></tr>
+      <tr><td>11/27</td><td class="l">POP·페어링 카드 시안, 추천 멘트 작성 · 소믈리에·주방 검토</td><td>베버리지 · 주방</td><td>이브 확정 메뉴</td></tr>
+      <tr class="hl"><td>12/3 · 12/10</td><td class="l">파일럿 운영</td><td>베버리지 · 홀</td><td>시안, 글라스 와인 코드</td></tr>
+      <tr><td>12/12</td><td class="l">파일럿 결과로 KPI·운영 범위 확정, POP·카드 최종 출력</td><td>베버리지</td><td>파일럿</td></tr>
+      <tr><td>12/17</td><td class="l">교육, 품목별 재고 확보</td><td>베버리지 · PLATZ 지배인</td><td>재고 확보량</td></tr>
+      <tr><td>12/22</td><td class="l">사전 결제 마감, 12/23 재고 이관</td><td>PLATZ 예약 · 베버리지</td><td>—</td></tr>
+      <tr><td>12/28</td><td class="l">POS 실적으로 결과 보고</td><td>베버리지</td><td>마감 대조</td></tr>
+    </tbody>
+  </table>
+  </div>
+</section>
+
+<!-- ═══════════ WHAT IF ═══════════ -->
+<section class="slide divider">
+  <svg class="stain br" style="width:220px"><use href="#stain"/></svg>
+  <span class="big">WHAT IF</span><span class="q">그래서, 뭐가 달라지나</span>
+</section>
+
+<section class="slide">
+  <svg class="stain tl"><use href="#stain"/></svg>
+  <span class="sec">WHAT IF · 기대 효과</span>
+  <h2 class="title">이브 밤, 달라지는 것</h2>
+  <p class="kr">목표 시나리오 기준 · 평소 대비</p>
+  <div class="effects">
+    <div class="eff"><div class="v"><span class="js-base-wt"></span>→<span class="js-goal-wt"></span><small>개</small></div><p>건배하는 테이블<br>(병 주문 기준)</p></div>
+    <div class="eff"><div class="v">+<span class="js-goal-glass"></span><small>잔</small></div><p>병이 부담이던 테이블의<br>글라스 와인</p></div>
+    <div class="eff"><div class="v js-goal-profit5"></div><p>순증분 이익<br>(부가세·원가·할인·판촉비 제외)</p></div>
+    <div class="eff"><div class="v"><span class="js-cards"></span><small>장</small></div><p>1~3월 재방문 카드 배포<br>(와인 주문 테이블 수)</p></div>
+  </div>
+  <div class="eff2">
+    <div><b>고객에게</b><br>와인을 몰라도, 한 병이 부담이어도, 이브의 첫 잔을 놓치지 않습니다. 바다 앞 창가석, 칠링된 첫 병, 메시지 카드가 기념 사진의 배경이 됩니다.</div>
+    <div><b>호텔에게</b><br>15만 원 안에서 이브 와인 수요를 실측한 데이터가 남습니다. 이 데이터로 12/31, 발렌타인데이 같은 다음 기념일 와인 판촉을 할지, 얼마나 크게 할지 판단할 수 있습니다.</div>
+  </div>
+</section>
+
+<section class="slide">
+  <svg class="stain br"><use href="#stain"/></svg>
+  <span class="sec">WHAT IF · 숫자</span>
+  <h2 class="title">Our Numbers</h2>
+  <p class="kr">모든 금액은 부가세 제외 · 순증분 이익 = (행사 매출총이익 − 평소 매출총이익) − 사전 결제 할인 − 판촉비</p>
+  <div class="bars" id="bars"></div>
+  <div class="tbl-wrap" style="margin-top:22px">
+  <table>
+    <thead><tr><th>시나리오</th><th>병 주문 비율</th><th>잔 주문 비율</th><th>병 수</th><th>와인 순매출</th><th>매출총이익</th><th>할인</th><th>판촉비</th><th>순증분 이익</th></tr></thead>
+    <tbody id="sc-body"></tbody>
+  </table>
+  </div>
+  <p class="note">뷔페 순매출 = 178석 × 95% × 88,000원 ÷ 1.1 = <b id="buffet-rev"></b> (1회전). 숫자가 크지 않습니다. 그래서 판촉비를 사내 제작물로 묶어 잃을 수 있는 돈을 작게 하고, 파일럿으로 숫자를 검증한 뒤 이브에 들어가도록 설계했습니다.</p>
+</section>
+
+<section class="slide">
+  <svg class="stain tr"><use href="#stain"/></svg>
+  <span class="sec">WHAT IF · 근거</span>
+  <h2 class="title">Assumptions</h2>
+  <p class="kr">근사값은 어디서 나왔나 · 실제 POS·원가 자료와 파일럿 결과가 나오면 바꿉니다</p>
+  <div class="tbl-wrap">
+  <table>
+    <thead><tr><th>항목</th><th>근사값</th><th>근거와 계산</th></tr></thead>
+    <tbody>
+      <tr><td>디너 회전 수</td><td>1회전</td><td class="l">디너 18:00~21:00, 3시간 운영 (여기어때 업장 정보, 업장 확인 필요)</td></tr>
+      <tr><td>좌석 점유율</td><td>95%</td><td class="l">연말 호텔 뷔페는 예약 경쟁이 붙음 (아시아경제, 2022). 이브 할증이 없어 가격 매력이 큼. 빈 좌석을 감안해 95%</td></tr>
+      <tr><td>평소 병당 평균가</td><td>60,000원</td><td class="l">메뉴판의 75,000원 이하 와인 8종 단순평균 60,125원</td></tr>
+      <tr><td>평소 테이블당 병 수</td><td>1.0병</td><td class="l">1병(750ml)은 약 5잔. 2~4인 테이블에서 일부만 마시면 1병이면 충분</td></tr>
+      <tr><td>보수 주문 비율</td><td>12%</td><td class="l">행사 효과는 없고 시즌 효과만 있다고 본 값: 10% × 1.22 (12월 와인 매출 증가율, 롯데백화점). 백화점 매출 증가율을 대입한 근사</td></tr>
+      <tr><td>목표 주문 비율</td><td>20%</td><td class="l">직원이 추천하면 5명 중 2명(40%)이 병 와인을 살 의향이 있다는 업계 조사. 의향과 실제 구매의 차이를 감안해 그 절반</td></tr>
+      <tr><td>도전 주문 비율</td><td>30%</td><td class="l">목표 조건에 사전 판매를 더해 구매 의향 40%의 75%가 실제 주문으로 이어진다고 가정</td></tr>
+      <tr class="hl"><td>검증</td><td>파일럿</td><td class="l">위 주문 비율은 모두 외부 자료를 바탕으로 한 근사입니다. 12/3·12/10 파일럿 실측값으로 바꿉니다</td></tr>
+      <tr><td>테이블당 병 수</td><td>1.1 / 1.2 / 1.3</td><td class="l">테이블의 71%(37/52)가 4인석. 와인을 주문한 4인석 중 15% / 30% / 45%가 2병 세트를 고르면 1 + 0.71 × 비율</td></tr>
+      <tr><td>병당 평균가</td><td id="mix-cell"></td><td class="l" id="mix-desc"></td></tr>
+      <tr><td>원가율</td><td>30 / 35 / 40%</td><td class="l">업계 와인 원가율은 판매가의 30~40% (GetBackBar), 소매가 대비 200~300% 마크업이 표준 (Toast). 비쌀수록 마크업 비율이 낮다는 원칙(Livat 외, 2023)에 따라 60K 이하 30%, 70~110K 35%, 떼땅져 40%. <b>원가 자료가 없어 추정</b></td></tr>
+      <tr><td>글라스 와인</td><td>15,000원 · 원가율 30%</td><td class="l">“1잔 = 병 매입 원가” 관행(VinePair). 잔 주문 비율 보수 5% / 목표 10% / 도전 15%, 테이블당 2잔. 개봉 후 남는 잔 손실을 감안해 원가율 30%</td></tr>
+      <tr><td>사전 결제 비중</td><td>30%</td><td class="l">병 와인 매출 중 사전 결제분 비중 가정. 이 부분에만 10% 할인</td></tr>
+      <tr><td>판촉비</td><td>150,000원</td><td class="l">POP, 페어링 카드, 메시지 카드 사내 제작 상한(안)</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p class="note">신뢰도: 메뉴·가격·좌석은 <b>높음</b> · 12월 수요 증가는 <b>중간</b> (백화점 기준) · 추천 효과와 원가율은 <b>낮음~중간</b> (해외 자료, 업계 통상치)</p>
+</section>
+
+<section class="slide">
+  <svg class="stain br"><use href="#stain"/></svg>
+  <span class="sec">WHAT IF · 계산기</span>
+  <h2 class="title">Simulator</h2>
+  <p class="kr">가정을 바꿔 보는 손익 계산기 · 좌석과 뷔페 가격은 고정 · 금액은 부가세 제외</p>
+  <div class="calc">
+    <div>
+      <div class="grp2">판매</div>
+      <label><span>좌석 점유율 <b id="v-occ"></b></span><input type="range" id="occ" min="70" max="100" step="1" value="95"></label>
+      <label><span>병 와인 주문 테이블 비율 <b id="v-attach"></b></span><input type="range" id="attach" min="5" max="50" step="1" value="20"></label>
+      <label><span>주문 테이블당 병 수 <b id="v-bottles"></b></span><input type="range" id="bottles" min="1" max="2" step="0.1" value="1.2"></label>
+      <label><span>병당 평균 가격 (부가세 포함) <b id="v-price"></b></span><input type="range" id="price" min="52000" max="150000" step="1000" value="71000"></label>
+      <label><span>잔 와인 주문 테이블 비율 <b id="v-glass"></b></span><input type="range" id="glass" min="0" max="30" step="1" value="10"></label>
+      <div class="grp2">비용</div>
+      <label><span>병 와인 평균 원가율 <b id="v-cost"></b></span><input type="range" id="cost" min="20" max="50" step="1" value="33"></label>
+      <label><span>사전 결제 비중 <b id="v-pre"></b></span><input type="range" id="pre" min="0" max="80" step="5" value="30"></label>
+      <label><span>사전 결제 할인율 <b id="v-disc"></b></span><input type="range" id="disc" min="0" max="20" step="1" value="10"></label>
+      <label><span>판촉비 <b id="v-promo"></b></span><input type="range" id="promo" min="0" max="1000000" step="10000" value="150000"></label>
+    </div>
+    <div class="out">
+      <svg class="stain br" style="color:#b0346a;opacity:.5;width:150px"><use href="#stain"/></svg>
+      <div class="lbl">평소 대비 순증분 이익</div>
+      <div class="big" id="o-profit"></div>
+      <dl>
+        <dt>와인 순매출 (병 + 잔)</dt><dd id="o-rev"></dd>
+        <dt>판매 병 수 / 잔 수</dt><dd id="o-units"></dd>
+        <dt>매출총이익</dt><dd id="o-gp"></dd>
+        <dt>평소 매출총이익</dt><dd id="o-base"></dd>
+        <dt>사전 결제 할인</dt><dd id="o-disc"></dd>
+        <dt>판촉비</dt><dd id="o-promo"></dd>
+        <dt class="sep">손익분기 병 주문 비율</dt><dd class="sep" id="o-be"></dd>
+      </dl>
+    </div>
+  </div>
+</section>
+
+<section class="slide">
+  <span class="sec dark">SOURCES</span>
+  <h2 class="title">Sources</h2>
+  <ol style="font-size:13px;margin:0;padding-left:20px;line-height:1.9">
+    <li>제공 자료: 호텔 와인 메뉴판, PLATZ 디너 메뉴판, 좌석 수(4인석 37·2인석 15), 평일 디너 88,000원 · 추정: 평소 와인 주문 비율 10%</li>
+    <li><a href="https://www.yeogi.com/domestic-accommodations/7061">여기어때 · 네스트호텔 업장 정보</a> (PLATZ 디너 18:00~21:00)</li>
+    <li><a href="https://www.allurekorea.com/?p=31237">Allure Korea · 인천으로 떠난 여행</a> · <a href="https://www.stayfolio.com/findstay/nest-hotel-incheon">Stayfolio · 네스트호텔 인천</a></li>
+    <li><a href="https://m.seoul.co.kr/news/2025/11/24/20251124020001">서울신문 (2025.11.24) · 주말 뷔페 22만원… 특급 호텔의 ‘연말 배짱’</a></li>
+    <li><a href="https://www.newsis.com/view/NISX20251128_0003421332">뉴시스 (2025.11.28) · 호텔가, 연말 앞두고 뷔페 가격 줄줄이 인상</a></li>
+    <li><a href="https://www.asiae.co.kr/en/article/2022110317245445551">아시아경제 (2022) · 비싸도 연말 호텔 뷔페, 예약 전쟁 시작</a></li>
+    <li><a href="https://biz.newdaily.co.kr/site/data/html/2021/12/22/2021122200193.amp.html">뉴데일리 (2021.12.22) · 롯데백화점 12월 와인·스파클링 판매 데이터</a></li>
+    <li><a href="https://premierfoodsafety.com/blog/?p=8803">Premier Food Safety · 직원 추천 시 5명 중 2명이 병 와인 구매 의향</a> (업계 조사)</li>
+    <li><a href="https://academy.getbackbar.com/what-is-the-average-liquor-cost-for-bars-and-restaurants">GetBackBar · 와인 원가율은 판매가의 30~40%</a></li>
+    <li><a href="https://pos.toasttab.com/blog/on-the-line/restaurant-wine-markup">Toast · 레스토랑 와인 마크업은 소매가의 200~300%</a></li>
+    <li><a href="https://vinepair.com/articles/restaurant-wine-bill-percent-markup-explained/">VinePair · 1잔 가격을 병 매입 원가로 받는 관행</a></li>
+    <li><a href="https://library.kab.ac.ug/Record/doaj-art-1d01a4e16614412fb02b7734cb2aa8c0/Description">Livat, Remaud, McHale (2023) · The Puzzle of Wine Price in Restaurants</a></li>
+    <li>기획 구조: 박신영, 『기획의 정석』 (4MAT, 5WHY, 쪼개기, 컨셉, 기대 효과, 스토리텔링)</li>
+  </ol>
+</section>
+
+<footer><span class="fact">제공·메뉴·자료</span>제공받은 정보, 메뉴판, 외부 자료에서 확인한 내용 &nbsp;·&nbsp; <span class="assume">추정·근사·확인</span>검증이나 협의가 필요한 내용</footer>
+</main>
+
+<script>
+(function(){
+  var TABLES4=37, TABLES2=15, TABLES=TABLES4+TABLES2, SEATS=TABLES4*4+TABLES2*2, PRICE=88000, OCC=0.95, VAT=1.1;
+  var GLASS_PRICE=15000, GLASS_COST=0.30, GLASS_PER_TABLE=2, PRE=0.30, DISC=0.10, PROMO=150000;
+  var BASE={attach:10,bottles:1.0,price:60000,cost:0.30};
+  var won=function(n){return (n<0?'−':'')+Math.abs(Math.round(n)).toLocaleString('ko-KR')+'원'};
+  var r1k=function(n){return Math.round(n/1000)*1000};
+  var setAll=function(cls,txt){document.querySelectorAll('.'+cls).forEach(function(e){e.textContent=txt})};
+
+  var TIERS=[{label:'52,000원대',p:52000,c:.30},{label:'60,000원대',p:60000,c:.30},{label:'70~110K (평균 85,000)',p:85000,c:.35},{label:'떼땅져 250,000',p:250000,c:.40}];
+  var MIX={보수:[.45,.35,.17,.03],목표:[.40,.35,.20,.05],도전:[.35,.30,.25,.10]};
+  function mix(m){
+    var rev=0,cost=0;m.forEach(function(w,i){rev+=w*TIERS[i].p;cost+=w*TIERS[i].p*TIERS[i].c});
+    return {price:r1k(rev),cost:cost/rev};
+  }
+
+  // 손익 모델 (금액은 부가세 제외)
+  function model(o){
+    var t=TABLES*o.occ;
+    var bt=t*o.attach/100, btl=bt*o.bottles, bRev=btl*o.price/VAT;
+    var gt=t*o.glass/100, gl=gt*GLASS_PER_TABLE, gRev=gl*GLASS_PRICE/VAT;
+    var gp=bRev*(1-o.cost)+gRev*(1-GLASS_COST);
+    var base=t*BASE.attach/100*BASE.bottles*BASE.price/VAT*(1-BASE.cost);
+    var disc=bRev*o.pre*o.disc;
+    var profit=gp-base-disc-o.promo;
+    var perPct=t/100*o.bottles*o.price/VAT*((1-o.cost)-o.pre*o.disc);
+    var be=(base+o.promo-gRev*(1-GLASS_COST))/perPct;
+    return {t:t,bt:bt,btl:btl,gt:gt,gl:gl,rev:bRev+gRev,gp:gp,base:base,disc:disc,promo:o.promo,profit:profit,be:be};
+  }
+
+  // 패키지 표
+  document.querySelectorAll('#pkg-body tr').forEach(function(tr){
+    var w=+tr.dataset.wine;
+    tr.children[3].textContent=won(w);
+    if(!tr.dataset.glass) tr.children[4].textContent=won(w*(1-DISC));
+  });
+
+  // 시나리오 (최악 = 행사를 해도 주문이 평소 그대로)
+  var sc=[
+    {name:'평소',attach:10,bottles:1.0,price:BASE.price,cost:BASE.cost,glass:0,pre:0,disc:0,promo:0,base:true},
+    {name:'보수',attach:12,bottles:1.1,m:MIX.보수,glass:5},
+    {name:'목표',attach:20,bottles:1.2,m:MIX.목표,glass:10},
+    {name:'도전',attach:30,bottles:1.3,m:MIX.도전,glass:15}
+  ];
+  sc.forEach(function(s){
+    if(s.m){var x=mix(s.m);s.price=x.price;s.cost=x.cost;s.pre=PRE;s.disc=DISC;s.promo=PROMO}
+    s.occ=OCC;s.r=model(s);
+  });
+  var worst={name:'최악',occ:OCC,attach:10,bottles:1.0,price:BASE.price,cost:BASE.cost,glass:0,pre:PRE,disc:DISC,promo:PROMO};
+  worst.r=model(worst);
+  var base=sc[0].r, goal=sc[2].r;
+
+  // 공통 숫자
+  var used=Math.round(base.t), wineT=Math.round(base.bt);
+  setAll('js-used',used);
+  setAll('js-nowine',used-wineT);
+  setAll('js-base-wt',wineT);
+  setAll('js-goal-wt',Math.round(goal.bt));
+  setAll('js-goal-glass',Math.round(goal.gl));
+  setAll('js-cards',Math.round(goal.bt+goal.gt));
+  ['js-goal-profit','js-goal-profit2','js-goal-profit3','js-goal-profit4','js-goal-profit5'].forEach(function(c){setAll(c,won(r1k(goal.profit)))});
+  setAll('js-goal-disc',won(r1k(goal.disc)));
+  setAll('js-worst',won(r1k(worst.r.profit)));
+  setAll('js-worst2',won(-r1k(worst.r.profit)));
+  setAll('js-worst-btl',Math.round(-worst.r.profit/(52000/VAT)));
+  setAll('js-be',goal.be.toFixed(1)+'%');
+
+  // WHY 테이블 그림
+  var tb='';for(var i=0;i<TABLES;i++){tb+='<i class="'+(i<wineT?'w':(i>=used?'x':''))+'"></i>'}
+  document.getElementById('tables').innerHTML=tb;
+
+  // 얼마 들어? 범위 그림
+  var rg=[{n:'최악',r:worst.r},{n:'보수',r:sc[1].r},{n:'목표',r:goal},{n:'도전',r:sc[3].r}];
+  var lo=Math.min.apply(null,rg.map(function(x){return x.r.profit})), hi=Math.max.apply(null,rg.map(function(x){return x.r.profit}));
+  var span=hi-lo, z=(-lo)/span*100, rh='';
+  rg.forEach(function(x){
+    var p=x.r.profit, left=p<0?(p-lo)/span*100:z, w=Math.abs(p)/span*100;
+    rh+='<div class="row"><span>'+x.n+'</span><div class="track"><div class="fill" style="left:'+left+'%;width:'+w+'%;background:'+(p<0?'#d98a9c':'var(--wine)')+'"></div><div class="zero" style="left:'+z+'%"></div></div><b'+(p<0?' style="color:#b3122e"':'')+'>'+(p>=0?'+':'')+won(r1k(p))+'</b></div>';
+  });
+  document.getElementById('range').innerHTML=rh;
+
+  document.getElementById('buffet-rev').textContent=won(SEATS*OCC*PRICE/VAT);
+  document.getElementById('mix-cell').textContent=sc.slice(1).map(function(s){return (s.price/1000)+'K'}).join(' / ');
+  document.getElementById('mix-desc').innerHTML='가격대별 판매 비중을 가정해 가중평균 ('+TIERS.map(function(t){return t.label}).join(' · ')+')<br>'+
+    Object.keys(MIX).map(function(k){return k+' '+MIX[k].map(function(w){return Math.round(w*100)+'%'}).join(' / ')}).join(' · ')+
+    '<br>12월 와인 구매자 3명 중 1명이 스파클링을 산다는 자료(롯데백화점)를 참고해 52,000원대 스파클링 비중을 가장 크게 잡음';
+
+  var rows='',bars='<div class="cap">순증분 이익 (부가세 제외)</div>',max=0;
+  sc.forEach(function(s){max=Math.max(max,Math.abs(s.r.profit))});
+  sc.forEach(function(s){
+    var r=s.r;
+    rows+='<tr'+(s.name==='목표'?' class="hl"':'')+'><td>'+s.name+'</td><td>'+s.attach+'%</td><td>'+s.glass+'%</td><td>'+Math.round(r.btl)+'병</td><td>'+won(r1k(r.rev))+'</td><td>'+won(r1k(r.gp))+'</td><td>'+(r.disc?'−'+won(r1k(r.disc)):'—')+'</td><td>'+(r.promo?'−'+won(r.promo):'—')+'</td><td'+(r.profit<0&&!s.base?' class="neg"':'')+'><b>'+(s.base?'기준':won(r1k(r.profit)))+'</b></td></tr>';
+    if(!s.base) bars+='<div class="bar-row"><span>'+s.name+'</span><div class="bar-track"><div class="bar-fill" style="width:'+Math.max(0,r.profit)/max*100+'%"></div></div><b'+(r.profit<0?' style="color:#b3122e"':'')+'>'+won(r1k(r.profit))+'</b></div>';
+  });
+  document.getElementById('sc-body').innerHTML=rows;
+  document.getElementById('bars').innerHTML=bars;
+
+  // 인력·기물
+  var ops='';
+  sc.slice(1).forEach(function(s){
+    var r=s.r, glasses=Math.ceil((r.bt*3+r.gl)*1.3), flutes=Math.ceil(r.bt*0.4*3*1.3);
+    ops+='<tr'+(s.name==='목표'?' class="hl"':'')+'><td>'+s.name+'</td><td>'+Math.round(r.btl)+'병</td><td>'+Math.round(r.gl)+'잔</td><td>'+glasses+'개</td><td>'+flutes+'개</td><td>'+(s.attach>=30?'2명 (전담 1 + 지원 1)':'1명')+'</td></tr>';
+  });
+  document.getElementById('ops-body').innerHTML=ops;
+
+  // 재고 (도전 × 1.5)
+  var ch=sc[3].r, glassBtl=ch.gl/5;
+  var ITEMS=['콘데 데 카랄 브뤼 · 레 그랑 슈망 · 아스코니 우네오리 모스카토 로제','르 트리포터 루즈·블랑 · 퓨리타 모스카토 다스티','이터 까베르네 쇼비뇽 · 아벤토 · 뮈느방, 배드 보이','떼땅져 리저브 브뤼'];
+  var stock='';
+  TIERS.forEach(function(t,i){
+    var exp=ch.btl*MIX.도전[i]+(i<2?glassBtl/2:0);
+    stock+='<tr><td>'+t.label+'<br><small style="font-weight:400;color:var(--muted)">'+ITEMS[i]+'</small></td><td>'+exp.toFixed(1)+'병'+(i<2?' (잔 포함)':'')+'</td><td><b>'+Math.ceil(exp*1.5)+'병</b></td></tr>';
+  });
+  document.getElementById('stock-body').innerHTML=stock;
+  document.getElementById('bucket').textContent=(Math.ceil(ch.bt*0.6)+2)+'개 (도전 시나리오 병 주문 테이블 '+Math.round(ch.bt)+'개 × 60% + 여유 2)';
+
+  // 계산기
+  var $=function(id){return document.getElementById(id)};
+  function render(){
+    var o={occ:+$('occ').value/100,attach:+$('attach').value,bottles:+$('bottles').value,price:+$('price').value,glass:+$('glass').value,
+      cost:+$('cost').value/100,pre:+$('pre').value/100,disc:+$('disc').value/100,promo:+$('promo').value};
+    $('v-occ').textContent=$('occ').value+'%';
+    $('v-attach').textContent=o.attach+'%';
+    $('v-bottles').textContent=o.bottles.toFixed(1)+'병';
+    $('v-price').textContent=won(o.price);
+    $('v-glass').textContent=o.glass+'%';
+    $('v-cost').textContent=$('cost').value+'%';
+    $('v-pre').textContent=$('pre').value+'%';
+    $('v-disc').textContent=$('disc').value+'%';
+    $('v-promo').textContent=won(o.promo);
+    var r=model(o);
+    $('o-profit').textContent=(r.profit>=0?'+':'')+won(r1k(r.profit));
+    $('o-rev').textContent=won(r1k(r.rev));
+    $('o-units').textContent=Math.round(r.btl)+'병 / '+Math.round(r.gl)+'잔';
+    $('o-gp').textContent=won(r1k(r.gp));
+    $('o-base').textContent='−'+won(r1k(r.base));
+    $('o-disc').textContent='−'+won(r1k(r.disc));
+    $('o-promo').textContent='−'+won(r.promo);
+    $('o-be').textContent=r.be>0?r.be.toFixed(1)+'%':'0% (글라스 와인만으로 충당)';
+  }
+  ['occ','attach','bottles','price','glass','cost','pre','disc','promo'].forEach(function(id){$(id).addEventListener('input',render)});
+  render();
+})();
+</script>
+</body>
+</html>

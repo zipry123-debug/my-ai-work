@@ -1,0 +1,15 @@
+# API 키
+설정.env
+*.env
+
+# 원자료(용량이 크고 재배포 조건이 있음)
+자료생성/데이터/
+자료생성/cache/
+
+# 임시 파일
+__pycache__/
+*.pyc
+*.bak
+*.log
+node_modules/
+.DS_Store

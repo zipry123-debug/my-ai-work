@@ -1,0 +1,163 @@
+{
+  "sourceCommit": "da3731b3d599fe71e55b2bee4a0be1f2a74cbc2d",
+  "snapshot": {
+    "cellSize": 200,
+    "cellCount": 4097,
+    "defaultMatches": 173,
+    "defaultHash": "c62926d0b2c3ae73ead2413c7885a370f8ddcc78aaab46f23ff88ce873da02c3",
+    "scenarios": [
+      {
+        "name": "home:required",
+        "hash": "c62926d0b2c3ae73ead2413c7885a370f8ddcc78aaab46f23ff88ce873da02c3"
+      },
+      {
+        "name": "guide:required",
+        "hash": "33c9b319e6f2ff03d3bfc86fa5504878c9a6042e1ccdf533e2f69df1fbe12b01"
+      },
+      {
+        "name": "transit:required",
+        "hash": "c62926d0b2c3ae73ead2413c7885a370f8ddcc78aaab46f23ff88ce873da02c3"
+      },
+      {
+        "name": "parking:required",
+        "hash": "bdcd0933e6b7676e70c0d6d21fee4d5c9d8ad95e769f599966c5742eafd61cce"
+      },
+      {
+        "name": "rival:required",
+        "hash": "61d1095e3d97b3fc46b54ba617c9c09cc2dc56aa7c4ce99fd3db9a6a0546736b"
+      },
+      {
+        "name": "shop:required",
+        "hash": "c62926d0b2c3ae73ead2413c7885a370f8ddcc78aaab46f23ff88ce873da02c3"
+      },
+      {
+        "name": "home:optional",
+        "hash": "c4c35973997288c8117c5f99efbf9883e6b0fe1c7c59323d69b8c892c17bbc29"
+      },
+      {
+        "name": "guide:optional",
+        "hash": "c62926d0b2c3ae73ead2413c7885a370f8ddcc78aaab46f23ff88ce873da02c3"
+      },
+      {
+        "name": "transit:optional",
+        "hash": "5ab60bdc7e80fd2e125d107ce52cb07a51f1da226e364044dee4599a4c396db6"
+      },
+      {
+        "name": "parking:optional",
+        "hash": "c62926d0b2c3ae73ead2413c7885a370f8ddcc78aaab46f23ff88ce873da02c3"
+      },
+      {
+        "name": "rival:optional",
+        "hash": "c62926d0b2c3ae73ead2413c7885a370f8ddcc78aaab46f23ff88ce873da02c3"
+      },
+      {
+        "name": "shop:optional",
+        "hash": "97a4da94b1fe7df9f5b5c1ea66390747249d75c67e7088051a342afe7809ffc8"
+      },
+      {
+        "name": "home:off",
+        "hash": "40b55d837ff740a989048b93cbcaf955020e595a84b961f1bca7b74489489d6e"
+      },
+      {
+        "name": "guide:off",
+        "hash": "d7e42912956b383e5a3a88bd4114f104c2c73cccd502a86e262493e5ceed3fce"
+      },
+      {
+        "name": "transit:off",
+        "hash": "2e457802159a9925f6cc339130d884ce799360e9c21c9b9bbc3f414d6f2c17f9"
+      },
+      {
+        "name": "parking:off",
+        "hash": "af170d1ed45eb4ec0e7de629f89757df9b85ca8a142c4e74a15df4c95bf25c0c"
+      },
+      {
+        "name": "rival:off",
+        "hash": "f6f17ac8aa57c7e487eab1dc0146d746aa306c3a3a5b33e83698e5e73e687611"
+      },
+      {
+        "name": "shop:off",
+        "hash": "2cc44be2f2809a774558b7f866dd0f0b0b8fc5c108db4e91d9bffdf69fcbec54"
+      }
+    ]
+  },
+  "snapshot100": {
+    "cellSize": 100,
+    "cellCount": 16333,
+    "defaultMatches": 488,
+    "defaultHash": "e238543dba72f39192968ad8d5d94e17f6c0fcba35549ea9e6da0c6f9c755032",
+    "scenarios": [
+      {
+        "name": "home:required",
+        "hash": "e238543dba72f39192968ad8d5d94e17f6c0fcba35549ea9e6da0c6f9c755032"
+      },
+      {
+        "name": "guide:required",
+        "hash": "0206939ac50aa491b2b625395ec0abb140534dc84c1b95d63211253a466d592a"
+      },
+      {
+        "name": "transit:required",
+        "hash": "e238543dba72f39192968ad8d5d94e17f6c0fcba35549ea9e6da0c6f9c755032"
+      },
+      {
+        "name": "parking:required",
+        "hash": "1cddf2afeabf6fb2f2cd6c499e2eb7ad0b6ca216d57903a83cfd2da3b86144bc"
+      },
+      {
+        "name": "rival:required",
+        "hash": "29b7bad0e2d9ed077a2c83ecb6eae2b8978a0ea64aa0fc8f5a6aeaa7ed3a2b56"
+      },
+      {
+        "name": "shop:required",
+        "hash": "e238543dba72f39192968ad8d5d94e17f6c0fcba35549ea9e6da0c6f9c755032"
+      },
+      {
+        "name": "home:optional",
+        "hash": "673b98b644f4041cb3ceba86aca061443c0ad0379e7204c7fd5e133b764c0728"
+      },
+      {
+        "name": "guide:optional",
+        "hash": "e238543dba72f39192968ad8d5d94e17f6c0fcba35549ea9e6da0c6f9c755032"
+      },
+      {
+        "name": "transit:optional",
+        "hash": "2ff5370d4b34156c9c6c245e1b12d68e0c7e4de428dcd607e46ce8f86c700cdd"
+      },
+      {
+        "name": "parking:optional",
+        "hash": "e238543dba72f39192968ad8d5d94e17f6c0fcba35549ea9e6da0c6f9c755032"
+      },
+      {
+        "name": "rival:optional",
+        "hash": "e238543dba72f39192968ad8d5d94e17f6c0fcba35549ea9e6da0c6f9c755032"
+      },
+      {
+        "name": "shop:optional",
+        "hash": "19a56f947c9f3f63cf428c9c79715bc62207e9908cc405f57ec18a66f52cbd39"
+      },
+      {
+        "name": "home:off",
+        "hash": "82cb786f09d33210c6ec1be2e1bf067e1f7579a11d84fd84c74f3b9af1b4cca7"
+      },
+      {
+        "name": "guide:off",
+        "hash": "def9b2c5cf7d0e140afe3aba4e9f016053736a281701a446e29b2d6b674c010d"
+      },
+      {
+        "name": "transit:off",
+        "hash": "743dd4fa1602485e1cd71495cd412a46203b14f559be0c9bcda9fb5343c695dd"
+      },
+      {
+        "name": "parking:off",
+        "hash": "4e51280e4c3a1b296d9f3d1b73fd000114cef708f46f13f120abaa19a950efde"
+      },
+      {
+        "name": "rival:off",
+        "hash": "b8666f8b2ff8ff58158ddc255e9a09e02de6270a2fcd31b70bcbd36d95d44465"
+      },
+      {
+        "name": "shop:off",
+        "hash": "c73b9588c26c69706032cd1cd5041ea3543de23278bc70e0ea41cb95ae53dfb6"
+      }
+    ]
+  }
+}

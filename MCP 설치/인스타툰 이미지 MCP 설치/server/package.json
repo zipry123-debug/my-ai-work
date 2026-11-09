@@ -1,0 +1,9 @@
+{
+  "name": "openai-gpt-image-mcp-install",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Pinned install of openai-gpt-image-mcp-server for Claude Code",
+  "dependencies": {
+    "openai-gpt-image-mcp-server": "1.4.0"
+  }
+}

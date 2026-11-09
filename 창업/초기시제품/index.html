@@ -1,0 +1,392 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>레터링 케이크 입지 조사</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<style>
+:root {
+  --bg: #f6f5f2; --panel: #fff; --ink: #1f2328; --muted: #646b73; --line: #dedbd4;
+  --accent: #1f5f8b; --accent-ink: #fff; --danger: #b3261e; --danger-bg: #fbeceb;
+  --warn: #8a5a00; --warn-bg: #fdf3dc; --ok: #24663b;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); line-height: 1.5;
+  font-family: "Pretendard", "Malgun Gothic", "Apple SD Gothic Neo", sans-serif; font-size: 15px; }
+header { background: var(--panel); border-bottom: 1px solid var(--line); padding: 14px 24px;
+  display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+h1 { font-size: 19px; margin: 0; }
+h2 { font-size: 16px; margin: 0 0 10px; }
+h3 { font-size: 14px; margin: 18px 0 6px; }
+main { max-width: 1240px; margin: 0 auto; padding: 18px 24px 48px; display: grid; gap: 16px; }
+.panel { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 16px; min-width: 0; }
+.muted { color: var(--muted); font-size: 13px; }
+.banner { padding: 10px 14px; border-radius: 6px; background: var(--warn-bg); color: var(--warn); font-weight: 600; }
+.banner.danger { background: var(--danger-bg); color: var(--danger); }
+label { display: block; font-weight: 600; margin-bottom: 4px; font-size: 14px; }
+textarea, input[type=password], select { width: 100%; font: inherit; color: inherit; background: #fff;
+  border: 1px solid var(--line); border-radius: 6px; padding: 8px 10px; }
+textarea { min-height: 112px; resize: vertical; }
+.form { display: grid; grid-template-columns: minmax(0, 1fr) 160px; gap: 14px; align-items: start; }
+button { font: inherit; font-weight: 600; border-radius: 6px; padding: 8px 14px; cursor: pointer;
+  border: 1px solid var(--line); background: #fff; color: var(--ink); }
+button.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+button:disabled { opacity: .6; cursor: wait; }
+.actions { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; align-items: center; }
+.table-wrap { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: 14px; }
+th, td { text-align: left; padding: 7px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { color: var(--muted); font-size: 13px; font-weight: 600; white-space: nowrap; }
+td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+tr.pick { cursor: pointer; }
+tr.pick:hover td { background: #f3f7fa; }
+tr.selected td { background: #e8f1f7; }
+.na { color: var(--muted); font-size: 13px; }
+.flag { color: var(--danger); font-weight: 600; }
+.tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; }
+.grid2 { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; }
+#map { height: 400px; border-radius: 6px; border: 1px solid var(--line); background: #eee; }
+.legend { display: flex; gap: 14px; flex-wrap: wrap; font-size: 13px; margin-top: 6px; color: var(--muted); }
+.dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 4px; }
+.notice { margin: 6px 0; padding: 8px 10px; background: var(--warn-bg); color: var(--warn); border-radius: 6px; font-size: 13px; }
+.scroll { max-height: 320px; overflow: auto; border: 1px solid var(--line); border-radius: 6px; }
+.scroll th { position: sticky; top: 0; background: var(--panel); }
+ul.check { margin: 0; padding-left: 18px; }
+ul.check li { margin-bottom: 4px; }
+dialog { border: 1px solid var(--line); border-radius: 8px; width: min(520px, calc(100vw - 32px)); color: inherit; }
+dialog::backdrop { background: rgba(0,0,0,.35); }
+.field { margin-bottom: 12px; }
+a { color: var(--accent); }
+@media (max-width: 800px) {
+  main { padding: 12px 16px 40px; } header { padding: 12px 16px; }
+  .form, .grid2 { grid-template-columns: minmax(0, 1fr); }
+}
+</style>
+</head>
+<body>
+<header>
+  <h1>레터링 케이크 입지 조사</h1>
+  <div class="actions" style="margin:0">
+    <span id="keyState" class="muted"></span>
+    <button id="openKeys" type="button">API 키 설정</button>
+  </div>
+</header>
+<main>
+  <div id="demoBanner" class="banner danger" hidden>데모 모드: 아래 숫자는 모두 가짜입니다. 입지 판단에 쓰지 마세요.</div>
+
+  <section class="panel">
+    <div class="form">
+      <div>
+        <label for="candidates">후보지 (한 줄에 한 곳, 최대 10곳)</label>
+        <textarea id="candidates" placeholder="서울 송파구 잠실동&#10;경기 성남시 분당구 정자동&#10;망원역"></textarea>
+      </div>
+      <div>
+        <label for="radius">조사 반경</label>
+        <select id="radius">
+          <option value="300">300m</option>
+          <option value="500" selected>500m</option>
+          <option value="1000">1km</option>
+          <option value="2000">2km</option>
+        </select>
+        <p class="muted" style="margin:8px 0 0">케이크 상호·경쟁점은 3km도 함께 봅니다.</p>
+      </div>
+    </div>
+    <div class="actions">
+      <button id="run" class="primary" type="button">조사하기</button>
+      <button id="csv" type="button" hidden>비교표 CSV 저장</button>
+      <span id="progress" class="muted" role="status"></span>
+    </div>
+  </section>
+
+  <div id="error" class="banner danger" hidden></div>
+
+  <section class="panel" id="compare" hidden>
+    <h2>후보지 비교</h2>
+    <div class="table-wrap"><table id="compareTable"></table></div>
+    <p class="muted">점수나 순위는 매기지 않습니다. 임대료·유동인구 없이 낸 점수는 근거가 부족하기 때문입니다. 경고 기준(최근 3년 폐업 3건 이상, 폐업이 개업 이상)은 공식 통계가 아니라 이 프로그램의 실무 기준입니다.</p>
+  </section>
+
+  <section class="panel" id="detail" hidden></section>
+
+  <section class="panel" id="manual" hidden>
+    <h2>자동으로 확인하지 못하는 항목</h2>
+    <p class="muted">아래 항목은 이 프로그램이 수집하지 않습니다. 계약 전에 직접 확인해야 합니다.</p>
+    <ul class="check">
+      <li><strong>임대료·공실률:</strong> <a href="https://www.reb.or.kr/r-one/" target="_blank" rel="noopener">한국부동산원 R-ONE</a>에서 지역 추이를 보고, 실제 호가는 부동산에서 확인</li>
+      <li><strong>상권 추정 매출:</strong> <a href="https://bigdata.sbiz.or.kr/" target="_blank" rel="noopener">소상공인365</a></li>
+      <li><strong>건물 용도·위반건축물:</strong> <a href="https://www.eais.go.kr/" target="_blank" rel="noopener">세움터</a> 건축물대장</li>
+      <li><strong>정화조 용량·소방 기준·영업신고 종류:</strong> 메뉴와 판매 방식을 알려주고 관할 구청 위생과에 사전 상담</li>
+      <li><strong>검색 수요 추이:</strong> <a href="https://datalab.naver.com/" target="_blank" rel="noopener">네이버 데이터랩</a>에서 3년 이상 조회</li>
+      <li><strong>인스타그램으로만 영업하는 공방:</strong> 지도에 등록하지 않으면 경쟁점 수에서 빠짐. "지역명 + 레터링케이크"로 직접 검색</li>
+      <li><strong>현장 조사:</strong> 평일·주말, 점심·저녁 유동인구 직접 세기 / 경쟁점 3곳 방문 / 부동산에 이전 임차인이 나간 이유 묻기 / 같은 업종 사장 인터뷰</li>
+    </ul>
+  </section>
+
+  <section class="panel" id="sources" hidden>
+    <h2>데이터 출처</h2>
+    <div class="table-wrap"><table>
+      <thead><tr><th>등급</th><th>기관·자료</th><th>쓰는 곳</th><th>한계</th></tr></thead>
+      <tbody>
+        <tr><td>A</td><td><a href="https://www.data.go.kr/data/15154921/openapi.do" target="_blank" rel="noopener">행정안전부 인허가 데이터</a> (제과점·휴게음식점·즉석판매제조가공업)</td><td>개·폐업 이력</td><td>도로명주소가 없는 옛 업소는 빠질 수 있음. 이력은 신고 기준이라 실제 영업과 다를 수 있음. 2일 전 기준</td></tr>
+        <tr><td>A</td><td><a href="https://www.data.go.kr/data/15012005/openapi.do" target="_blank" rel="noopener">소상공인시장진흥공단 상가(상권)정보</a></td><td>현재 영업 중인 음식·빵집 수</td><td>폐업 정보 없음. 레터링 전문점을 구분하지 못해 빵·제과 분류와 상호로 추림</td></tr>
+        <tr><td>B</td><td><a href="https://developers.kakao.com/docs/ko/local/dev-guide" target="_blank" rel="noopener">카카오 로컬</a></td><td>위치 찾기, 레터링 경쟁점 검색</td><td>지도 미등록 공방 누락. 검색어당 최대 45건</td></tr>
+      </tbody>
+    </table></div>
+    <p class="muted" id="fetched"></p>
+  </section>
+</main>
+
+<dialog id="keys">
+  <form method="dialog" id="keyForm">
+    <h2>API 키 설정</h2>
+    <p class="muted">키는 이 컴퓨터의 설정.env 파일에만 저장됩니다. 빈칸으로 두면 기존 키를 유지합니다.</p>
+    <div class="field">
+      <label for="dataKey">공공데이터포털 인증키 <span id="dataState" class="muted"></span></label>
+      <input type="password" id="dataKey" autocomplete="off">
+    </div>
+    <div class="field">
+      <label for="kakaoKey">카카오 REST API 키 <span id="kakaoState" class="muted"></span></label>
+      <input type="password" id="kakaoKey" autocomplete="off">
+    </div>
+    <div class="actions">
+      <button class="primary" type="submit" value="save">저장</button>
+      <button type="submit" value="cancel">닫기</button>
+    </div>
+  </form>
+</dialog>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script>
+const $ = id => document.getElementById(id);
+const esc = v => String(v ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const NA = '<span class="na">확인 불가</span>';
+let results = [];
+let selected = 0;
+let map = null;
+let layer = null;
+
+function safeUrl(u) { return /^https?:\/\//.test(u || "") ? u : ""; }
+function storedGet(k) { try { return localStorage.getItem(k); } catch { return null; } }
+function storedSet(k, v) { try { localStorage.setItem(k, v); } catch {} }
+
+function renderStatus(s) {
+  $("demoBanner").hidden = !s.demo;
+  const d = s.keys.DATA_GO_KR_KEY, k = s.keys.KAKAO_REST_KEY;
+  $("keyState").textContent = s.demo ? "데모 모드" : `공공데이터 키 ${d ? "있음" : "없음"} · 카카오 키 ${k ? "있음" : "없음"}`;
+  $("dataState").textContent = d ? "(저장됨)" : "(없음)";
+  $("kakaoState").textContent = k ? "(저장됨)" : "(없음)";
+}
+
+async function post(path, body) {
+  const res = await fetch(path, {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(body)});
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error || "요청 실패");
+  return data;
+}
+
+function cell(section, fn) {
+  return section && section.state === "ok" ? fn(section) : NA;
+}
+
+function renderCompare() {
+  const head = `<thead><tr>
+    <th>후보지</th><th>찾은 위치</th>
+    <th class="num">레터링 경쟁점<br>반경 / 3km</th>
+    <th class="num">빵·제과 업소<br>(상가정보)</th>
+    <th class="num">제과점 영업 중<br>(인허가)</th>
+    <th class="num">3년 개업</th><th class="num">3년 폐업</th>
+    <th class="num">폐업 업소 영업기간<br>중앙값</th>
+    <th class="num">'케이크' 상호 3km<br>3년 폐업</th>
+    <th>경고</th></tr></thead>`;
+  const rows = results.map((r, i) => {
+    if (r.state !== "ok") {
+      return `<tr><td>${esc(r.query)}</td><td colspan="9" class="flag">${esc(r.message)}</td></tr>`;
+    }
+    const lic = r.licenses;
+    const warn = lic.state === "ok"
+      ? (lic.warnings.length ? `<span class="flag">${lic.warnings.map(esc).join("<br>")}</span>` : "기준 해당 없음")
+      : NA;
+    const months = cell(lic, l => l.summary.median_months == null ? "폐업 사례 없음" : `${l.summary.median_months}개월`);
+    return `<tr class="pick ${i === selected ? "selected" : ""}" data-i="${i}" tabindex="0">
+      <td>${esc(r.query)}</td>
+      <td>${esc(r.place.address)}${r.place.place ? `<br><span class="muted">${esc(r.place.place)}</span>` : ""}</td>
+      <td class="num">${cell(r.competitors, c => `${c.near} / ${c.wide}${c.truncated ? "+" : ""}`)}</td>
+      <td class="num">${cell(r.stores, s => s.bakery)}</td>
+      <td class="num">${cell(lic, l => l.summary.active)}</td>
+      <td class="num">${cell(lic, l => l.summary.opened)}</td>
+      <td class="num">${cell(lic, l => l.summary.closed)}</td>
+      <td class="num">${months}</td>
+      <td class="num">${cell(lic, l => l.cake_summary.closed)}</td>
+      <td>${warn}</td></tr>`;
+  }).join("");
+  $("compareTable").innerHTML = head + `<tbody>${rows}</tbody>`;
+  $("compare").hidden = false;
+}
+
+function sectionNotice(section, label) {
+  if (!section || section.state === "ok") return "";
+  const hint = section.state === "missing_key" ? " 오른쪽 위 'API 키 설정'에서 입력하세요." : "";
+  return `<div class="notice">${esc(label)}: 확인 불가 (${esc(section.message)}).${hint}</div>`;
+}
+
+function licenseTable(rows) {
+  if (!rows.length) return '<p class="muted">해당 업소가 없습니다.</p>';
+  return `<div class="scroll"><table>
+    <thead><tr><th>상호</th><th>업종</th><th>상태</th><th>인허가</th><th>폐업</th><th class="num">거리</th><th>주소</th></tr></thead>
+    <tbody>${rows.map(l => `<tr>
+      <td>${esc(l.name)}</td><td>${esc(l.dataset)}</td>
+      <td class="${l.is_closed ? "flag" : ""}">${esc(l.status)}</td>
+      <td>${esc(l.opened ?? "-")}</td><td>${esc(l.closed ?? "-")}</td>
+      <td class="num">${l.distance == null ? "-" : l.distance + "m"}</td><td>${esc(l.address)}</td></tr>`).join("")}</tbody>
+  </table></div>`;
+}
+
+function renderDetail() {
+  const r = results[selected];
+  if (!r || r.state !== "ok") { $("detail").hidden = true; return; }
+  const c = r.competitors, s = r.stores, l = r.licenses;
+  const notes = [];
+  if (r.place.matches > 1) notes.push(`같은 이름의 위치가 ${r.place.matches}곳 있어 첫 번째를 사용했습니다. 찾은 위치가 맞는지 확인하세요. 다르면 시·구까지 적어 주세요.`);
+  if (l.state === "ok") {
+    if (l.truncated) notes.push("인허가 자료를 끝까지 받지 못했습니다. 실제 건수는 표시보다 많을 수 있습니다.");
+    if (l.no_coordinates) notes.push(`${r.region} 제과점 ${l.region_rows}건 중 ${l.no_coordinates}건은 좌표가 없어 반경 집계에서 빠졌습니다.`);
+    l.partial.forEach(p => notes.push(`일부 업종 조회 실패 - ${p}`));
+  }
+  if (c.state === "ok" && c.truncated) notes.push("카카오 검색 상한(검색어당 45건)에 걸려 경쟁점이 표시보다 많을 수 있습니다.");
+
+  const dongRows = l.state === "ok" ? l.dongs : [];
+  $("detail").innerHTML = `
+    <h2>${esc(r.query)} 상세 <span class="muted">${esc(r.place.address)} · 반경 ${r.radius}m</span></h2>
+    ${sectionNotice(c, "레터링 경쟁점")}${sectionNotice(s, "상가정보")}${sectionNotice(l, "개·폐업 이력")}
+    ${notes.map(n => `<div class="notice">${esc(n)}</div>`).join("")}
+    <div class="grid2">
+      <div>
+        <div id="map"></div>
+        <div class="legend">
+          <span><i class="dot" style="background:#1f5f8b"></i>레터링 경쟁점</span>
+          <span><i class="dot" style="background:#3a8f5c"></i>영업 중 제과점</span>
+          <span><i class="dot" style="background:#b3261e"></i>폐업</span>
+        </div>
+      </div>
+      <div>
+        <h3 style="margin-top:0">레터링·주문제작 경쟁점 (3km)</h3>
+        ${c.state === "ok" ? (c.rows.length ? `<div class="scroll"><table>
+          <thead><tr><th>상호</th><th class="num">거리</th><th>주소</th></tr></thead>
+          <tbody>${c.rows.map(p => `<tr><td>${safeUrl(p.url) ? `<a href="${esc(p.url)}" target="_blank" rel="noopener">${esc(p.name)}</a>` : esc(p.name)}</td><td class="num">${p.distance}m</td><td>${esc(p.address)}</td></tr>`).join("")}</tbody>
+        </table></div>` : '<p class="muted">검색된 곳이 없습니다. 인스타그램 공방은 직접 확인이 필요합니다.</p>') : NA}
+      </div>
+    </div>
+    ${l.state === "ok" ? `
+      <h3>반경 ${r.radius}m 제과점 개·폐업 이력</h3>${licenseTable(l.rows)}
+      <h3>3km 내 상호에 '케이크'가 들어간 업소 (제과점·휴게음식점·즉석판매제조가공업)</h3>${licenseTable(l.cake_rows)}
+      <h3>${esc(r.region)} 동별 제과점 현황 <span class="muted">폐업 많은 순. 다음 후보지를 고를 때 참고</span></h3>
+      ${dongRows.length ? `<div class="scroll"><table>
+        <thead><tr><th>동</th><th class="num">영업 중</th><th class="num">3년 개업</th><th class="num">3년 폐업</th></tr></thead>
+        <tbody>${dongRows.map(d => `<tr><td>${esc(d.dong)}</td><td class="num">${d.active}</td><td class="num">${d.opened}</td><td class="num">${d.closed}</td></tr>`).join("")}</tbody>
+      </table></div>` : '<p class="muted">주소에서 동을 읽지 못했습니다.</p>'}` : ""}`;
+  $("detail").hidden = false;
+  renderMap(r);
+}
+
+function renderMap(r) {
+  if (!window.L) {
+    $("map").innerHTML = '<p class="muted" style="padding:12px">지도를 불러오지 못했습니다. 인터넷 연결을 확인하세요.</p>';
+    return;
+  }
+  if (map) { map.remove(); map = null; }
+  map = L.map("map").setView([r.place.lat, r.place.lon], r.radius <= 500 ? 15 : 14);
+  L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {maxZoom: 19, attribution: "&copy; OpenStreetMap"}).addTo(map);
+  layer = L.layerGroup().addTo(map);
+  L.circle([r.place.lat, r.place.lon], {radius: r.radius, color: "#1f2328", weight: 1.5, fillOpacity: .04}).addTo(layer);
+  const add = (p, color, label) => {
+    if (p.lat == null) return;
+    L.circleMarker([p.lat, p.lon], {radius: 6, color, fillColor: color, fillOpacity: .85, weight: 1})
+      .bindTooltip(esc(label)).addTo(layer);
+  };
+  if (r.licenses.state === "ok") {
+    r.licenses.rows.forEach(l => add(l, l.is_closed ? "#b3261e" : "#3a8f5c", `${l.name} (${l.status})`));
+  }
+  if (r.competitors.state === "ok") {
+    r.competitors.rows.filter(p => p.distance <= Math.max(r.radius, 1000)).forEach(p => add(p, "#1f5f8b", p.name));
+  }
+}
+
+function select(i) {
+  selected = i;
+  renderCompare();
+  renderDetail();
+}
+
+function downloadCsv() {
+  const header = ["후보지","찾은 위치","레터링 경쟁점(반경)","레터링 경쟁점(3km)","빵·제과 업소","제과점 영업 중","3년 개업","3년 폐업","폐업 영업기간 중앙값(개월)","케이크 상호 3km 3년 폐업","경고","반경(m)","조회일"];
+  const today = new Date().toISOString().slice(0, 10);
+  const ok = s => s && s.state === "ok";
+  const NAtext = "확인 불가";
+  const lines = results.map(r => {
+    if (r.state !== "ok") return [r.query, r.message];
+    const l = r.licenses, c = r.competitors, s = r.stores;
+    return [r.query, r.place.address,
+      ok(c) ? c.near : NAtext, ok(c) ? c.wide : NAtext, ok(s) ? s.bakery : NAtext,
+      ok(l) ? l.summary.active : NAtext, ok(l) ? l.summary.opened : NAtext, ok(l) ? l.summary.closed : NAtext,
+      ok(l) ? (l.summary.median_months ?? "폐업 사례 없음") : NAtext, ok(l) ? l.cake_summary.closed : NAtext,
+      ok(l) ? l.warnings.join(" / ") : NAtext, r.radius, today];
+  });
+  // 셀이 수식으로 실행되지 않도록 위험한 첫 글자를 막는다.
+  const quote = v => { let t = String(v ?? ""); if (/^[=+\-@]/.test(t)) t = "'" + t; return `"${t.replace(/"/g, '""')}"`; };
+  const csv = "﻿" + [header, ...lines].map(row => row.map(quote).join(",")).join("\r\n");
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([csv], {type: "text/csv"}));
+  a.download = `입지비교_${today}.csv`;
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+$("run").addEventListener("click", async () => {
+  const candidates = $("candidates").value.split("\n").map(s => s.trim()).filter(Boolean);
+  $("error").hidden = true;
+  $("run").disabled = true;
+  $("progress").textContent = "조사 중입니다. 처음 조회하는 지역은 몇 분 걸릴 수 있습니다.";
+  storedSet("candidates", $("candidates").value);
+  try {
+    const data = await post("/api/analyze", {candidates, radius: Number($("radius").value)});
+    results = data.results;
+    selected = Math.max(0, results.findIndex(r => r.state === "ok"));
+    renderCompare();
+    renderDetail();
+    ["manual", "sources"].forEach(id => $(id).hidden = false);
+    $("csv").hidden = false;
+    $("fetched").textContent = `조회일 ${new Date().toLocaleDateString("ko-KR")}. 같은 조회는 최대 7일간 저장된 결과를 다시 씁니다.`;
+    $("progress").textContent = "";
+  } catch (err) {
+    $("error").textContent = err.message;
+    $("error").hidden = false;
+    $("progress").textContent = "";
+  } finally {
+    $("run").disabled = false;
+  }
+});
+
+$("compareTable").addEventListener("click", e => {
+  const tr = e.target.closest("tr.pick");
+  if (tr) select(Number(tr.dataset.i));
+});
+$("compareTable").addEventListener("keydown", e => {
+  const tr = e.target.closest("tr.pick");
+  if (tr && e.key === "Enter") select(Number(tr.dataset.i));
+});
+$("csv").addEventListener("click", downloadCsv);
+$("openKeys").addEventListener("click", () => $("keys").showModal());
+$("keys").addEventListener("close", async () => {
+  const body = {DATA_GO_KR_KEY: $("dataKey").value, KAKAO_REST_KEY: $("kakaoKey").value};
+  $("dataKey").value = ""; $("kakaoKey").value = "";
+  if ($("keys").returnValue !== "save") return;
+  try { renderStatus(await post("/api/keys", body)); }
+  catch (err) { $("error").textContent = err.message; $("error").hidden = false; }
+});
+
+$("candidates").value = storedGet("candidates") || "";
+fetch("/api/status").then(r => r.json()).then(renderStatus);
+</script>
+</body>
+</html>

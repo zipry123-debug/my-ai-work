@@ -1,0 +1,578 @@
+{
+  "title": "시그리드 누네즈 『신의 숨결에 날리는 깃털』",
+  "format": "C",
+  "date": "20261030",
+  "source_dir": "output/20261030_깃털/cuts",
+  "final_dir": "output/20261030_깃털/final",
+  "facts": [
+    {
+      "fact": "시그리드 누네즈의 첫 소설(데뷔작)이다",
+      "sources": [
+        "https://en.wikipedia.org/wiki/Sigrid_Nunez",
+        "https://www.kirkusreviews.com/book-reviews/sigrid-nunez/a-feather-on-the-breath-of-god/"
+      ]
+    },
+    {
+      "fact": "원서는 1995년에 나왔다",
+      "sources": [
+        "https://en.wikipedia.org/wiki/Sigrid_Nunez",
+        "https://www.kirkusreviews.com/book-reviews/sigrid-nunez/a-feather-on-the-breath-of-god/"
+      ]
+    },
+    {
+      "fact": "누네즈는 2018년 『The Friend』로 전미도서상을 받았다",
+      "sources": [
+        "https://en.wikipedia.org/wiki/Sigrid_Nunez",
+        "https://ridibooks.com/books/4271000058"
+      ]
+    },
+    {
+      "fact": "화자의 아버지는 중국계 파나마인, 어머니는 독일인이다",
+      "sources": [
+        "https://en.wikipedia.org/wiki/Sigrid_Nunez",
+        "https://ridibooks.com/books/4271000058",
+        "https://www.kirkusreviews.com/book-reviews/sigrid-nunez/a-feather-on-the-breath-of-god/"
+      ]
+    },
+    {
+      "fact": "작가의 성장 배경이 반영된 자전적 소설이다",
+      "sources": [
+        "https://ridibooks.com/books/4271000058",
+        "https://www.britannica.com/biography/Sigrid-Nunez"
+      ]
+    },
+    {
+      "fact": "4부 구성: 1부 아버지, 2부 어머니, 3부 발레, 4부 이민자 남성과의 사랑",
+      "sources": [
+        "https://ridibooks.com/books/4271000058",
+        "https://www.cfnews.kr/news/article.html?no=112228",
+        "https://www.kirkusreviews.com/book-reviews/sigrid-nunez/a-feather-on-the-breath-of-god/"
+      ]
+    },
+    {
+      "fact": "1부의 아버지는 말수가 적었다",
+      "sources": [
+        "https://ridibooks.com/books/4271000058",
+        "https://www.kirkusreviews.com/book-reviews/sigrid-nunez/a-feather-on-the-breath-of-god/"
+      ]
+    },
+    {
+      "fact": "2부의 어머니 크리스타는 고향 독일을 그리워했다",
+      "sources": [
+        "https://ridibooks.com/books/4271000058",
+        "https://www.kirkusreviews.com/book-reviews/sigrid-nunez/a-feather-on-the-breath-of-god/"
+      ]
+    },
+    {
+      "fact": "3부의 제목이 책 제목과 같고, 소녀 시절 발레로 도피한 이야기를 다룬다",
+      "sources": [
+        "https://ridibooks.com/books/4271000058",
+        "https://www.cfnews.kr/news/article.html?no=112228"
+      ]
+    },
+    {
+      "fact": "한국어판: 복복서가, 장성주 옮김",
+      "sources": [
+        "https://ridibooks.com/books/4271000058",
+        "https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=398348813"
+      ]
+    },
+    {
+      "fact": "각 부는 원래 독립된 글이었다",
+      "sources": [
+        "https://ridibooks.com/books/4271000058",
+        "https://www.cfnews.kr/news/article.html?no=112228"
+      ]
+    }
+  ],
+  "unconfirmed": [],
+  "cuts": [
+    {
+      "image": "20261030_C_01.png",
+      "role": "표지",
+      "scene": "한결이 연한 하늘색 표지의 책을 가슴 앞에 들고 정면, 옆에 책갈피가 앉아 올려다봄. 공중에 하얀 깃털 하나",
+      "expression": {
+        "한결": "미소",
+        "책갈피": "호기심"
+      },
+      "bubble_area": "위 20%, 아래 25%",
+      "bubbles": [
+        {
+          "type": "speech",
+          "text": "오늘은 가족 이야기를\n들고 왔어요.",
+          "pos": [
+            72,
+            12
+          ],
+          "speaker": "한결",
+          "tail": [
+            45,
+            20
+          ]
+        },
+        {
+          "type": "title",
+          "text": "가족을 이해하고 싶었던 딸의 기록\n누네즈 『신의 숨결에 날리는 깃털』",
+          "pos": [
+            50,
+            87
+          ],
+          "size": 46
+        }
+      ],
+      "avoid": [
+        [
+          15,
+          8,
+          45,
+          32
+        ],
+        [
+          68,
+          50,
+          95,
+          75
+        ]
+      ]
+    },
+    {
+      "image": "20261030_C_02.png",
+      "role": "도입",
+      "scene": "한결이 소파에 앉아 휴대폰을 귀에 대고 통화 중, 머뭇거리는 얼굴. 책갈피는 옆에서 졺",
+      "expression": {
+        "한결": "생각",
+        "책갈피": "졸림"
+      },
+      "bubble_area": "위 25%, 아래 25%",
+      "bubbles": [
+        {
+          "type": "speech",
+          "text": "응, 엄마…\n나는 잘 지내.",
+          "pos": [
+            79,
+            11
+          ],
+          "speaker": "한결",
+          "size": 44,
+          "tail": [
+            58,
+            18
+          ]
+        },
+        {
+          "type": "thought",
+          "text": "가족인데 왜\n할 말이 없을까",
+          "pos": [
+            27,
+            75
+          ],
+          "speaker": "한결",
+          "size": 40,
+          "tail": [
+            32,
+            52
+          ]
+        },
+        {
+          "type": "narration",
+          "text": "가까운데 잘 모르는 사람들.\n이 책의 화자도 그랬어요.",
+          "pos": [
+            50,
+            91
+          ]
+        }
+      ],
+      "avoid": [
+        [
+          12,
+          4,
+          58,
+          34
+        ],
+        [
+          55,
+          70,
+          100,
+          88
+        ]
+      ]
+    },
+    {
+      "image": "20261030_C_03.png",
+      "role": "본문",
+      "scene": "한결이 책을 높이 들고 신나서 소개, 책갈피는 기쁜 얼굴",
+      "expression": {
+        "한결": "신남",
+        "책갈피": "기쁨"
+      },
+      "bubble_area": "위 20%, 아래 30%",
+      "bubbles": [
+        {
+          "type": "speech",
+          "text": "이 책은 시그리드 누네즈의\n첫 소설이에요!",
+          "pos": [
+            50,
+            13
+          ],
+          "speaker": "한결",
+          "tail": [
+            44,
+            26
+          ]
+        },
+        {
+          "type": "info",
+          "text": "원서 1995년 출간\n2018년 『The Friend』로 전미도서상 수상",
+          "pos": [
+            50,
+            80.5
+          ]
+        },
+        {
+          "type": "info",
+          "text": "작가의 성장 배경이 반영된 자전적 소설",
+          "pos": [
+            50,
+            91.5
+          ]
+        }
+      ],
+      "avoid": [
+        [
+          28,
+          8,
+          62,
+          40
+        ],
+        [
+          62,
+          28,
+          96,
+          60
+        ]
+      ]
+    },
+    {
+      "image": "20261030_C_04.png",
+      "role": "본문",
+      "scene": "한결이 벽에 붙은 빈 메모지 4장을 손으로 가리키며 설명, 책갈피는 메모지를 올려다봄",
+      "expression": {
+        "한결": "미소",
+        "책갈피": "호기심"
+      },
+      "bubble_area": "위 20%, 아래 30%",
+      "bubbles": [
+        {
+          "type": "speech",
+          "text": "책은 네 부분으로 되어 있어요.\n원래 따로 쓴 글들을 엮었대요.",
+          "pos": [
+            55,
+            10
+          ],
+          "speaker": "한결",
+          "tail": [
+            20,
+            20
+          ]
+        },
+        {
+          "type": "info",
+          "text": "1부 아버지 · 2부 어머니\n3부 발레 · 4부 이민자와의 사랑",
+          "pos": [
+            60,
+            86
+          ]
+        }
+      ],
+      "avoid": [
+        [
+          0,
+          19,
+          24,
+          42
+        ],
+        [
+          76,
+          44,
+          100,
+          68
+        ]
+      ]
+    },
+    {
+      "image": "20261030_C_05.png",
+      "role": "본문",
+      "scene": "한결이 오래된 빛바랜 가족사진 액자를 두 손으로 들고 바라봄. 사진 속 남자는 뒷모습 실루엣",
+      "expression": {
+        "한결": "생각"
+      },
+      "bubble_area": "위 25%, 아래 25%",
+      "bubbles": [
+        {
+          "type": "thought",
+          "text": "아빠는 무슨\n생각을 했을까",
+          "pos": [
+            19,
+            20
+          ],
+          "speaker": "한결",
+          "size": 38,
+          "tail": [
+            38,
+            22
+          ]
+        },
+        {
+          "type": "speech",
+          "text": "1부는 말수가 적었던 아버지 이야기.\n중국계 파나마인이었어요.",
+          "pos": [
+            50,
+            77.1
+          ],
+          "speaker": "한결"
+        },
+        {
+          "type": "narration",
+          "text": "남은 기억을 하나씩 맞춰 보며\n아버지를 되짚어 가요.",
+          "pos": [
+            50,
+            90.3
+          ]
+        }
+      ],
+      "avoid": [
+        [
+          33,
+          6,
+          74,
+          32
+        ],
+        [
+          24,
+          52,
+          60,
+          72
+        ]
+      ]
+    },
+    {
+      "image": "20261030_C_06.png",
+      "role": "본문",
+      "scene": "저녁 창가에서 한결이 창밖 먼 곳을 바라봄, 책갈피도 창턱에서 같이 바라봄",
+      "expression": {
+        "한결": "생각",
+        "책갈피": "호기심"
+      },
+      "bubble_area": "위 25%, 아래 25%",
+      "bubbles": [
+        {
+          "type": "speech",
+          "text": "2부는 독일에서 온 어머니 크리스타.\n늘 고향 독일을 그리워했대요.",
+          "pos": [
+            36,
+            8
+          ],
+          "speaker": "한결",
+          "size": 40,
+          "tail": [
+            68,
+            19
+          ]
+        },
+        {
+          "type": "narration",
+          "text": "낯선 나라에서 이방인으로 사는 부모,\n그 곁에서 자란 딸의 시선이에요.",
+          "pos": [
+            55,
+            90
+          ],
+          "size": 40
+        }
+      ],
+      "avoid": [
+        [
+          63,
+          8,
+          90,
+          40
+        ],
+        [
+          12,
+          48,
+          34,
+          72
+        ]
+      ]
+    },
+    {
+      "image": "20261030_C_07.png",
+      "role": "본문",
+      "scene": "한결이 신나게 두 주먹을 쥐고, 머리 위 생각 구름 속에 토슈즈를 신고 발레하는 어린 소녀",
+      "expression": {
+        "한결": "신남"
+      },
+      "bubble_area": "아래 35%",
+      "bubbles": [
+        {
+          "type": "speech",
+          "text": "3부 제목이 바로 책 제목이에요!",
+          "pos": [
+            50,
+            72.5
+          ],
+          "speaker": "한결",
+          "size": 40,
+          "tail": [
+            50,
+            66
+          ]
+        },
+        {
+          "type": "speech",
+          "text": "답답한 현실에서 벗어나\n발레로 도망치던 소녀 시절 이야기.",
+          "pos": [
+            50,
+            81.6
+          ],
+          "speaker": "한결",
+          "size": 38
+        },
+        {
+          "type": "thought",
+          "text": "나한테 발레 같은 건 책이었지",
+          "pos": [
+            50,
+            91.4
+          ],
+          "speaker": "한결",
+          "size": 36
+        }
+      ],
+      "avoid": [
+        [
+          35,
+          42,
+          65,
+          68
+        ],
+        [
+          18,
+          0,
+          82,
+          40
+        ]
+      ]
+    },
+    {
+      "image": "20261030_C_08.png",
+      "role": "요약·정보",
+      "scene": "한결이 책을 펼쳐 들고 미소, 책갈피가 책 위로 고개를 내밂",
+      "expression": {
+        "한결": "미소",
+        "책갈피": "기쁨"
+      },
+      "bubble_area": "아래 40%",
+      "bubbles": [
+        {
+          "type": "speech",
+          "text": "4부는 이민자 남성과의\n사랑 이야기로 끝맺어요.",
+          "pos": [
+            50,
+            69
+          ],
+          "speaker": "한결",
+          "tail": [
+            50,
+            34
+          ]
+        },
+        {
+          "type": "info",
+          "text": "복복서가 · 장성주 옮김",
+          "pos": [
+            50,
+            79.6
+          ]
+        },
+        {
+          "type": "info",
+          "text": "난이도 ★★☆☆☆ (한결 기준)\n가족·정체성 이야기를 좋아한다면 추천",
+          "pos": [
+            50,
+            89.8
+          ]
+        }
+      ],
+      "avoid": [
+        [
+          36,
+          6,
+          64,
+          33
+        ],
+        [
+          56,
+          33,
+          82,
+          45
+        ]
+      ]
+    },
+    {
+      "image": "20261030_C_09.png",
+      "role": "마무리",
+      "scene": "밤, 스탠드 불빛 아래 한결이 침대에 기대 앉아 책을 덮고 미소, 책갈피는 옆에서 콧방울 달고 잠",
+      "expression": {
+        "한결": "미소",
+        "책갈피": "졸림"
+      },
+      "bubble_area": "위 20%, 아래 25%",
+      "bubbles": [
+        {
+          "type": "speech",
+          "text": "오늘은 엄마한테\n먼저 전화해 볼까 봐요.",
+          "pos": [
+            40,
+            10
+          ],
+          "speaker": "한결",
+          "tail": [
+            66,
+            22
+          ]
+        },
+        {
+          "type": "narration",
+          "text": "여러분은 가족에게\n끝내 묻지 못한 게 있나요?",
+          "pos": [
+            70,
+            83.2
+          ]
+        },
+        {
+          "type": "narration",
+          "text": "저장해 두고 책 고를 때 꺼내 보세요",
+          "pos": [
+            70,
+            92.6
+          ],
+          "size": 36
+        }
+      ],
+      "avoid": [
+        [
+          60,
+          18,
+          92,
+          38
+        ],
+        [
+          18,
+          68,
+          48,
+          88
+        ]
+      ]
+    }
+  ]
+}

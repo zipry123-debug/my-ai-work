@@ -1,0 +1,539 @@
+{
+  "title": "카프카 『소송』",
+  "format": "C",
+  "date": "20261030",
+  "source_dir": "output/20261030_소송/cuts",
+  "final_dir": "output/20261030_소송/final",
+  "facts": [
+    {
+      "fact": "주인공 요제프 K는 은행원이며, 서른 번째 생일 아침에 체포된다",
+      "sources": [
+        "https://en.wikipedia.org/wiki/The_Trial",
+        "https://ebook-product.kyobobook.co.kr/dig/epd/ebook/E000003113086"
+      ]
+    },
+    {
+      "fact": "1914~1915년에 쓰였고 카프카 사후 1925년에 출간됐다",
+      "sources": [
+        "https://en.wikipedia.org/wiki/The_Trial",
+        "https://www.britannica.com/topic/The-Trial-novel-by-Kafka"
+      ]
+    },
+    {
+      "fact": "카프카는 막스 브로트에게 원고를 없애 달라고 했지만 브로트가 출간했다",
+      "sources": [
+        "https://en.wikipedia.org/wiki/The_Trial",
+        "https://www.britannica.com/topic/The-Trial-novel-by-Kafka"
+      ]
+    },
+    {
+      "fact": "완성되지 않은 작품이다",
+      "sources": [
+        "https://en.wikipedia.org/wiki/The_Trial",
+        "https://www.audible.com/blog/summary-the-trial-by-franz-kafka"
+      ]
+    },
+    {
+      "fact": "카프카에스크(Kafkaesque)는 카프카의 이름에서 나온 말로, 악몽처럼 복잡하고 부조리한 상황을 뜻한다",
+      "sources": [
+        "https://www.oxfordlearnersdictionaries.com/definition/english/kafkaesque",
+        "https://www.merriam-webster.com/dictionary/Kafkaesque",
+        "https://dictionary.com/browse/kafkaesque"
+      ]
+    },
+    {
+      "fact": "문학동네 세계문학전집 023 『소송』, 권혁준 옮김(2010)",
+      "sources": [
+        "https://ebook-product.kyobobook.co.kr/dig/epd/ebook/E000003113086",
+        "https://ridibooks.com/author/11520"
+      ]
+    },
+    {
+      "fact": "체포된 뒤에도 출근은 할 수 있다",
+      "sources": [
+        "운영자 확인(작품 원문)",
+        "https://en.wikipedia.org/wiki/The_Trial"
+      ]
+    }
+  ],
+  "unconfirmed": [],
+  "cuts": [
+    {
+      "image": "20261030_C_01.png",
+      "role": "표지",
+      "scene": "한결이 어두운 표지의 책을 들고 정면, 책갈피는 책 더미 위에 근엄하게 앉음",
+      "expression": {
+        "한결": "미소",
+        "책갈피": "뚱함"
+      },
+      "bubble_area": "위 20%(대사), 아래 20%(제목)",
+      "avoid": [
+        [
+          14,
+          12,
+          45,
+          40
+        ],
+        [
+          62,
+          27,
+          92,
+          54
+        ]
+      ],
+      "bubbles": [
+        {
+          "type": "speech",
+          "speaker": "한결",
+          "text": "오늘의 고전은…\n좀 억울한 이야기예요.",
+          "pos": [
+            70,
+            12
+          ],
+          "tail": [
+            45,
+            22
+          ]
+        },
+        {
+          "type": "title",
+          "text": "죄목도 모른 채 재판받는 소설\n카프카 『소송』",
+          "pos": [
+            50,
+            86
+          ],
+          "size": 60
+        }
+      ]
+    },
+    {
+      "image": "20261030_C_02.png",
+      "role": "도입",
+      "scene": "아침 침대, 놀라서 깬 한결의 가슴 위에서 책갈피가 노려봄",
+      "expression": {
+        "한결": "놀람",
+        "책갈피": "뚱함"
+      },
+      "bubble_area": "위 18%, 아래 35%",
+      "avoid": [
+        [
+          5,
+          32,
+          52,
+          64
+        ],
+        [
+          56,
+          19,
+          92,
+          53
+        ]
+      ],
+      "bubbles": [
+        {
+          "type": "thought",
+          "speaker": "책갈피",
+          "text": "……",
+          "pos": [
+            35,
+            11
+          ],
+          "tail": [
+            62,
+            22
+          ]
+        },
+        {
+          "type": "speech",
+          "speaker": "한결",
+          "text": "아침부터 왜 그런 눈으로 봐…?\n내가 뭘 했는데?",
+          "pos": [
+            40,
+            76
+          ],
+          "tail": [
+            36,
+            60
+          ]
+        },
+        {
+          "type": "narration",
+          "text": "이유도 모르고 추궁당하는 기분.\n이 책 주인공은 이걸 1년 내내 겪어요.",
+          "pos": [
+            50,
+            93
+          ]
+        }
+      ]
+    },
+    {
+      "image": "20261030_C_03.png",
+      "role": "본문",
+      "scene": "책상에서 설명하는 한결, 뒤로 정장 입은 낯선 남자 둘",
+      "expression": {
+        "한결": "놀람"
+      },
+      "bubble_area": "왼쪽 위 20%, 오른쪽 가운데 아래, 아래 15%",
+      "avoid": [
+        [
+          20,
+          19,
+          50,
+          47
+        ],
+        [
+          62,
+          12,
+          90,
+          27
+        ]
+      ],
+      "bubbles": [
+        {
+          "type": "speech",
+          "speaker": "한결",
+          "text": "주인공 요제프 K는\n은행에서 일하는 평범한 직장인.",
+          "pos": [
+            30,
+            9
+          ],
+          "size": 40,
+          "tail": [
+            36,
+            20
+          ]
+        },
+        {
+          "type": "speech",
+          "speaker": "한결",
+          "text": "서른 번째 생일 아침, 낯선 사람들이\n와서 체포됐다고 말해요.",
+          "pos": [
+            60,
+            69
+          ],
+          "size": 42,
+          "tail": [
+            50,
+            44
+          ]
+        },
+        {
+          "type": "speech",
+          "speaker": "한결",
+          "text": "그런데 체포된 사람이…\n출근은 해도 된대요?",
+          "pos": [
+            50,
+            93
+          ]
+        }
+      ]
+    },
+    {
+      "image": "20261030_C_04.png",
+      "role": "본문",
+      "scene": "턱에 손가락을 대고 고민하는 한결, 옆에서 뚱한 책갈피",
+      "expression": {
+        "한결": "생각",
+        "책갈피": "뚱함"
+      },
+      "bubble_area": "오른쪽 위 30%, 아래 15%",
+      "avoid": [
+        [
+          5,
+          18,
+          40,
+          46
+        ],
+        [
+          66,
+          52,
+          95,
+          82
+        ]
+      ],
+      "bubbles": [
+        {
+          "type": "speech",
+          "speaker": "한결",
+          "text": "K는 계속 물어요.\n“제 죄가 뭡니까?”",
+          "pos": [
+            72,
+            10
+          ],
+          "tail": [
+            40,
+            26
+          ]
+        },
+        {
+          "type": "speech",
+          "speaker": "한결",
+          "text": "그런데 아무도\n대답해 주지 않아요.",
+          "pos": [
+            72,
+            27
+          ]
+        },
+        {
+          "type": "speech",
+          "speaker": "한결",
+          "text": "왜 혼나는지 모르는데 일단 혼나는 상황…\n직장인이라면 익숙하죠?",
+          "pos": [
+            50,
+            93
+          ],
+          "max_width": 92
+        }
+      ]
+    },
+    {
+      "image": "20261030_C_05.png",
+      "role": "본문",
+      "scene": "끝없는 서류 복도에 선 한결, 서류 더미 위의 책갈피",
+      "expression": {
+        "한결": "생각",
+        "책갈피": "호기심"
+      },
+      "bubble_area": "위 15%, 오른쪽 가운데, 아래 25%",
+      "avoid": [
+        [
+          26,
+          15,
+          48,
+          38
+        ],
+        [
+          63,
+          47,
+          86,
+          70
+        ]
+      ],
+      "bubbles": [
+        {
+          "type": "speech",
+          "speaker": "한결",
+          "text": "이런 상황을 부르는 단어가 있어요.",
+          "pos": [
+            50,
+            7
+          ],
+          "tail": [
+            38,
+            16
+          ]
+        },
+        {
+          "type": "info",
+          "text": "카프카에스크(Kafkaesque),\n‘카프카스럽다’.",
+          "pos": [
+            74,
+            40
+          ],
+          "size": 36
+        },
+        {
+          "type": "speech",
+          "speaker": "한결",
+          "text": "이유도 모른 채 복잡한 절차 속에서\n헤매는 악몽 같은 상황을 말해요.",
+          "pos": [
+            50,
+            76.6
+          ],
+          "size": 42
+        },
+        {
+          "type": "speech",
+          "speaker": "한결",
+          "text": "작가 이름이 사전에 단어로 올랐다니,\n대단하죠?",
+          "pos": [
+            50,
+            92
+          ],
+          "size": 42
+        }
+      ]
+    },
+    {
+      "image": "20261030_C_06.png",
+      "role": "본문",
+      "scene": "신난 한결, 머리 위 생각 구름에 촛불 옆 원고를 지키는 손",
+      "expression": {
+        "한결": "신남"
+      },
+      "bubble_area": "아래 36%",
+      "avoid": [
+        [
+          33,
+          24,
+          67,
+          55
+        ],
+        [
+          24,
+          0,
+          76,
+          22
+        ]
+      ],
+      "bubbles": [
+        {
+          "type": "speech",
+          "speaker": "한결",
+          "text": "사실 이 책, 완성된\n작품이 아니에요.",
+          "pos": [
+            50,
+            60.5
+          ],
+          "size": 36,
+          "max_width": 42,
+          "tail": [
+            50,
+            53
+          ]
+        },
+        {
+          "type": "speech",
+          "speaker": "한결",
+          "text": "카프카는 친구 막스 브로트에게\n원고를 없애 달라고 부탁했는데,",
+          "pos": [
+            50,
+            71.9
+          ],
+          "size": 40
+        },
+        {
+          "type": "speech",
+          "speaker": "한결",
+          "text": "친구가 약속을 안 지키고\n1925년에 책으로 냈어요.",
+          "pos": [
+            50,
+            83.2
+          ],
+          "size": 40
+        },
+        {
+          "type": "speech",
+          "speaker": "한결",
+          "text": "그 덕분에 우리가 읽는 거죠!",
+          "pos": [
+            50,
+            92.3
+          ],
+          "size": 38
+        }
+      ]
+    },
+    {
+      "image": "20261030_C_07.png",
+      "role": "요약·정보",
+      "scene": "한결이 초록 책과 크림색 책을 양손에 들고 미소",
+      "expression": {
+        "한결": "미소"
+      },
+      "bubble_area": "아래 40%",
+      "avoid": [
+        [
+          37,
+          0,
+          64,
+          26
+        ],
+        [
+          15,
+          23,
+          40,
+          48
+        ],
+        [
+          62,
+          23,
+          86,
+          47
+        ]
+      ],
+      "bubbles": [
+        {
+          "type": "info",
+          "text": "문학동네 세계문학전집 023 · 권혁준 옮김",
+          "pos": [
+            50,
+            73
+          ],
+          "size": 42
+        },
+        {
+          "type": "info",
+          "text": "난이도 ★★★☆☆ (한결 기준)\n문장은 어렵지 않지만, 답답함을 견디는 게 관건",
+          "pos": [
+            50,
+            86
+          ],
+          "size": 40
+        }
+      ]
+    },
+    {
+      "image": "20261030_C_08.png",
+      "role": "마무리",
+      "scene": "저녁 소파, 미소 짓는 한결의 무릎 위 책에서 책갈피가 콧방울을 달고 잠",
+      "expression": {
+        "한결": "미소(눈 감음)",
+        "책갈피": "졸림"
+      },
+      "bubble_area": "왼쪽 가운데, 아래 20%",
+      "avoid": [
+        [
+          60,
+          5,
+          90,
+          32
+        ],
+        [
+          42,
+          60,
+          78,
+          74
+        ]
+      ],
+      "bubbles": [
+        {
+          "type": "speech",
+          "speaker": "한결",
+          "text": "K의 소송은 어떻게 끝날까요?\n결말은 직접 확인해 보세요.",
+          "pos": [
+            27,
+            38
+          ],
+          "max_width": 50,
+          "tail": [
+            62,
+            26
+          ]
+        },
+        {
+          "type": "narration",
+          "text": "여러분은 이유도 모르고\n억울했던 순간, 있었나요?",
+          "pos": [
+            50,
+            83.6
+          ],
+          "size": 38
+        },
+        {
+          "type": "narration",
+          "text": "저장해 두고 책 고를 때 꺼내 보세요",
+          "pos": [
+            50,
+            92.3
+          ],
+          "size": 36
+        }
+      ]
+    }
+  ],
+  "removed_unconfirmed": [
+    "을유세계문학전집 16 『소송』, 이재황 옮김 — 출처 미확인으로 7번 컷에서 삭제",
+    "예전에 『심판』이라는 제목으로도 나왔다 — 출처 미확인으로 7번 컷에서 삭제"
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "name": "ansan-location-map",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "안산 입지 지도 — NAVER Dynamic Map 기반 정적 HTML 프로젝트",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "start": "node scripts/serve.mjs",
+    "check": "node scripts/check.mjs"
+  }
+}

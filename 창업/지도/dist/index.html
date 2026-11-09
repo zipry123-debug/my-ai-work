@@ -1,0 +1,1934 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>케이크 매장 입지 지도</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+
+<style>
+/* 이 사이트 전용 색상 값이다. */
+:root {
+  --grey50: #f8f9fb; --grey100: #f1f3f6; --grey200: #e3e6ea; --grey300: #cfd4da; --grey400: #adb4bd;
+  --grey500: #88919c; --grey600: #68717d; --grey700: #4b5563; --grey800: #323a47; --grey900: #1c2230;
+  --blue50: #e9f1fe; --blue500: #2f7bed; --blue600: #2369d8; --blue700: #1c5abf;
+  --red50: #fdeeee; --red500: #e5484d; --red700: #c62a2f;
+  --green50: #eef9f3; --green800: #0a7d4f;
+  --best: #d9480f; --best-line: #7a2a00; --white: #fff;
+  --shadow-float: 0 8px 24px rgba(15, 30, 60, .12);
+}
+* { box-sizing: border-box; }
+html, body { height: 100%; margin: 0; }
+body { background: var(--white); color: var(--grey900); line-height: 1.5; font-size: 15px; letter-spacing: -.01em;
+  font-family: "Pretendard", -apple-system, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+  -webkit-font-smoothing: antialiased; }
+button, input, select { font-family: inherit; letter-spacing: inherit; }
+:focus-visible { outline: 2px solid var(--blue500); outline-offset: 2px; }
+/* 왼쪽 창은 화면 폭의 30%로 하되 380~600px 사이로 둔다. */
+.app { display: grid; grid-template-columns: clamp(380px, 30vw, 600px) minmax(0, 1fr); height: 100vh; }
+aside { background: var(--white); border-right: 1px solid var(--grey200); overflow-y: auto; padding: 24px 20px 32px; }
+h1 { font-size: 22px; font-weight: 700; letter-spacing: -.02em; margin: 0 0 12px; }
+.fake { background: var(--red50); color: var(--red700); font-weight: 600; padding: 12px 14px; border-radius: 12px; font-size: 13px; line-height: 1.45; }
+
+.summary { position: sticky; top: -24px; z-index: 5; background: var(--white); margin: 8px -20px 0; padding: 16px 20px; border-bottom: 8px solid var(--grey100); }
+.summary-label { font-size: 14px; font-weight: 600; color: var(--grey600); }
+.summary-value { display: flex; align-items: baseline; gap: 2px; font-size: 18px; font-weight: 700; }
+.summary strong { font-size: 32px; font-weight: 700; letter-spacing: -.03em; line-height: 1.25; color: var(--best); font-variant-numeric: tabular-nums; }
+.summary .note { margin-top: 2px; }
+
+.block { margin: 0 -20px; padding: 16px 20px; border-bottom: 8px solid var(--grey100); }
+.block > summary { font-weight: 700; font-size: 17px; cursor: pointer; list-style: none; display: flex; align-items: center; gap: 6px; }
+.block > summary::-webkit-details-marker { display: none; }
+.block > summary .note { font-weight: 500; margin: 0 0 0 auto; }
+.regions { list-style: none; margin: 8px -8px 0; padding: 0; max-height: 200px; overflow-y: auto; }
+.regions button { width: 100%; display: flex; justify-content: space-between; align-items: center; gap: 8px; text-align: left;
+  font-size: 15px; font-weight: 500; border: 0; border-radius: 10px; background: none; color: inherit; padding: 10px 8px; cursor: pointer; transition: background .12s; }
+.regions button:hover { background: var(--grey100); }
+.regions .size { color: var(--grey500); font-size: 13px; font-weight: 400; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.regions .near { display: block; color: var(--grey500); font-size: 13px; font-weight: 400; }
+
+.conds-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding-top: 20px; }
+.conds-head h2 { font-size: 17px; font-weight: 700; margin: 0; }
+.link { font-size: 13px; font-weight: 600; background: none; border: 0; color: var(--blue600); text-decoration: none; cursor: pointer; padding: 2px 0; }
+.link:hover { color: var(--blue700); }
+.mode-help { margin: 8px 0 4px; padding: 12px 14px; background: var(--grey50); border-radius: 12px; font-size: 13px; line-height: 1.6; color: var(--grey600); }
+.mode-help b { color: var(--grey800); font-weight: 600; }
+.cond { border-bottom: 1px solid var(--grey100); padding: 14px 0; }
+.cond-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.cond-head h3 { font-size: 15px; margin: 0; min-width: 0; }
+.fold { font-size: 15px; font-weight: 600; background: none; border: 0; color: inherit; padding: 4px 0; cursor: pointer; text-align: left; display: inline-flex; align-items: center; gap: 8px; }
+.fold::before { content: ""; width: 7px; height: 7px; flex: none; margin-left: 2px; border-right: 2px solid var(--grey400); border-bottom: 2px solid var(--grey400); transform: rotate(-45deg); transition: transform .15s; }
+.fold[aria-expanded=true]::before { transform: translateY(-2px) rotate(45deg); }
+.brief { margin: 2px 0 0 19px; font-size: 13px; color: var(--grey500); }
+.cond.open .brief { display: none; }
+.mode { display: inline-flex; gap: 2px; padding: 2px; background: var(--grey100); border-radius: 8px; flex: none; }
+.mode button { font-size: 12px; font-weight: 500; border: 0; border-radius: 6px; background: none; color: var(--grey600); padding: 4px 10px; cursor: pointer; }
+.mode button[aria-pressed=true] { background: var(--white); color: var(--blue600); font-weight: 700; box-shadow: 0 1px 3px rgba(15, 30, 60, .14); }
+.cond.off .body { opacity: .4; }
+.row { margin-top: 14px; }
+.row label { display: flex; justify-content: space-between; gap: 8px; font-size: 14px; color: var(--grey700); }
+.row output { font-weight: 700; color: var(--blue600); font-variant-numeric: tabular-nums; white-space: nowrap; }
+input[type=range] { -webkit-appearance: none; appearance: none; width: 100%; height: 22px; margin: 4px 0 0; background: none; cursor: pointer; }
+input[type=range]::-webkit-slider-runnable-track { height: 6px; border-radius: 3px;
+  background: linear-gradient(to right, var(--blue500) var(--pct, 0%), var(--grey200) var(--pct, 0%)); }
+input[type=range]::-moz-range-track { height: 6px; border-radius: 3px; background: var(--grey200); }
+input[type=range]::-moz-range-progress { height: 6px; border-radius: 3px; background: var(--blue500); }
+input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 22px; height: 22px; margin-top: -8px; border-radius: 50%; background: var(--white); border: 0; box-shadow: 0 1px 5px rgba(15, 30, 60, .32); }
+input[type=range]::-moz-range-thumb { width: 22px; height: 22px; border-radius: 50%; background: var(--white); border: 0; box-shadow: 0 1px 5px rgba(15, 30, 60, .32); }
+input[type=range]:disabled { cursor: default; }
+input[type=checkbox] { -webkit-appearance: none; appearance: none; width: 20px; height: 20px; flex: none; margin: 0; border-radius: 6px; background: var(--grey200); cursor: pointer;
+  background-position: center; background-repeat: no-repeat; background-size: 14px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 14'%3E%3Cpath d='M3 7.3l2.8 2.7L11 4.5' fill='none' stroke='%23fff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); }
+input[type=checkbox]:checked { background-color: var(--blue500); }
+.checks { display: flex; flex-wrap: wrap; gap: 8px 14px; margin-top: 12px; font-size: 14px; color: var(--grey700); }
+.checks label { display: inline-flex; align-items: center; gap: 6px; cursor: pointer; }
+.note { color: var(--grey500); font-size: 13px; line-height: 1.5; margin: 6px 0 0; }
+.btn { font-size: 15px; font-weight: 600; border: 0; background: var(--grey100); color: var(--grey700); border-radius: 10px; padding: 10px 16px; cursor: pointer; transition: background .12s; }
+.btn:hover { background: var(--grey200); }
+.btn:disabled { color: var(--grey500); background: var(--grey100); cursor: default; }
+.btn.primary { background: var(--blue500); color: var(--white); width: 100%; }
+.btn.primary:hover { background: var(--blue600); }
+.btn.primary:disabled { background: var(--grey100); color: var(--grey500); }
+h4.sub { font-size: 17px; font-weight: 700; margin: 24px 0 0; }
+.foot { margin-top: 16px; display: grid; gap: 12px; }
+.sources ul { margin: 6px 0 0; padding-left: 16px; }
+.pop-hold { margin: 8px 0 0; padding: 8px 10px; }
+.pop-note { margin: 0 0 10px; font-size: 12px; line-height: 1.4; }
+
+.right { display: grid; grid-template-rows: minmax(0, 1fr) auto; min-width: 0; height: 100vh; }
+.mapwrap { position: relative; min-width: 0; min-height: 0; }
+#map { position: absolute !important; inset: 0; width: 100% !important; height: 100% !important; background: var(--grey100); font-family: inherit; }
+.map-fake { position: absolute; top: 12px; left: 60px; z-index: 900; pointer-events: none; padding: 6px 12px; border-radius: 999px; box-shadow: var(--shadow-float); }
+.map-status { position: absolute; inset: 50% auto auto 50%; transform: translate(-50%, -50%); z-index: 1000; padding: 16px 20px; border-radius: 12px; background: white; box-shadow: var(--shadow-float); text-align: center; font-size: 14px; }
+.map-status[hidden] { display: none; }
+/* 넓게 볼 때 안내. 지도를 가리지 않게 위쪽 가운데에 작게 둔다. */
+/* 칸 크기 전환(지도 오른쪽 위). 네이버 지도 위에 있어 흰 바탕과 그림자를 준다. */
+.cell-size { position: absolute; top: 12px; right: 12px; z-index: 900; background: var(--white); box-shadow: var(--shadow-float); }
+.cell-size[hidden] { display: none; }
+.cell-size button { font-size: 13px; padding: 6px 12px; }
+.cell-size button[aria-pressed=true] { background: var(--blue500); color: var(--white); box-shadow: none; }
+.cell-size button:disabled { cursor: progress; }
+.zoom-note { inset: 56px auto auto 50%; transform: translateX(-50%); padding: 8px 14px; font-size: 13px; pointer-events: none; }
+.map-popup { width: 300px; max-width: calc(100vw - 48px); padding: 16px; border-radius: 16px; background: white; box-shadow: var(--shadow-float); overflow: auto; }
+.map-popup .pop-close { float: right; border: 0; background: none; color: var(--grey600); font-size: 22px; line-height: 1; padding: 0 0 6px 8px; cursor: pointer; }
+.legend { position: absolute; right: 12px; bottom: 36px; z-index: 100; max-height: calc(100% - 90px); overflow: auto; background: var(--white); border-radius: 14px; box-shadow: var(--shadow-float); padding: 12px 14px; font-size: 13px; color: var(--grey700); }
+.legend-body { display: grid; gap: 6px; }
+.legend-toggle { display: none; }
+.legend i { display: inline-block; width: 14px; height: 14px; border-radius: 4px; }
+.legend i.best { border: 2px solid var(--best-line); background: var(--best); }
+.legend label { display: flex; align-items: center; gap: 6px; cursor: pointer; }
+.legend input[type=checkbox] { width: 16px; height: 16px; border-radius: 5px; background-size: 12px; }
+.legend .presets { display: flex; gap: 10px; margin-top: 4px; }
+.pop { min-width: 250px; font-size: 14px; color: var(--grey800); }
+.pop h4 { margin: 0; font-size: 17px; font-weight: 700; color: var(--grey900); }
+.pop ul { list-style: none; margin: 8px 0 10px; padding: 0; display: grid; gap: 5px; }
+.pop .btn { padding: 8px 12px; font-size: 14px; }
+.pop small { font-size: 12px; line-height: 1.4; }
+.badge { display: inline-block; padding: 1px 7px; margin-right: 4px; border-radius: 6px; font-size: 12px; font-weight: 700; }
+.badge.pass { background: var(--green50); color: var(--green800); }
+.badge.fail { background: var(--red50); color: var(--red700); }
+.badge.skip { background: var(--grey100); color: var(--grey600); }
+small.fail { color: var(--red700); font-weight: 600; }
+.compare small { font-size: 13px; }
+.pop small, .compare small { display: block; color: var(--grey500); }
+.pop .naver { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px 14px; margin-top: 10px; font-size: 13px; font-weight: 600; }
+.pop .naver a { color: var(--blue600); text-decoration: none; }
+.pin { display: flex; align-items: center; justify-content: center; width: 26px; height: 26px; border-radius: 50%;
+  background: var(--grey900); color: var(--white); font-weight: 700; font-size: 13px; border: 2px solid var(--white); box-shadow: 0 2px 6px rgba(15, 30, 60, .4); }
+
+.compare { background: var(--white); border-top: 1px solid var(--grey200); padding: 14px 20px; }
+.compare-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.compare-head h2 { font-size: 17px; font-weight: 700; margin: 0; display: flex; align-items: baseline; gap: 6px; }
+.compare-head .note { margin: 0; font-weight: 500; }
+.compare-btns { display: flex; gap: 16px; }
+/* 크게 보기: 비교창이 지도 자리를 덮는다. 지도는 그대로 두어 크기가 바뀌지 않게 한다. */
+.right { position: relative; }
+.compare.max { position: absolute; inset: 0; z-index: 1001; display: flex; flex-direction: column; }
+.compare.max #compareBody { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+.compare.max .compare-body, .compare.max .compare-body.checks { flex: 1; min-height: 0; max-height: none; }
+.compare-body { max-height: 24vh; overflow: auto; margin-top: 8px; }
+.compare table { border-collapse: collapse; width: 100%; font-size: 14px; }
+.compare th, .compare td { text-align: left; vertical-align: top; padding: 10px 12px; border-bottom: 1px solid var(--grey100); min-width: 170px; font-weight: 500; }
+.compare th { font-weight: 700; }
+.compare th:first-child, .compare td:first-child { min-width: 100px; color: var(--grey600); font-weight: 500; position: sticky; left: 0; background: var(--white); }
+.compare thead th { position: sticky; top: 0; background: var(--white); z-index: 1; }
+.compare thead th:first-child { z-index: 2; }
+.compare input, .compare select { width: 100%; font-size: 14px; border: 0; border-radius: 8px; padding: 7px 10px; color: var(--grey900); background: var(--grey100); }
+.compare select { margin-bottom: 4px; cursor: pointer; font-weight: 600; }
+.compare select[data-status=ok] { background: var(--green50); color: var(--green800); }
+.compare select[data-status=bad] { background: var(--red50); color: var(--red700); }
+.compare-tabs { margin-top: 8px; }
+.compare-tabs[hidden] { display: none; }
+.compare-body.checks { max-height: 38vh; }
+.compare-body.checks:not([hidden]) { display: block; margin-top: 8px; } /* 체크박스 줄용 .checks 배치를 받지 않게 한다. */
+.tip-btn { width: 18px; height: 18px; margin-left: 4px; padding: 0; border: 0; border-radius: 50%; background: var(--grey200); color: var(--grey700); font-size: 12px; font-weight: 700; line-height: 18px; cursor: pointer; }
+.tip { position: fixed; z-index: 1100; max-width: min(300px, calc(100vw - 16px)); padding: 12px 14px; border-radius: 12px; background: var(--grey900); color: var(--white); font-size: 13px; line-height: 1.5; white-space: pre-line; box-shadow: var(--shadow-float); }
+.tip[hidden] { display: none; }
+.cand-actions { display: flex; flex-wrap: wrap; gap: 4px 10px; margin-top: 4px; }
+/* 휴대폰 현장 확인: 후보 하나를 골라 항목을 세로로 적는다. */
+.pick { display: flex; width: fit-content; margin-bottom: 8px; }
+.pick button { font-size: 14px; padding: 6px 12px; }
+.one-head { padding: 4px 0 8px; border-bottom: 1px solid var(--grey200); }
+.one-list { list-style: none; margin: 0; padding: 0; }
+.one-list li { padding: 12px 0; border-bottom: 1px solid var(--grey100); }
+.one-title { display: flex; align-items: center; margin-bottom: 6px; font-size: 14px; font-weight: 600; color: var(--grey700); }
+
+/* 주소에 지역이 없으면 지도 대신 지역 고르는 화면을 보인다. */
+.picking .app { display: none; }
+.picker { max-width: 720px; margin: 0 auto; padding: 32px 20px 48px; }
+.picker .fake { margin-bottom: 20px; }
+.picker input { width: 100%; font-size: 16px; padding: 12px 14px; border: 1px solid var(--grey300); border-radius: 12px; }
+.picker h2 { font-size: 14px; font-weight: 600; color: var(--grey600); margin: 24px 0 8px; }
+.picker ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+.picker a { display: block; padding: 10px 16px; border: 1px solid var(--grey200); border-radius: 12px; color: var(--grey900); text-decoration: none; font-weight: 600; }
+.picker a:hover { background: var(--grey100); }
+h1 .link { margin-left: 8px; vertical-align: middle; }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+@media (max-width: 800px) {
+  .app { display: flex; flex-direction: column; height: auto; }
+  .right { display: contents; }
+  .mapwrap { order: 1; height: 45vh; flex: none; position: sticky; top: 0; z-index: 10; }
+  /* 휴대폰에서는 범례를 접어 두고 버튼으로 연다. */
+  .legend { padding: 0; }
+  .legend-toggle { display: block; font: inherit; font-weight: 600; color: var(--grey800); background: none; border: 0; padding: 8px 12px; cursor: pointer; }
+  .legend-body { display: none; padding: 0 14px 12px; }
+  .legend.open .legend-body { display: grid; }
+  aside { order: 2; border-right: 0; overflow: visible; padding-inline: 16px; }
+  .summary, .block { margin-inline: -16px; padding-inline: 16px; }
+  .compare { order: 3; padding-inline: 16px; }
+  /* 표를 작은 상자에 가두지 않고 페이지와 함께 스크롤한다. 열을 좁혀 후보 2곳이 함께 보이게 한다. */
+  .compare-body, .compare-body.checks { max-height: none; }
+  .compare.max { position: fixed; }
+  .compare th, .compare td { min-width: 128px; padding: 10px 8px; }
+  .compare th:first-child, .compare td:first-child { min-width: 80px; word-break: keep-all; }
+  .summary { position: static; }
+  .popup-open .legend { display: none; }
+  /* 상세창: 지도(위 45%) 아래 남은 화면에 붙인다. */
+  .sheet:not([hidden]) { display: block; position: fixed; left: 0; right: 0; bottom: 0; z-index: 1000; max-height: 55vh; overflow-y: auto;
+    background: var(--white); border-radius: 16px 16px 0 0; box-shadow: 0 -8px 24px rgba(15, 30, 60, .16); }
+  .sheet .map-popup { width: auto; max-width: none; border-radius: 0; box-shadow: none; overflow: visible; }
+  /* 아래 창 손잡이. 누르거나 아래로 밀면 한 줄로 접혀 지도를 가리지 않는다. */
+  .sheet-bar { position: sticky; top: 0; z-index: 1; display: flex; align-items: center; gap: 8px; width: 100%; padding: 14px 16px 8px; border: 0;
+    background: var(--white); font: inherit; text-align: left; cursor: pointer; touch-action: none; }
+  .sheet-bar::before { content: ""; position: absolute; top: 6px; left: 50%; width: 36px; height: 4px; margin-left: -18px; border-radius: 2px; background: var(--grey300); }
+  .sheet-title { flex: 1; font-weight: 700; font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .sheet-hint { color: var(--grey600); font-size: 13px; white-space: nowrap; }
+  .sheet.collapsed .map-popup { display: none; }
+  .sheet.collapsed .sheet-bar { padding-bottom: 14px; }
+}
+.sheet-bar { display: none; }
+@media (max-width: 800px) { .sheet-bar { display: flex; } }
+/* 휴대폰은 폭이 좁아 위쪽 안내 띠와 겹치므로 칸 크기 버튼을 그 아래로, 확대 안내를 다시 그 아래로 내린다. */
+@media (max-width: 800px) {
+  .cell-size { top: 54px; }
+  .zoom-note { top: 100px; }
+}
+</style>
+</head>
+<body>
+<script>
+if (!new URLSearchParams(location.search).get("region")) document.documentElement.classList.add("picking");
+</script>
+<main class="picker" id="picker" hidden>
+  <h1>케이크 매장 입지 지도</h1>
+  <div class="fake">공공자료로 계산한 후보 칸이에요. 현장에 가 볼 곳을 줄이는 용도이고, 이 결과만으로 계약을 판단하면 안 돼요.</div>
+  <input id="pickerSearch" type="search" placeholder="지역 이름" aria-label="지역 이름으로 찾기">
+  <div id="pickerList"></div>
+  <p class="note" id="pickerEmpty" hidden>맞는 지역이 없어요.</p>
+</main>
+<div class="app">
+  <aside>
+    <h1>안산 입지 지도</h1>
+    <div class="fake">공공자료로 계산한 후보 칸이에요. 경쟁점은 상호와 업종으로 자동 추정해서 틀리거나 빠진 곳이 많아요. 개인 가게 상당수는 판매 여부를 몰라 계산에서 빠져요. 현장에 가 볼 곳을 줄이는 용도이고, 이 결과만으로 계약을 판단하면 안 돼요. 기준값은 공식 수치가 아니라 임의로 정한 값이에요.</div>
+
+    <div class="summary" role="status">
+      <div class="summary-label">모든 조건을 맞춘 곳</div>
+      <div class="summary-value"><strong id="allCount">0</strong>칸</div>
+      <div class="note" id="allArea"></div>
+      <div class="note" id="sumNote"></div>
+    </div>
+
+    <details class="block" open>
+      <summary>모두 맞춘 구역 <span id="regionCount"></span> <span class="note">넓은 순</span></summary>
+      <ul class="regions" id="regions"></ul>
+      <p class="note" id="regionEmpty" hidden></p>
+    </details>
+
+    <div class="conds-head">
+      <h2>조건</h2>
+      <button class="link" id="foldAll" type="button"></button>
+    </div>
+    <div class="mode-help"><b>필수</b> 못 맞추면 회색으로 표시해요<br><b>참고</b> 못 맞춰도 칸은 남지만 '모두 충족'에서는 빠져요<br><b>끔</b> 계산에서 빼요</div>
+
+    <section class="cond" data-cond="home">
+      <div class="cond-head"><h3><button class="fold" type="button">1. 거주지역</button></h3><div class="mode"></div></div>
+      <p class="brief"></p>
+      <div class="body">
+        <div class="row"><label for="minHouseholds">동 최소 세대수 <output for="minHouseholds"></output></label>
+          <input type="range" id="minHouseholds" min="0" max="25000" step="500"></div>
+        <div class="row"><label for="maxDecline">4년 인구 감소율 상한 <output for="maxDecline"></output></label>
+          <input type="range" id="maxDecline" min="0" max="20" step="1"></div>
+        <div class="row"><label for="minAroundHouseholds">칸 주변 500m 최소 가구수 <output for="minAroundHouseholds"></output></label>
+          <input type="range" id="minAroundHouseholds" min="0" max="8000" step="100"></div>
+        <p class="note">주거·상업지역에 걸치는 칸만 통과해요. 가구 수는 2024년 100m 격자 자료이고 노이즈가 있어요.</p>
+      </div>
+    </section>
+
+    <section class="cond" data-cond="guide">
+      <div class="cond-head"><h3><button class="fold" type="button">2. 안내 기준점</button></h3><div class="mode"></div></div>
+      <p class="brief"></p>
+      <div class="body">
+        <div class="row"><label for="guideDist">기준점까지 거리 <output for="guideDist"></output></label>
+          <input type="range" id="guideDist" min="100" max="1000" step="50"></div>
+        <div class="checks" id="guideTypes"></div>
+      </div>
+    </section>
+
+    <section class="cond" data-cond="transit">
+      <div class="cond-head"><h3><button class="fold" type="button">3. 대중교통</button></h3><div class="mode"></div></div>
+      <p class="brief"></p>
+      <div class="body">
+        <div class="row"><label for="subwayDist">지하철역까지 거리 <output for="subwayDist"></output></label>
+          <input type="range" id="subwayDist" min="100" max="2000" step="50"></div>
+        <div class="row"><label for="busDist">버스 정류장까지 거리 <output for="busDist"></output></label>
+          <input type="range" id="busDist" min="50" max="1000" step="50"></div>
+        <p class="note">둘 중 하나만 맞아도 통과해요.</p>
+      </div>
+    </section>
+
+    <section class="cond" data-cond="parking">
+      <div class="cond-head"><h3><button class="fold" type="button">4. 공영주차장</button></h3><div class="mode"></div></div>
+      <p class="brief"></p>
+      <div class="body">
+        <div class="row"><label for="parkingDist">공영주차장까지 거리 <output for="parkingDist"></output></label>
+          <input type="range" id="parkingDist" min="50" max="1000" step="50"></div>
+      </div>
+    </section>
+
+    <section class="cond" data-cond="rival">
+      <div class="cond-head"><h3><button class="fold" type="button">5. 경쟁·폐업</button></h3><div class="mode"></div></div>
+      <p class="brief"></p>
+      <div class="body">
+        <div class="row"><label for="rivalRadius">조사 반경 <output for="rivalRadius"></output></label>
+          <input type="range" id="rivalRadius" min="200" max="3000" step="100"></div>
+        <div class="row"><label for="rivalMax">케이크 판매 가게 허용 수 <output for="rivalMax"></output></label>
+          <input type="range" id="rivalMax" min="0" max="5" step="1"></div>
+        <div class="row"><label for="closedMax">최근 3년 제과점 폐업 허용 수 <output for="closedMax"></output></label>
+          <input type="range" id="closedMax" min="0" max="10" step="1"></div>
+        <div class="checks"><label><input type="checkbox" id="countUnknown"> 판매 여부를 모르는 빵집도 경쟁점으로 세기</label></div>
+        <p class="note" id="countUnknownNote"></p>
+      </div>
+    </section>
+
+    <section class="cond" data-cond="shop">
+      <div class="cond-head"><h3><button class="fold" type="button">6. 상가 존재</button></h3><div class="mode"></div></div>
+      <p class="brief"></p>
+      <div class="body">
+        <div class="row"><label for="minStores">칸 안 최소 업소 수 <output for="minStores"></output></label>
+          <input type="range" id="minStores" min="1" max="30" step="1"></div>
+        <p class="note">기존 업소가 있는지만 봐요. 빈 호실이나 건물 용도는 확인하지 못해요.</p>
+      </div>
+    </section>
+
+    <h4 class="sub">지도에 표시</h4>
+    <div class="checks" id="layerChecks"></div>
+
+    <div class="foot">
+      <button class="btn" id="reset" type="button">시작값으로 되돌리기</button>
+      <p class="note" style="margin:0">시작값은 비교를 시작하려고 정한 값이라 통계 근거가 없어요. 칸 크기는 <span id="cellSizeText">200m</span>이고(지도 오른쪽 위에서 바꿀 수 있어요) 거리는 직선거리예요. 인스타그램으로만 영업하는 가게와 임대료·공실·건물 용도는 지도에 없어요.</p>
+      <details class="sources"><summary class="note">자료 출처와 기준일</summary><ul class="note" id="sourceList"></ul></details>
+    </div>
+  </aside>
+
+  <div class="right">
+    <div class="mapwrap">
+      <div id="map"></div>
+      <div id="mapStatus" class="map-status" role="status">네이버 지도를 불러오는 중이에요.</div>
+      <div class="map-fake fake" id="mapBadge"></div>
+      <div id="zoomNote" class="map-status zoom-note" role="status" hidden>지도를 확대하면 이 근처 지역 칸을 불러와요.</div>
+      <div class="mode cell-size" id="cellSize" role="group" aria-label="칸 크기" hidden>
+        <button type="button" data-size="200">200m</button>
+        <button type="button" data-size="100">100m</button>
+      </div>
+    </div>
+    <section class="compare" id="compare" aria-label="후보 비교">
+      <div class="compare-head">
+        <h2>후보 비교 <span class="note" id="candCount"></span></h2>
+        <div class="compare-btns">
+          <button class="link" id="compareMax" type="button" aria-controls="compare" hidden></button>
+          <button class="link" id="compareFold" type="button" aria-controls="compareBody"></button>
+        </div>
+      </div>
+      <div id="compareBody">
+        <p class="note" id="compareEmpty">지도에서 칸을 누르고 "후보로 저장"을 누르면 최대 5곳까지 비교할 수 있어요.</p>
+        <div class="mode compare-tabs" id="compareTabs" role="group" aria-label="후보 비교 보기" hidden>
+          <button type="button" data-tab="conds">조건 비교</button>
+          <button type="button" data-tab="checks">현장 확인</button>
+        </div>
+        <div class="compare-body" id="compareTable" hidden></div>
+        <p class="note" id="compareNote" hidden>현장 확인 기록은 직접 적는 메모예요. 조건 계산에는 쓰지 않아요. 후보와 기록은 이 브라우저에만 저장돼요.</p>
+        <p class="note" id="otherCandidates" hidden></p>
+      </div>
+      <div class="tip" id="compareTip" role="tooltip" hidden></div>
+    </section>
+  </div>
+</div>
+<div class="sheet" id="sheet" role="dialog" aria-label="칸 상세 정보" hidden></div>
+
+<script>
+function showMapError() {
+  const status = document.getElementById("mapStatus");
+  status.textContent = location.protocol === "file:"
+    ? "이 파일은 더블클릭으로 열 수 없어요. 입지조사 폴더의 실행.bat으로 열어 주세요."
+    : "지도나 지역 자료를 불러오지 못했어요. 잠시 후 새로고침해 주세요.";
+  status.hidden = false;
+}
+window.navermap_authFailure = showMapError;
+async function showPicker() {
+  const picker = document.getElementById("picker");
+  picker.hidden = false;
+  const response = await fetch("data/regions/index.json");
+  if (!response.ok) throw new Error(`지역 목록을 읽지 못했어요: ${response.status}`);
+  const {regions, show} = await response.json();
+  const list = document.getElementById("pickerList");
+  const search = document.getElementById("pickerSearch");
+  const esc = text => String(text).replace(/[&<>"']/g, ch => `&#${ch.charCodeAt(0)};`);
+  function render() {
+    const word = search.value.replace(/\s/g, "");
+    // 목록 파일에 show가 있으면 그 지역만 보인다(완성한 지역만 먼저 공개). 다른 지역도 주소로는 열린다.
+    const shown = regions.filter(r => (!show || show.includes(r.id)) && (!word || `${r.sido}${r.name}`.includes(word)));
+    const groups = new Map();
+    for (const region of shown) groups.set(region.sido, [...(groups.get(region.sido) || []), region]);
+    list.innerHTML = [...groups].map(([sido, items]) => `<h2>${esc(sido)}</h2><ul>${items
+      .sort((a, b) => a.name.localeCompare(b.name, "ko"))
+      .map(r => `<li><a href="?region=${esc(r.id)}">${esc(r.name)}</a></li>`).join("")}</ul>`).join("");
+    document.getElementById("pickerEmpty").hidden = shown.length > 0;
+  }
+  search.addEventListener("input", render);
+  render();
+}
+async function initMap() {
+"use strict";
+// 주소 끝의 ?region=41270 처럼 시군구 코드로 시작할 지역을 고른다. 없으면 지역 고르는 화면을 보인다.
+// 지도는 한 장이고, 화면을 옮기면 근처 지역 자료를 불러와 칸을 이어서 그린다.
+const regionId = new URLSearchParams(location.search).get("region");
+if (!regionId) return showPicker();
+if (!/^[0-9]{5}$/.test(regionId)) throw new Error("지역 코드가 올바르지 않아요");
+const indexResponse = await fetch("data/regions/index.json");
+if (!indexResponse.ok) throw new Error(`지역 목록을 읽지 못했어요: ${indexResponse.status}`);
+const REGION_INDEX = (await indexResponse.json()).regions;
+// 칸 크기는 200m와 100m 두 가지다. 지역마다 크기별 파일이 따로 있다(41270.json, 41270_100.json).
+const CELL_SIZES = [200, 100];
+const CELL_SIZE_KEY = "location-map-cell-size";
+const sizesOf = entry => entry.cellSizes || [200];
+const hasSize = (id, size) => REGION_INDEX.some(entry => entry.id === id && sizesOf(entry).includes(size));
+async function fetchRegion(id, size) {
+  const response = await fetch(`data/regions/${id}${size === 200 ? "" : `_${size}`}.json`);
+  if (!response.ok) throw new Error(`지역 자료를 읽지 못했어요: ${id} ${size}m ${response.status}`);
+  return response.json();
+}
+// 주소의 &cell=100이 먼저, 없으면 이 브라우저에서 마지막으로 고른 크기. 그 크기 자료가 없는 지역이면 200m로 연다.
+let startSize = Number(new URLSearchParams(location.search).get("cell"));
+if (!CELL_SIZES.includes(startSize)) {
+  try { startSize = Number(localStorage.getItem(CELL_SIZE_KEY)); } catch { startSize = 200; }
+}
+if (!CELL_SIZES.includes(startSize) || !hasSize(regionId, startSize)) startSize = 200;
+const REGION = await fetchRegion(regionId, startSize);
+// ---------- 설정 ----------
+// 동구·중구처럼 여러 도시에 있는 이름이 있어 시도를 앞에 붙인다(세종시는 겹쳐서 뺀다).
+const labelOf = R => R.sido && !R.name.startsWith(R.sido) ? `${R.sido} ${R.name}` : R.name;
+// 지금 보고 있는 칸 크기(m). 화면에는 한 번에 한 크기의 지역 자료만 올린다. 크기를 바꾸면 자료를 모두 내리고 다시 불러온다.
+let CELL_M = REGION.grid.cellM;
+const cellKm2 = () => (CELL_M / 1000) ** 2;
+
+const DEFAULTS = {
+  modes: {home: "required", guide: "optional", transit: "required", parking: "optional", rival: "optional", shop: "required"},
+  minHouseholds: 0, maxDecline: 20, minAroundHouseholds: 1000, minStores: 1, guideDist: 300, subwayDist: 800, busDist: 300, parkingDist: 300,
+  rivalRadius: 500, rivalMax: 2, closedMax: 10, countUnknown: false,
+  guideTypes: {subway: true, mart: true, school: true, office: true, apartment: true},
+  visible: {best: true, 5: true, 4: true, 3: true, 2: true, 1: true, 0: true, missed: true, hold: true, rivalMark: true},
+};
+const MODES = [["required", "필수"], ["optional", "참고"], ["off", "끔"]];
+const GUIDE_TYPES = {subway: "지하철역", mart: "대형마트", school: "학교", office: "공공기관", apartment: "아파트 단지"};
+const LAYERS = {
+  rival: {label: "케이크 판매 추정 가게", color: "#1957c2", on: true},
+  rivalUnknown: {label: "판매 미확인 가게", color: "#9aa3ad", on: false},
+  closed: {label: "폐업 제과점", color: "#e5484d", on: true},
+  subway: {label: "지하철역", color: "#6b3fa0", on: false},
+  bus: {label: "버스 정류장", color: "#a06a00", on: false},
+  parking: {label: "공영주차장", color: "#4b5563", on: false},
+  landmark: {label: "기타 기준점", color: "#c2410c", on: false},
+};
+const FORMAT = {
+  minHouseholds: v => `${v.toLocaleString("ko-KR")}세대`,
+  minAroundHouseholds: v => `${v.toLocaleString("ko-KR")}가구`,
+  minStores: v => `${v}곳`,
+  maxDecline: v => `${v}%`,
+  rivalMax: v => `${v}곳`,
+  closedMax: v => `${v}건`,
+};
+const SLIDERS = ["minHouseholds", "maxDecline", "minAroundHouseholds", "minStores", "guideDist", "subwayDist", "busDist", "parkingDist", "rivalRadius", "rivalMax", "closedMax"];
+const MAX_RIVAL_RADIUS = 3000; // 조사 반경 슬라이더의 최댓값. 이보다 먼 가게는 칸에 담지 않는다.
+const MAX_CANDIDATES = 5;
+const STORE_KEY = "location-map-candidates-v3"; // 지역과 상관없이 후보를 하나로 저장한다.
+const metres = v => v >= 1000 ? `${(v / 1000).toFixed(v % 1000 ? 1 : 0)}km` : `${v}m`;
+const fmt = (id, v) => (FORMAT[id] || metres)(v);
+const esc = v => String(v ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+
+// ---------- 지역 자료와 격자 ----------
+// 모든 지역은 전국 공통 격자(EPSG:5179, 200m 또는 100m)를 쓴다. 칸 id는 전국 격자 번호라 같은 크기에서는 지역이 달라도 겹치지 않는다.
+// 크기가 다르면 같은 id가 다른 곳을 가리키므로, 후보에는 크기를 함께 저장한다.
+const M_LAT = 111320;
+const loaded = new Map(); // 지역 id → 불러온 지역
+const cells = [];
+const cellById = new Map();
+const gridPeople = new Map();
+// 점을 1km 칸에 나눠 담아 두고 가까운 칸만 찾는다. 칸 수만 개 × 정류장 수천 곳을 다 비교하면 지역 하나에 수십 초가 걸린다.
+// 거리 계산식은 같아서 결과는 다 비교할 때와 똑같다.
+const BUCKET_M = 1000;
+function pointIndex(points, mLon) {
+  const bLat = BUCKET_M / M_LAT, bLon = BUCKET_M / mLon, buckets = new Map();
+  for (const p of points) {
+    const key = bucketKey(Math.floor(p.lat / bLat), Math.floor(p.lon / bLon));
+    if (!buckets.has(key)) buckets.set(key, []);
+    buckets.get(key).push(p);
+  }
+  // near: 1km 칸마다 '가장 가까운 점이 될 수 있는 점' 목록을 한 번만 만들어 둔다(nearestOf).
+  return {bLat, bLon, buckets, count: points.length, points, units: points.map(p => [p.lon / bLon, p.lat / bLat]), near: new Map()};
+}
+const bucketKey = (i, j) => i * 100000 + j;
+// 가운데 칸에서 테두리 한 바퀴씩 넓혀 가며 찾는다(테두리 칸만 본다).
+function forRing(index, i0, j0, k, visit) {
+  const at = (i, j) => {
+    const list = index.buckets.get(bucketKey(i, j));
+    if (list) for (const p of list) visit(p);
+  };
+  if (k === 0) return at(i0, j0);
+  for (let j = j0 - k; j <= j0 + k; j++) { at(i0 - k, j); at(i0 + k, j); }
+  for (let i = i0 - k + 1; i <= i0 + k - 1; i++) { at(i, j0 - k); at(i, j0 + k); }
+}
+// k바퀴를 본 뒤 가장 가까운 점이 k km 안이면 바깥 점은 더 멀다.
+// 5km 안에 없으면(시골의 대형마트 등) 1km 칸마다 '가장 가까운 점이 될 수 있는 점'만 한 번 골라 두고 그 점만 비교한다.
+// 1km 칸 안 어느 위치에서든 가장 가까운 점은 U(= 점마다 '칸에서 가장 먼 거리'의 최솟값) 안에 있으므로,
+// 칸까지 가장 가까운 거리가 U보다 먼 점은 답이 될 수 없다. 결과는 전부 비교할 때와 같다.
+// 100m 칸은 칸 수가 4배라, 칸마다 전체 점을 훑으면 청주 하나에 10초 넘게 걸렸다.
+const NEAREST_RINGS = 5;
+function nearCandidates(index, i0, j0) {
+  const units = index.units;
+  let limit = Infinity;
+  for (const [x, y] of units) {
+    const fx = x - j0 > .5 ? x - j0 : j0 + 1 - x, fy = y - i0 > .5 ? y - i0 : i0 + 1 - y;
+    const d = fx * fx + fy * fy;
+    if (d < limit) limit = d;
+  }
+  limit = (Math.sqrt(limit) + .001) ** 2; // 소수 계산 오차(1m) 여유
+  const result = [];
+  for (let k = 0; k < units.length; k++) {
+    const [x, y] = units[k];
+    const nx = x < j0 ? j0 - x : x > j0 + 1 ? x - j0 - 1 : 0, ny = y < i0 ? i0 - y : y > i0 + 1 ? y - i0 - 1 : 0;
+    if (nx * nx + ny * ny <= limit) result.push(index.points[k]);
+  }
+  return result;
+}
+function nearestOf(index, lat, lon, dist) {
+  let best = Infinity;
+  if (!index.count) return best;
+  const i0 = Math.floor(lat / index.bLat), j0 = Math.floor(lon / index.bLon);
+  for (let k = 0; k <= NEAREST_RINGS; k++) {
+    forRing(index, i0, j0, k, p => {
+      const m = dist(lat, lon, p.lat, p.lon);
+      if (m < best) best = m;
+    });
+    if (best <= k * BUCKET_M) return best;
+  }
+  const key = bucketKey(i0, j0);
+  let list = index.near.get(key);
+  if (!list) index.near.set(key, list = nearCandidates(index, i0, j0));
+  for (const p of list) {
+    const m = dist(lat, lon, p.lat, p.lon);
+    if (m < best) best = m;
+  }
+  return best;
+}
+// 같은 1km 칸에 든 칸들은 둘러볼 점 목록이 같아서, 1km 칸마다 한 번만 모아 둔다(순서도 예전과 같다).
+function distancesWithin(index, lat, lon, dist, radius) {
+  const result = [];
+  const i0 = Math.floor(lat / index.bLat), j0 = Math.floor(lon / index.bLon), key = `${bucketKey(i0, j0)}|${radius}`;
+  if (!index.around) index.around = new Map();
+  let list = index.around.get(key);
+  if (!list) {
+    // 1km 칸 테두리에서도 radius보다 먼 점은 칸 안 어디서든 radius 밖이라 미리 뺀다(1m 여유).
+    const reach = (radius + 1) / BUCKET_M, gap = (v, lo) => v < lo ? lo - v : v > lo + 1 ? v - lo - 1 : 0;
+    list = [];
+    for (let k = 0; k <= Math.ceil(radius / BUCKET_M) + 1; k++) forRing(index, i0, j0, k, p => {
+      const x = gap(p.lon / index.bLon, j0), y = gap(p.lat / index.bLat, i0);
+      if (x * x + y * y <= reach * reach) list.push(p);
+    });
+    index.around.set(key, list);
+  }
+  for (const p of list) {
+    const m = dist(lat, lon, p.lat, p.lon);
+    if (m <= radius) result.push(m);
+  }
+  // 가까운 순으로 정렬해 두면 '반경 안 개수'를 이분 탐색으로 바로 센다(countWithin).
+  return Float64Array.from(result).sort();
+}
+function makeRegion(R) {
+  const GRID = R.grid, ROWS = GRID.rows, COLS = GRID.cols, DATA = R.data;
+  const midLat = (R.bounds.south + R.bounds.north) / 2;
+  const M_LON = 111320 * Math.cos(midLat * Math.PI / 180);
+  // Math.hypot은 느려서 제곱근으로 계산한다. hypot과의 차이는 1조분의 1m 수준이고, 26개 지역 파일에서 판정이 같음을 확인했다.
+  const dist = (lat1, lon1, lat2, lon2) => { const a = (lat1 - lat2) * M_LAT, b = (lon1 - lon2) * M_LON; return Math.sqrt(a * a + b * b); };
+  // EPSG:5179 격자는 위경도와 살짝 어긋난다. 조각의 네 모서리 값으로 보간해 칸 위치를 구한다.
+  const TILE = GRID.tileCells, TILE_ROWS = GRID.nodes.length - 1, TILE_COLS = GRID.nodes[0].length - 1;
+  function cornerAt(r, c) {
+    // 범위 밖 점(다른 지역 쪽)은 가장자리 조각으로 늘려 계산한다. 그 점에는 이 지역 칸이 없다.
+    const j = Math.max(0, Math.min(Math.floor(c / TILE), TILE_COLS - 1)), i = Math.max(0, Math.min(Math.floor(r / TILE), TILE_ROWS - 1));
+    const u = c / TILE - j, v = r / TILE - i;
+    const n = GRID.nodes, mix = k => (1 - v) * ((1 - u) * n[i][j][k] + u * n[i][j + 1][k]) + v * ((1 - u) * n[i + 1][j][k] + u * n[i + 1][j + 1][k]);
+    return [mix(0), mix(1)];
+  }
+  const B = R.bounds, PAD = .01;
+  function gridAt(lat, lon) {
+    // 이 지역 범위에서 먼 점은 계산이 흩어지므로 바로 '칸 없음'으로 돌려준다.
+    if (lat < B.south - PAD || lat > B.north + PAD || lon < B.west - PAD || lon > B.east + PAD) return {r: -1, c: -1};
+    let a = GRID.lat[1], b = GRID.lat[2], d = GRID.lon[1], e = GRID.lon[2];
+    let det = a * e - b * d;
+    let dLat = lat - GRID.lat[0], dLon = lon - GRID.lon[0];
+    let r = (a * dLon - d * dLat) / det, c = (e * dLat - b * dLon) / det;
+    for (let step = 0; step < 4; step++) {
+      const base = cornerAt(r, c), right = cornerAt(r, c + .1), down = cornerAt(r + .1, c);
+      a = (right[0] - base[0]) * 10; b = (down[0] - base[0]) * 10; d = (right[1] - base[1]) * 10; e = (down[1] - base[1]) * 10;
+      det = a * e - b * d;
+      dLat = lat - base[0]; dLon = lon - base[1];
+      c += (e * dLat - b * dLon) / det;
+      r += (a * dLon - d * dLat) / det;
+    }
+    return {r: Math.floor(r), c: Math.floor(c)};
+  }
+  const region = {id: R.id, label: labelOf(R), R, DATA, ROWS, COLS, TILE, TILE_ROWS, TILE_COLS, dist, cornerAt, gridAt, cells: [],
+    cellIndex: new Int32Array(ROWS * COLS).fill(-1)};
+  const indexes = {};
+  for (const key of ["subway", "bus", "parking", "mart", "school", "office", "apartment", "rival", "rivalUnknown", "closed", "closedOther"]) {
+    indexes[key] = pointIndex(DATA[key], M_LON);
+  }
+  const near = (key, lat, lon) => distancesWithin(indexes[key], lat, lon, dist, MAX_RIVAL_RADIUS);
+  for (const [r, c, dongIndex, zoneIndex, homeShare, holdIndex, stores, people, households, around] of R.cells) {
+    const [lat, lon] = cornerAt(r + .5, c + .5);
+    const nearest = {};
+    for (const key of ["subway", "bus", "parking", "mart", "school", "office", "apartment"]) {
+      nearest[key] = nearestOf(indexes[key], lat, lon, dist);
+    }
+    region.cellIndex[r * COLS + c] = region.cells.length;
+    const cell = {
+      region, r, c, gx: GRID.col0 + c, gy: GRID.row0 - r, id: `${GRID.col0 + c}_${GRID.row0 - r}`,
+      lat, lon, nearest, dong: R.dongs[dongIndex], zoneName: R.zones[zoneIndex], homeShare, stores, people, households, around,
+      hold: R.holdReasons[holdIndex],
+      rivals: near("rival", lat, lon),
+      unknowns: near("rivalUnknown", lat, lon),
+      closed: near("closed", lat, lon),
+      closedOther: near("closedOther", lat, lon),
+    };
+    region.cells.push(cell);
+    gridPeople.set(cell.dong, (gridPeople.get(cell.dong) || 0) + people);
+  }
+  region.cellAt = (r, c) => {
+    if (r < 0 || r >= ROWS || c < 0 || c >= COLS) return null;
+    const index = region.cellIndex[r * COLS + c];
+    return index < 0 ? null : region.cells[index];
+  };
+  return region;
+}
+function addRegion(R) {
+  if (loaded.has(R.id)) return loaded.get(R.id);
+  const region = makeRegion(R);
+  loaded.set(R.id, region);
+  for (const cell of region.cells) {
+    cells.push(cell);
+    cellById.set(cell.id, cell);
+  }
+  return region;
+}
+function removeRegion(id) {
+  const region = loaded.get(id);
+  if (!region) return;
+  loaded.delete(id);
+  for (const cell of region.cells) {
+    cellById.delete(cell.id);
+    gridPeople.delete(cell.dong);
+  }
+  const keep = cells.filter(cell => cell.region !== region);
+  cells.length = 0;
+  cells.push(...keep);
+}
+// 위아래·좌우 칸. 지역 경계를 넘어도 전국 격자 번호로 찾는다(행 r이 커지면 격자 번호 gy는 작아진다).
+const cellNear = (cell, dr, dc) => cellById.get(`${cell.gx + dc}_${cell.gy - dr}`) || null;
+
+// 칸 인구 합과 주민등록 인구가 크게 다른 동은 원인을 몰라 값을 고치지 않고 안내만 한다. 판정에는 영향이 없다.
+const POPULATION_GAP = 1.5;
+function populationNote(dong) {
+  const grid = gridPeople.get(dong), ratio = grid / dong.people;
+  if (ratio < POPULATION_GAP && ratio > 1 / POPULATION_GAP) return "";
+  return `이 동은 칸 인구 합 ${grid.toLocaleString("ko-KR")}명, 주민등록 인구 ${dong.people.toLocaleString("ko-KR")}명으로 차이가 커요. 외국인 포함이나 경계 차이일 수 있지만 확인하지 못했어요. 인구는 참고만 하세요.`;
+}
+
+// ---------- 조건 판정 ----------
+let state = structuredClone(DEFAULTS);
+const COND_NAMES = {home: "거주지역", guide: "안내 기준점", transit: "대중교통", parking: "공영주차장", rival: "경쟁·폐업", shop: "상가 존재"};
+
+// 칸이 수만 개라 판정마다 목록을 새로 만들지 않도록 미리 배열로 둔다.
+const GUIDE_LIST = Object.entries(GUIDE_TYPES);
+function guideNearest(cell) {
+  let best = null;
+  for (const [type, label] of GUIDE_LIST) {
+    if (state.guideTypes[type] && (!best || cell.nearest[type] < best.m)) best = {m: cell.nearest[type], label};
+  }
+  return best;
+}
+// list는 가까운 순으로 정렬된 거리 목록이다. radius 이하인 개수 = radius보다 큰 첫 위치.
+const countWithin = (list, radius) => {
+  let lo = 0, hi = list.length;
+  while (lo < hi) {
+    const mid = (lo + hi) >> 1;
+    if (list[mid] <= radius) lo = mid + 1; else hi = mid;
+  }
+  return lo;
+};
+// 경쟁점 수. 스위치를 켜면 판매 여부를 모르는 빵집도 더한다.
+const rivalCount = c => countWithin(c.rivals, state.rivalRadius) + (state.countUnknown ? countWithin(c.unknowns, state.rivalRadius) : 0);
+
+const CHECKS = {
+  home: c => c.homeShare > 0 && c.dong.households >= state.minHouseholds && (c.dong.decline === null || c.dong.decline <= state.maxDecline) && c.around >= state.minAroundHouseholds,
+  guide: c => { const g = guideNearest(c); return !!g && g.m <= state.guideDist; },
+  transit: c => c.nearest.subway <= state.subwayDist || c.nearest.bus <= state.busDist,
+  parking: c => c.nearest.parking <= state.parkingDist,
+  rival: c => rivalCount(c) <= state.rivalMax && countWithin(c.closed, state.rivalRadius) <= state.closedMax,
+  shop: c => c.stores >= state.minStores,
+};
+const DETAILS = {
+  home: c => `${c.homeShare > 0 ? "주거·상업지역 포함" : "주거·상업지역 아님"}, 동 ${c.dong.households.toLocaleString("ko-KR")}세대, ${c.dong.decline === null ? "4년 변화 미확인(행정동 변경)" : `4년 ${c.dong.decline >= 0 ? `감소 ${c.dong.decline}` : `증가 ${-c.dong.decline}`}%`}, 주변 500m ${c.around.toLocaleString("ko-KR")}가구, 칸 안 ${c.people.toLocaleString("ko-KR")}명${CELL_M === 100 ? "(100m 칸은 인구 오차가 커요)" : ""}`,
+  guide: c => { const g = guideNearest(c); return g ? `가장 가까운 ${g.label} ${Math.round(g.m)}m` : "선택한 시설 종류 없음"; },
+  transit: c => `지하철역 ${Math.round(c.nearest.subway)}m, 버스 정류장 ${Math.round(c.nearest.bus)}m`,
+  parking: c => `공영주차장 ${Math.round(c.nearest.parking)}m`,
+  rival: c => `반경 ${metres(state.rivalRadius)} 안 케이크 판매 추정 ${countWithin(c.rivals, state.rivalRadius)}곳${state.countUnknown ? ` + 판매 미확인 빵집 ${countWithin(c.unknowns, state.rivalRadius)}곳` : `, 판매 미확인 빵집 ${countWithin(c.unknowns, state.rivalRadius)}곳(세지 않음)`}, 제과점 폐업 ${countWithin(c.closed, state.rivalRadius)}건 (즉석판매·휴게 상호 참고 ${countWithin(c.closedOther, state.rivalRadius)}건)`,
+  shop: c => `칸 안 업소 ${c.stores.toLocaleString("ko-KR")}곳`,
+};
+const CHECK_LIST = Object.entries(CHECKS);
+function evaluate(cell) {
+  let passed = 0, total = 0, requiredOk = !cell.hold;
+  for (const [key, check] of CHECK_LIST) {
+    const mode = state.modes[key];
+    if (mode === "off") continue;
+    total++;
+    if (check(cell)) passed++;
+    else if (mode === "required") requiredOk = false;
+  }
+  return {passed, total, requiredOk};
+}
+// 칸 위치를 실제 네이버 지도로 연다. 경도,위도,줌 순서다.
+function naverUrl(cell, keyword) {
+  const view = `c=${cell.lon.toFixed(6)},${cell.lat.toFixed(6)},16,0,0,0,dh`;
+  return keyword
+    ? `https://map.naver.com/p/search/${encodeURIComponent(keyword)}?${view}`
+    : `https://map.naver.com/p/?${view}`;
+}
+function statusTag(key, cell) {
+  const mode = state.modes[key];
+  if (mode === "off") return '<span class="badge skip">끔</span>';
+  if (CHECKS[key](cell)) return '<span class="badge pass">통과</span>';
+  return `<span class="badge fail">${mode === "required" ? "탈락" : "미충족"}</span>`;
+}
+
+// ---------- 지도 ----------
+const nm = naver.maps;
+const latLng = (lat, lon) => new nm.LatLng(lat, lon);
+const first = addRegion(REGION);
+// 처음 화면은 시작 지역에서 주거·상업지역이 몰린 곳에 맞춘다. 멀리 떨어진 섬까지 맞추면 지도가 너무 작아진다.
+const populated = first.cells.filter(c => c.homeShare > 0 && c.around >= 1000);
+const sortedBy = key => (populated.length ? populated : first.cells).map(c => c[key]).sort((a, b) => a - b);
+const lats = sortedBy("lat"), lons = sortedBy("lon");
+const edge = (list, share) => list[Math.floor((list.length - 1) * share)];
+const VIEW = new nm.LatLngBounds(latLng(edge(lats, .03), edge(lons, .03)), latLng(edge(lats, .97), edge(lons, .97)));
+const phone = window.matchMedia("(max-width: 800px)"); // 휴대폰 화면 배치
+const mapElement = document.getElementById("map");
+const map = new nm.Map(mapElement, {
+  center: VIEW.getCenter(),
+  zoom: 12,
+  zoomControl: true,
+  zoomControlOptions: {position: nm.Position.TOP_LEFT},
+  scaleControl: true,
+});
+if (!map.controls) await new Promise(resolve => {
+  const readyListener = nm.Event.addListener(map, "init", () => {
+    nm.Event.removeListener(readyListener);
+    resolve();
+  });
+});
+// 처음 화면은 사람이 사는 칸에 맞춘다. 오른쪽 아래 범례가 칸을 가리지 않게 범례 폭만큼 비켜 맞춘다.
+function fitView() {
+  const legend = document.querySelector(".legend");
+  const right = legend && legend.offsetWidth < mapElement.clientWidth / 2 ? legend.offsetWidth + 24 : 20;
+  map.fitBounds(VIEW, {top: 65, right, bottom: 35, left: 20});
+}
+fitView();
+document.getElementById("mapStatus").hidden = true;
+
+const changeRegion = document.createElement("a");
+changeRegion.className = "link";
+changeRegion.href = location.pathname;
+changeRegion.textContent = "지역으로 이동";
+const BEST_FILL = [217, 72, 15];
+const RIVAL_MARK_COLOR = "#e0218a";
+// 이 확대 단계부터 분홍 테두리를 칸마다 그린다. 100m 칸은 한 단계 더 확대해야 칸이 200m 칸만큼 크게 보인다.
+const cellZoom = () => CELL_M === 100 ? 15 : 14;
+// 칸마다 네 모서리의 위경도를 미리 구해 둔다. 색칠과 분홍·갈색 선이 모두 이 모서리를 써서 서로 어긋나지 않는다.
+// 웹 메르카토르(네이버 지도와 같은 투영)에서 확대 0단계 기준 좌표(0~1). 그릴 때 확대 배율만 곱하면 된다.
+const mercator = ([lat, lon]) => [(lon + 180) / 360, (1 - Math.log(Math.tan(Math.PI / 4 + lat * Math.PI / 360)) / Math.PI) / 2];
+// 이웃 칸은 모서리를 함께 쓰므로 모서리마다 한 번만 계산한다(값은 칸마다 계산할 때와 같다).
+function prepareShapes(region) {
+  const width = region.COLS + 1, nodes = new Map();
+  const node = (r, c) => {
+    const key = r * width + c;
+    let found = nodes.get(key);
+    if (!found) {
+      const corner = region.cornerAt(r, c);
+      nodes.set(key, found = {corner, world: mercator(corner)});
+    }
+    return found;
+  };
+  for (const cell of region.cells) {
+    const {r, c} = cell;
+    const list = [node(r, c), node(r, c + 1), node(r + 1, c + 1), node(r + 1, c)];
+    cell.corners = list.map(n => n.corner);
+    cell.world = list.flatMap(n => n.world);
+  }
+}
+
+// 화면 크기 캔버스 한 장에 칸을 다각형으로 칠하고, 그 위 SVG에 구역 경계를 그린다.
+// 예전에는 칸 한 개를 1px로 그린 작은 그림을 100배 넘게 늘려 붙였는데, 브라우저가 늘리는 과정에서 선과 10px 넘게 어긋났다.
+class GridOverlay extends nm.OverlayView {
+  constructor() {
+    super();
+    this.edges = [];
+    this.element = document.createElement("div");
+    this.element.style.cssText = "position:absolute;left:0;top:0;width:0;height:0;pointer-events:none";
+    this.canvas = document.createElement("canvas");
+    this.canvas.style.cssText = "position:absolute;left:0;top:0;pointer-events:none";
+    this.svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    this.svg.style.cssText = "position:absolute;left:0;top:0;width:1px;height:1px;overflow:visible;pointer-events:none";
+    this.outline = document.createElementNS("http://www.w3.org/2000/svg", "path");
+    this.outline.setAttribute("fill", "none");
+    this.outline.setAttribute("stroke", "#7a2a00");
+    this.outline.setAttribute("stroke-width", "2.5");
+    this.rivalOutline = document.createElementNS("http://www.w3.org/2000/svg", "path");
+    this.rivalOutline.setAttribute("fill", "none");
+    this.rivalOutline.setAttribute("stroke", RIVAL_MARK_COLOR);
+    this.rivalOutline.setAttribute("stroke-width", "1.5");
+    this.rivalEdges = [];
+    this.rivalMerged = [];
+    this.svg.append(this.rivalOutline, this.outline);
+    this.element.append(this.canvas, this.svg);
+    this.setMap(map);
+  }
+  onAdd() { this.getPanes().overlayLayer.append(this.element); }
+  draw() {
+    if (!this.getMap()) return;
+    const projection = this.getProjection();
+    const at = ([lat, lon]) => projection.fromCoordToOffset(latLng(lat, lon));
+    this.paint(projection, at);
+    const toPath = edges => edges.map(edge => edge.map((point, index) => {
+      const p = at(point);
+      return `${index ? "L" : "M"}${p.x},${p.y}`;
+    }).join(" ")).join(" ");
+    this.outline.setAttribute("d", toPath(this.edges));
+    // 넓게 볼 때는 붙은 칸을 묶은 바깥선만, 확대하면 칸마다 테두리를 그린다.
+    const perCell = this.getMap().getZoom() >= cellZoom();
+    this.rivalOutline.setAttribute("d", toPath(perCell ? this.rivalEdges : this.rivalMerged));
+  }
+  // 화면과 그 둘레 절반만큼만 칠한다. 지도를 끌면 캔버스도 함께 움직이고, 멈추면 다시 칠한다.
+  paint(projection, at) {
+    const bounds = map.getBounds(), sw = bounds.getSW(), ne = bounds.getNE();
+    const dLat = (ne.lat() - sw.lat()) / 2, dLon = (ne.lng() - sw.lng()) / 2;
+    const south = sw.lat() - dLat, north = ne.lat() + dLat, west = sw.lng() - dLon, east = ne.lng() + dLon;
+    this.painted = {south, north, west, east, zoom: this.getMap().getZoom()};
+    const topLeft = at([north, west]), bottomRight = at([south, east]);
+    const ratio = window.devicePixelRatio || 1;
+    const width = Math.ceil(bottomRight.x - topLeft.x), height = Math.ceil(bottomRight.y - topLeft.y);
+    const canvas = this.canvas;
+    canvas.width = Math.max(1, Math.round(width * ratio));
+    canvas.height = Math.max(1, Math.round(height * ratio));
+    canvas.style.width = `${width}px`;
+    canvas.style.height = `${height}px`;
+    canvas.style.left = `${topLeft.x}px`;
+    canvas.style.top = `${topLeft.y}px`;
+    const ctx = canvas.getContext("2d");
+    ctx.setTransform(ratio, 0, 0, ratio, -topLeft.x * ratio, -topLeft.y * ratio);
+    ctx.clearRect(topLeft.x, topLeft.y, width, height);
+    // 칸이 수만 개라 네이버 변환을 칸마다 부르면 느리다. 미리 구한 메르카토르 좌표에 배율과 원점만 적용하고,
+    // 그 결과가 네이버 변환과 1px 넘게 다르면(투영이 다른 경우) 네이버 변환으로 그린다.
+    const scale = 256 * 2 ** this.getMap().getZoom();
+    const center = map.getCenter(), centerOffset = at([center.lat(), center.lng()]);
+    const [cx, cy] = mercator([center.lat(), center.lng()]);
+    const ox = centerOffset.x - cx * scale, oy = centerOffset.y - cy * scale;
+    const [tx, ty] = mercator([north, west]);
+    const fast = Math.hypot(tx * scale + ox - topLeft.x, ty * scale + oy - topLeft.y) <= 1;
+    // 색마다 별도 판에 불투명하게 칠한 뒤 원래 투명도로 얹는다. 경로 하나에 칸을 수만 개 넣으면 브라우저가 크게 느려져
+    // 수백 칸씩 나눠 칠하는데, 나눈 경계에 생기는 가는 틈은 같은 색 0.5px 테두리로 메운다(불투명이라 겹쳐도 티가 안 난다).
+    const groups = new Map();
+    for (const cell of cells) {
+      if (!cell.fill || cell.lat < south || cell.lat > north || cell.lon < west || cell.lon > east) continue;
+      if (!groups.has(cell.fill)) groups.set(cell.fill, []);
+      groups.get(cell.fill).push(cell);
+    }
+    const off = this.offscreen || (this.offscreen = document.createElement("canvas"));
+    off.width = canvas.width;
+    off.height = canvas.height;
+    const octx = off.getContext("2d");
+    octx.setTransform(ratio, 0, 0, ratio, -topLeft.x * ratio, -topLeft.y * ratio);
+    octx.lineWidth = 1;
+    octx.lineJoin = "miter";
+    const CHUNK = 400;
+    for (const [fill, list] of groups) {
+      octx.clearRect(topLeft.x, topLeft.y, width, height);
+      octx.fillStyle = octx.strokeStyle = fill.rgb;
+      for (let from = 0; from < list.length; from += CHUNK) {
+        octx.beginPath();
+        for (const cell of list.slice(from, from + CHUNK)) {
+          if (fast) {
+            const w = cell.world;
+            octx.moveTo(w[0] * scale + ox, w[1] * scale + oy);
+            octx.lineTo(w[2] * scale + ox, w[3] * scale + oy);
+            octx.lineTo(w[4] * scale + ox, w[5] * scale + oy);
+            octx.lineTo(w[6] * scale + ox, w[7] * scale + oy);
+          } else {
+            const [a, b, c, d] = cell.corners.map(at);
+            octx.moveTo(a.x, a.y);
+            octx.lineTo(b.x, b.y);
+            octx.lineTo(c.x, c.y);
+            octx.lineTo(d.x, d.y);
+          }
+          octx.closePath();
+        }
+        octx.fill();
+        octx.stroke();
+      }
+      ctx.save();
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      ctx.globalAlpha = fill.alpha;
+      ctx.drawImage(off, 0, 0);
+      ctx.restore();
+    }
+  }
+  onRemove() { this.element.remove(); }
+  setEdges(edges) { this.edges = edges; this.draw(); }
+  setRivalEdges(edges, merged) { this.rivalEdges = edges; this.rivalMerged = merged; }
+}
+prepareShapes(first);
+const gridOverlay = new GridOverlay();
+// 범례 버튼에 포커스가 가며 지도 안쪽이 스크롤되면 화면과 클릭 위치가 어긋난다.
+mapElement.addEventListener("scroll", () => { mapElement.scrollLeft = 0; mapElement.scrollTop = 0; });
+
+// 시설 표시. 지역 자료마다 주변 3km 점이 겹쳐 들어 있어 위치와 이름이 같은 점은 한 번만 그린다.
+const layerGroups = {};
+for (const key of Object.keys(LAYERS)) layerGroups[key] = {markers: [], seen: new Set(), waiting: []};
+const layerOn = key => document.querySelector(`#layerChecks input[data-layer="${key}"]`)?.checked ?? LAYERS[key].on;
+function addLayerPoints(region) {
+  for (const [key, spec] of Object.entries(LAYERS)) {
+    const D = region.DATA;
+    const points = key === "landmark" ? [...D.mart, ...D.school, ...D.office, ...D.apartment] : D[key];
+    const group = layerGroups[key];
+    for (const p of points) {
+      const pointKey = `${p.lat},${p.lon},${p.name}`;
+      if (group.seen.has(pointKey)) continue;
+      group.seen.add(pointKey);
+      group.waiting.push(p);
+    }
+    if (layerOn(key)) makeMarkers(key);
+  }
+}
+// 표시가 꺼진 시설(버스 정류장 수천 곳 등)은 표시를 켤 때 표지를 만든다. 지역을 불러올 때 시간을 줄이려는 것이다.
+function makeMarkers(key) {
+  const spec = LAYERS[key], group = layerGroups[key], size = key === "bus" ? 6 : 10;
+  for (const p of group.waiting) {
+    const title = p.date ? `${p.name} (${p.type}, ${p.date} 폐업)` : p.name;
+    // 만들 때 지도를 넘기면 붙는 시점이 늦어, 곧바로 표시를 끄면 일부 점이 남았다. 만든 뒤 setMap으로 붙인다.
+    const marker = new nm.Marker({
+      position: latLng(p.lat, p.lon), title, clickable: false, map: null,
+      icon: {content: `<span title="${esc(title)}" style="display:block;width:${size}px;height:${size}px;border:1px solid white;border-radius:50%;background:${spec.color}"></span>`,
+        size: new nm.Size(size, size), anchor: new nm.Point(size / 2, size / 2)},
+      zIndex: 20,
+    });
+    if (layerOn(key)) marker.setMap(map);
+    group.markers.push(marker);
+  }
+  group.waiting = [];
+}
+addLayerPoints(first);
+let candidateMarkers = [];
+
+// 충족 개수별로 색상 자체를 다르게 한다. 주황은 항상 '모두 충족'이다.
+const COUNT_COLORS = {5: [13, 148, 136], 4: [47, 123, 237], 3: [240, 194, 10], 2: [142, 68, 173], 1: [10, 170, 105], 0: [50, 58, 71]};
+const MISSED_COLOR = [120, 120, 120];
+const HOLD_COLOR = [176, 137, 104];
+// 칸 색칠. 같은 객체를 쓰는 칸끼리 한 번에 칠한다.
+const fillOf = (rgb, alpha) => ({rgb: `rgb(${rgb.join(",")})`, alpha: alpha / 255});
+const FILLS = {best: fillOf(BEST_FILL, 225), missed: fillOf(MISSED_COLOR, 50), hold: fillOf(HOLD_COLOR, 110)};
+for (const [k, rgb] of Object.entries(COUNT_COLORS)) FILLS[k] = fillOf(rgb, 200);
+
+let condTotal = 0;
+function draw() {
+  let total = 0;
+  const rivalEdges = [];
+  const rivalOptional = state.modes.rival === "optional";
+  for (const region of loaded.values()) {
+    for (const cell of region.cells) {
+      const e = evaluate(cell);
+      cell.e = e;
+      cell.best = false;
+      cell.rivalMark = false;
+      cell.rivalOver = false;
+      cell.fill = null;
+      total = e.total;
+      if (cell.hold) {
+        if (state.visible.hold) cell.fill = FILLS.hold;
+      } else if (e.total === 0) {
+        continue;
+      } else if (!e.requiredOk) {
+        if (state.visible.missed) cell.fill = FILLS.missed;
+      } else if (e.passed === e.total) {
+        cell.best = true;
+        if (state.visible.best) cell.fill = FILLS.best;
+      } else if (state.visible[e.passed]) {
+        cell.fill = FILLS[e.passed];
+      }
+      // 참고 조건인 경쟁점 기준을 넘은 칸은 충족 개수 색을 유지한 채 테두리로 구별한다.
+      if (rivalOptional && e.requiredOk && !CHECKS.rival(cell)) {
+        cell.rivalOver = true;
+        if (state.visible.rivalMark && state.visible[e.passed]) {
+          rivalEdges.push([...cell.corners, cell.corners[0]]);
+          cell.rivalMark = true;
+        }
+      }
+    }
+  }
+  condTotal = total;
+  // 이웃도 분홍인 변은 빼고 바깥 변만 모은다. 이웃은 지역이 달라도 찾는다.
+  const rivalAt = (cell, dr, dc) => cellNear(cell, dr, dc)?.rivalMark;
+  const rivalMerged = [];
+  for (const cell of cells) {
+    if (!cell.rivalMark) continue;
+    const {r, c, region} = cell;
+    const nw = region.cornerAt(r, c), ne = region.cornerAt(r, c + 1), sw = region.cornerAt(r + 1, c), se = region.cornerAt(r + 1, c + 1);
+    if (!rivalAt(cell, -1, 0)) rivalMerged.push([nw, ne]);
+    if (!rivalAt(cell, 1, 0)) rivalMerged.push([sw, se]);
+    if (!rivalAt(cell, 0, -1)) rivalMerged.push([nw, sw]);
+    if (!rivalAt(cell, 0, 1)) rivalMerged.push([ne, se]);
+  }
+  gridOverlay.setRivalEdges(rivalEdges, rivalMerged);
+  findRegions();
+  renderView();
+  renderLegend(total);
+  renderBriefs();
+  renderPopup();
+  renderCompare();
+}
+
+// 위아래·좌우로 붙은 칸을 한 구역으로 묶고 바깥 테두리를 그린다. 지역 경계를 넘어 이어진 구역도 하나로 본다.
+let bestGroups = [];
+function findRegions() {
+  const seen = new Set();
+  const groups = [];
+  const edges = [];
+  const steps = [[-1, 0], [1, 0], [0, -1], [0, 1]];
+  for (const start of cells) {
+    if (!start.best || seen.has(start)) continue;
+    seen.add(start);
+    const stack = [start], members = [];
+    while (stack.length) {
+      const cell = stack.pop();
+      members.push(cell);
+      for (const [dr, dc] of steps) {
+        const next = cellNear(cell, dr, dc);
+        if (next && next.best) {
+          if (!seen.has(next)) { seen.add(next); stack.push(next); }
+          continue;
+        }
+        const {region, r, c} = cell;
+        const nw = region.cornerAt(r, c), ne = region.cornerAt(r, c + 1), sw = region.cornerAt(r + 1, c), se = region.cornerAt(r + 1, c + 1);
+        if (dr === -1) edges.push([nw, ne]);
+        if (dr === 1) edges.push([sw, se]);
+        if (dc === -1) edges.push([nw, sw]);
+        if (dc === 1) edges.push([ne, se]);
+      }
+    }
+    const dist = start.region.dist;
+    const lat = members.reduce((sum, m) => sum + m.lat, 0) / members.length;
+    const lon = members.reduce((sum, m) => sum + m.lon, 0) / members.length;
+    const center = members.reduce((best, m) => dist(lat, lon, m.lat, m.lon) < dist(lat, lon, best.lat, best.lon) ? m : best);
+    const dongCount = {};
+    for (const m of members) dongCount[m.dong.name] = (dongCount[m.dong.name] || 0) + 1;
+    const dongs = Object.entries(dongCount).sort((a, b) => b[1] - a[1]).map(([name]) => name);
+    groups.push({size: members.length, center, dongs, members});
+  }
+  gridOverlay.setEdges(state.visible.best ? edges : []);
+  bestGroups = groups.sort((a, b) => b.size - a.size || b.center.gy - a.center.gy || a.center.gx - b.center.gx);
+}
+
+// 왼쪽 숫자와 구역 목록은 지금 화면에 보이는 칸만 센다. 지도를 옮기면 다시 센다.
+// 칸이 수만 개라 칸마다 지도 좌표 객체를 만들지 않고 화면 범위 숫자와 바로 비교한다(경계 포함).
+const inView = (box, cell) => cell.lat >= box.south && cell.lat <= box.north && cell.lon >= box.west && cell.lon <= box.east;
+function renderView() {
+  const view = map.getBounds(), sw = view.getSW(), ne = view.getNE();
+  const bounds = {south: sw.lat(), north: ne.lat(), west: sw.lng(), east: ne.lng()};
+  let all = 0, shown = 0, rivalMarked = 0;
+  const byRegion = new Map();
+  // 제목은 화면 가운데에서 가장 가까운 칸의 지역 이름을 쓴다(가운데가 강이나 산이어도 이름이 나오게).
+  const center = map.getCenter(), cLat = center.lat(), cLon = center.lng();
+  let here = null, hereGap = Infinity;
+  for (const cell of cells) {
+    if (!inView(bounds, cell)) continue;
+    shown++;
+    const gap = (cell.lat - cLat) ** 2 + ((cell.lon - cLon) * .8) ** 2;
+    if (gap < hereGap) { hereGap = gap; here = cell.region; }
+    if (cell.best) {
+      all++;
+      byRegion.set(cell.region, (byRegion.get(cell.region) || 0) + 1);
+    }
+    if (cell.rivalOver) rivalMarked++;
+  }
+  const groups = bestGroups.filter(group => group.members.some(cell => inView(bounds, cell)));
+  const title = here ? `${here.label} 일대` : "케이크 매장";
+  document.title = `${title} 입지 지도`;
+  const h1 = document.querySelector("aside h1");
+  h1.textContent = document.title;
+  h1.append(changeRegion);
+  // 주소에 지역과 칸 크기를 남긴다(200m는 기본이라 적지 않는다).
+  const query = here ? `?region=${here.id}${CELL_M === 200 ? "" : `&cell=${CELL_M}`}` : location.search;
+  if (query !== location.search) history.replaceState(null, "", `${location.pathname}${query}`);
+  document.getElementById("allCount").textContent = all.toLocaleString("ko-KR");
+  const split = byRegion.size > 1 ? ` (${[...byRegion].map(([region, n]) => `${region.label} ${n.toLocaleString("ko-KR")}`).join(" · ")})` : "";
+  document.getElementById("allArea").textContent = `약 ${(all * cellKm2()).toFixed(1)}㎢ · 화면 안 ${CELL_M}m 칸 ${shown.toLocaleString("ko-KR")}칸 중${split}`;
+  document.getElementById("sumNote").textContent = condTotal
+    ? `지금 화면에 보이는 칸만 셌어요. 조건 ${condTotal}개로 계산했어요. 필수 조건을 놓친 칸은 회색이에요.${state.modes.rival === "optional" ? ` 경쟁·폐업 기준을 넘은 칸 ${rivalMarked.toLocaleString("ko-KR")}칸은 분홍 테두리예요.` : ""}`
+    : "켜 둔 조건이 없어요. 조건을 하나 이상 켜 주세요.";
+  renderRegions(groups, condTotal);
+  renderSources();
+}
+
+// 화면 근처 지역을 불러온다. 너무 넓게 보면 불러오지 않고, 불러온 지역이 많으면 화면에서 먼 지역부터 내린다.
+const LOAD_ZOOM = 11;
+const MAX_LOADED = 12;
+const loading = new Set();
+const boxOf = b => ({south: b.south, north: b.north, west: b.west, east: b.east});
+function viewBox(grow) {
+  const bounds = map.getBounds(), sw = bounds.getSW(), ne = bounds.getNE();
+  const dLat = (ne.lat() - sw.lat()) * grow, dLon = (ne.lng() - sw.lng()) * grow;
+  return {south: sw.lat() - dLat, north: ne.lat() + dLat, west: sw.lng() - dLon, east: ne.lng() + dLon};
+}
+const overlaps = (a, b) => a.south <= b.north && b.south <= a.north && a.west <= b.east && b.west <= a.east;
+const zoomNote = document.getElementById("zoomNote");
+// 받아 온 자료를 지도에 올린다. 받는 사이 칸 크기가 바뀌었으면 버린다(크기가 섞이면 칸 id가 겹친다).
+function placeRegion(R) {
+  if (!R || R.grid.cellM !== CELL_M) return null;
+  const region = addRegion(R);
+  if (!region.cells[0]?.corners) prepareShapes(region);
+  addLayerPoints(region);
+  return region;
+}
+// 여러 지역을 한꺼번에 받기 시작하고, 화면 가운데에 가까운 지역부터 계산한다. 첫 지역은 바로 그린다.
+// 지역 하나 계산에 몇 초 걸려도 가운데 지역 칸은 먼저 보인다. onFirst: 첫 지역을 그린 직후 부른다.
+const yieldToScreen = () => new Promise(resolve => setTimeout(resolve, 0));
+function centerGap(bounds) {
+  const center = map.getCenter(), lat = center.lat(), lon = center.lng();
+  const dLat = Math.max(bounds.south - lat, 0, lat - bounds.north), dLon = Math.max(bounds.west - lon, 0, lon - bounds.east);
+  return dLat * dLat + dLon * dLon;
+}
+async function placeInOrder(entries, size, onFirst) {
+  const todo = entries.filter(entry => !loaded.has(entry.id) && !loading.has(`${entry.id}_${size}`));
+  if (!todo.length) return 0;
+  for (const entry of todo) loading.add(`${entry.id}_${size}`);
+  const fetches = new Map(todo.map(entry => [entry.id, fetchRegion(entry.id, size).catch(error => { console.error(error); return null; })]));
+  let placed = 0;
+  try {
+    for (const entry of [...todo].sort((a, b) => centerGap(a.bounds) - centerGap(b.bounds))) {
+      const R = await fetches.get(entry.id);
+      if (size !== CELL_M) return placed;
+      if (!placeRegion(R)) continue;
+      placed++;
+      // 그리기는 칸 전체를 다시 판정해 오래 걸려서 첫 지역 뒤에만 그리고, 나머지는 부른 쪽이 마지막에 한 번 그린다.
+      if (placed === 1) {
+        draw();
+        if (onFirst) onFirst();
+      }
+      await yieldToScreen();
+      if (size !== CELL_M) return placed;
+    }
+  } finally {
+    for (const entry of todo) loading.delete(`${entry.id}_${size}`);
+  }
+  return placed;
+}
+async function loadNearby() {
+  const wide = map.getZoom() < LOAD_ZOOM;
+  zoomNote.hidden = !wide;
+  if (wide) return;
+  const box = viewBox(.25), size = CELL_M;
+  const wanted = REGION_INDEX.filter(entry => entry.bounds && sizesOf(entry).includes(size) && overlaps(box, boxOf(entry.bounds)));
+  if (!await placeInOrder(wanted, size) || size !== CELL_M) return;
+  unloadFar();
+  renderCandidates();
+  draw();
+}
+function unloadFar() {
+  if (loaded.size <= MAX_LOADED) return;
+  const box = viewBox(.25);
+  const keep = new Set(candidates.filter(sameSize).map(item => item.region));
+  if (selected) keep.add(selected.region.id);
+  for (const region of [...loaded.values()]) {
+    if (loaded.size <= MAX_LOADED) break;
+    if (keep.has(region.id) || overlaps(box, boxOf(region.R.bounds))) continue;
+    removeRegion(region.id);
+  }
+}
+nm.Event.addListener(map, "idle", () => {
+  // 칸 색칠은 칠할 때 화면과 그 둘레만 덮는다. 확대 직후 먼 곳으로 옮기는 경우(구역 목록 누르기 등) 지도는 다시 칠하라고
+  // 알려 주지 않아 새 화면에 색이 빠졌다. 화면이 칠한 범위를 벗어났으면 다시 칠한다.
+  const view = map.getBounds(), sw = view.getSW(), ne = view.getNE(), p = gridOverlay.painted;
+  if (!p || p.zoom !== map.getZoom() || sw.lat() < p.south || ne.lat() > p.north || sw.lng() < p.west || ne.lng() > p.east) gridOverlay.draw();
+  renderView();
+  loadNearby().catch(error => console.error(error));
+});
+
+// 출처는 불러온 지역의 것을 모아 같은 문구는 한 번만 적는다. 지역마다 다른 문구는 지역 이름을 붙인다.
+let sourcesKey = "";
+function renderSources() {
+  const regions = [...loaded.values()];
+  const key = regions.map(region => region.id).join(",");
+  if (key === sourcesKey) return;
+  sourcesKey = key;
+  const lines = new Map();
+  for (const region of regions) {
+    for (const s of region.R.sources) {
+      const text = `${s.name}: ${s.by} (${s.date})`;
+      if (!lines.has(text)) lines.set(text, []);
+      lines.get(text).push(region.label);
+    }
+  }
+  document.getElementById("sourceList").innerHTML = [...lines].map(([text, labels]) =>
+    `<li>${labels.length < regions.length ? `[${esc(labels.join(", "))}] ` : ""}${esc(text)}</li>`).join("");
+  const built = [...new Set(regions.map(region => region.R.builtAt))].sort();
+  document.getElementById("mapBadge").textContent = `실제 자료 · 불러온 지역 ${regions.length}곳 · ${built.at(-1)} 생성`;
+}
+
+const regionList = document.getElementById("regions");
+function landmarkNear(cell) {
+  const {DATA, dist} = cell.region;
+  const nearestIn = keys => {
+    let best = {name: "", m: Infinity};
+    for (const key of keys) {
+      for (const p of DATA[key]) {
+        const m = dist(cell.lat, cell.lon, p.lat, p.lon);
+        if (m < best.m) best = {name: p.name, m};
+      }
+    }
+    return best;
+  };
+  // 역·학교·마트가 알아보기 쉬워서 500m 안에 있으면 먼저 쓴다.
+  const known = nearestIn(["subway", "school", "mart"]);
+  return known.m <= 500 ? known.name : nearestIn(["apartment", "office"]).name;
+}
+function renderRegions(regions, total) {
+  document.getElementById("regionCount").textContent = `${regions.length}곳`;
+  const empty = document.getElementById("regionEmpty");
+  empty.hidden = regions.length > 0;
+  if (!regions.length) {
+    empty.textContent = total ? "모든 조건을 맞춘 곳이 없어요. 조건을 조금 풀어 보세요." : "켜 둔 조건이 없어요.";
+  }
+  const regionName = region => `${region.dongs[0]} 일대${region.dongs.length > 1 ? ` 외 ${region.dongs.length - 1}개 동` : ""}`;
+  const nameCount = {}, placeCount = {};
+  for (const region of regions) nameCount[regionName(region)] = (nameCount[regionName(region)] || 0) + 1;
+  regionList.replaceChildren(...regions.map(region => {
+    const item = document.createElement("li");
+    const button = document.createElement("button");
+    button.type = "button";
+    const name = regionName(region);
+    // 이름이 겹치는 구역만 가까운 장소를 함께 적어 구분한다. 장소까지 같으면 번호를 붙인다.
+    let near = "";
+    if (nameCount[name] > 1) {
+      const place = landmarkNear(region.center);
+      const nth = placeCount[`${name}|${place}`] = (placeCount[`${name}|${place}`] || 0) + 1;
+      near = `<small class="near">${esc(place)} 근처${nth > 1 ? ` ${nth}` : ""}</small>`;
+    }
+    button.innerHTML = `<span>${esc(name)}${near}</span><span class="size">${(region.size * cellKm2()).toFixed(2)}㎢ · ${region.size}칸</span>`;
+    button.addEventListener("click", () => selectCell(region.center, true));
+    item.append(button);
+    return item;
+  }));
+}
+
+const legendBox = document.createElement("div");
+legendBox.className = "legend";
+legendBox.innerHTML = '<button class="legend-toggle" type="button" aria-expanded="false">범례 ▾</button><div class="legend-body"></div>';
+const legendToggle = legendBox.querySelector(".legend-toggle");
+const legendBody = legendBox.querySelector(".legend-body");
+legendToggle.addEventListener("click", () => {
+  const open = legendBox.classList.toggle("open");
+  legendToggle.setAttribute("aria-expanded", open);
+  legendToggle.textContent = open ? "범례 ▴" : "범례 ▾";
+});
+for (const event of ["click", "dblclick", "mousedown", "pointerdown", "touchstart", "wheel"]) {
+  legendBox.addEventListener(event, e => e.stopPropagation());
+}
+legendBox.addEventListener("change", e => {
+  if (!e.target.dataset.show) return;
+  state.visible[e.target.dataset.show] = e.target.checked;
+  schedule();
+});
+legendBox.addEventListener("click", e => {
+  const preset = e.target.dataset.preset;
+  if (!preset) return;
+  for (const key of Object.keys(state.visible)) state.visible[key] = preset === "all" || key === "best";
+  schedule();
+});
+mapElement.append(legendBox);
+let legendTotal = null;
+function renderLegend(total) {
+  const box = legendBody;
+  // 켜고 끌 때 체크박스 포커스가 사라지지 않도록, 조건 개수가 바뀔 때만 새로 만든다.
+  const legendKey = `${total}|${state.modes.rival}`;
+  if (legendKey !== legendTotal) {
+    legendTotal = legendKey;
+    const row = (key, swatch, text) => `<label><input type="checkbox" data-show="${key}">${swatch}${text}</label>`;
+    const rows = [row("best", '<i class="best"></i>', `모두 충족 (${total}개)`)];
+    for (let k = total - 1; k >= 0; k--) {
+      rows.push(row(k, `<i style="background:rgb(${COUNT_COLORS[k].join(",")})"></i>`, `${k}개 충족`));
+    }
+    rows.push(row("missed", `<i style="background:rgba(${MISSED_COLOR.join(",")},.35)"></i>`, "필수 미충족"));
+    rows.push(row("hold", `<i style="background:rgba(${HOLD_COLOR.join(",")},.6)"></i>`, "보류 (공업·산단·개발제한 등)"));
+    if (state.modes.rival === "optional") {
+      rows.push(row("rivalMark", `<i style="border:2px solid ${RIVAL_MARK_COLOR}"></i>`, "경쟁·폐업 기준 초과"));
+    }
+    box.innerHTML = total
+      ? rows.join("") + '<div class="presets"><button class="link" type="button" data-preset="best">모두 충족만</button><button class="link" type="button" data-preset="all">전체 보기</button></div>'
+      : "조건 없음";
+  }
+  box.querySelectorAll("input").forEach(input => { input.checked = state.visible[input.dataset.show]; });
+}
+
+// ---------- 칸 선택 ----------
+let selected = null;
+let radiusCircle = null;
+const popup = new nm.InfoWindow({
+  borderWidth: 0, backgroundColor: "transparent", disableAnchor: false, disableAutoPan: true,
+  anchorSize: new nm.Size(14, 12), anchorColor: "#ffffff", pixelOffset: new nm.Point(0, -12),
+});
+function clearRadius() {
+  if (radiusCircle) { radiusCircle.setMap(null); radiusCircle = null; }
+}
+// 휴대폰은 지도가 작아 상세창을 말풍선 대신 화면 아래 창에 띄운다.
+const sheet = document.getElementById("sheet");
+// 손잡이를 누르거나 아래로 밀면 제목 한 줄만 남기고 접는다. 다른 칸을 눌러도 접힌 채로 제목만 바뀐다.
+const sheetBar = document.createElement("button");
+sheetBar.type = "button";
+sheetBar.className = "sheet-bar";
+sheetBar.innerHTML = '<span class="sheet-title"></span><span class="sheet-hint"></span>';
+const sheetTitle = sheetBar.querySelector(".sheet-title");
+function setSheetCollapsed(collapsed) {
+  sheet.classList.toggle("collapsed", collapsed);
+  sheetBar.setAttribute("aria-expanded", String(!collapsed));
+  sheetBar.querySelector(".sheet-hint").textContent = collapsed ? "펼치기 ▴" : "접기 ▾";
+  if (!collapsed) sheet.scrollTop = 0;
+}
+setSheetCollapsed(false);
+let sheetTouchY = null, sheetMoved = false;
+sheetBar.addEventListener("touchstart", e => { sheetTouchY = e.touches[0].clientY; sheetMoved = false; }, {passive: true});
+sheetBar.addEventListener("touchend", e => {
+  if (sheetTouchY === null) return;
+  const dy = e.changedTouches[0].clientY - sheetTouchY;
+  sheetTouchY = null;
+  if (Math.abs(dy) < 30) return;
+  sheetMoved = true;
+  setSheetCollapsed(dy > 0);
+});
+sheetBar.addEventListener("click", () => {
+  if (sheetMoved) { sheetMoved = false; return; }
+  setSheetCollapsed(!sheet.classList.contains("collapsed"));
+});
+function closePopup() {
+  popup.close();
+  sheet.hidden = true;
+  mapElement.classList.remove("popup-open");
+  selected = null;
+  clearRadius();
+}
+let popupFitScheduled = false;
+function fitPopup() {
+  if (popupFitScheduled) return;
+  popupFitScheduled = true;
+  requestAnimationFrame(() => {
+    popupFitScheduled = false;
+    const content = mapElement.querySelector(".map-popup");
+    if (!selected || !content) return;
+    const rect = content.getBoundingClientRect();
+    const viewport = mapElement.getBoundingClientRect();
+    const dx = rect.left < viewport.left + 12 ? viewport.left + 12 - rect.left
+      : rect.right > viewport.right - 12 ? viewport.right - 12 - rect.right : 0;
+    const dy = rect.top < viewport.top + 56 ? viewport.top + 56 - rect.top
+      : rect.bottom > viewport.bottom - 20 ? viewport.bottom - 20 - rect.bottom : 0;
+    if (Math.abs(dx) < 1 && Math.abs(dy) < 1) return;
+    const projection = map.getProjection();
+    const center = projection.fromCoordToOffset(map.getCenter());
+    map.setCenter(projection.fromOffsetToCoord(new nm.Point(center.x - dx, center.y - dy)));
+  });
+}
+let fitted = false;
+new ResizeObserver(() => {
+  const width = mapElement.clientWidth, height = mapElement.clientHeight;
+  if (!width || !height) return;
+  map.setSize(new nm.Size(width, height));
+  if (!fitted) { fitted = true; fitView(); }
+  relayout();
+  const content = mapElement.querySelector(".map-popup");
+  if (content) { content.style.maxHeight = `${Math.max(140, height - 100)}px`; fitPopup(); }
+}).observe(mapElement);
+
+function popupRow(key, cell) {
+  const optional = state.modes[key] === "optional" ? " (참고)" : "";
+  return `<li>${statusTag(key, cell)} ${COND_NAMES[key]}${optional}<small>${esc(DETAILS[key](cell))}</small></li>`;
+}
+function renderPopup() {
+  clearRadius();
+  if (!selected) return;
+  const c = selected, e = evaluate(c);
+  const saved = candidateFor(c);
+  const full = candidates.length >= MAX_CANDIDATES;
+  const box = document.createElement("div");
+  box.className = "pop map-popup";
+  box.style.maxHeight = `${Math.max(140, mapElement.clientHeight - 100)}px`;
+  box.innerHTML = `
+    <button class="pop-close" type="button" aria-label="상세 정보 닫기">×</button>
+    <h4>${esc(c.dong.name)}</h4>
+    <small>조건 ${e.total}개 중 ${e.passed}개를 맞췄어요 · ${esc(c.region.label)}${c.dong.gu ? ` ${esc(c.dong.gu)}` : ""} · ${esc(c.zoneName || "용도지역 정보 없음")}</small>
+    ${c.hold ? `<p class="fake pop-hold">보류: ${esc(c.hold)}. 입점 가능 여부를 먼저 확인해야 해서 후보 칸 계산에서 뺐어요.</p>` : ""}
+    <ul>${Object.keys(CHECKS).map(key => popupRow(key, c)).join("")}</ul>
+    ${populationNote(c.dong) ? `<p class="note pop-note">${esc(populationNote(c.dong))}</p>` : ""}
+    <button class="btn primary" type="button" ${saved || full ? "disabled" : ""}>${saved ? `후보 ${saved.label}로 저장했어요` : full ? `후보는 ${MAX_CANDIDATES}곳까지 저장할 수 있어요` : "후보로 저장"}</button>
+    <div class="naver">
+      <a href="${naverUrl(c)}" target="_blank" rel="noopener">네이버 지도로 보기</a>
+      <a href="${naverUrl(c, "레터링케이크")}" target="_blank" rel="noopener">근처 레터링케이크 검색</a>
+    </div>`;
+  // 저장하면 버튼이 새로 그려져, 막지 않으면 이 클릭이 지도 클릭으로 처리되어 다른 칸이 선택된다.
+  box.querySelector(".pop-close").addEventListener("click", e => { e.stopPropagation(); closePopup(); });
+  for (const event of ["click", "dblclick", "mousedown", "pointerdown", "touchstart", "wheel"]) {
+    box.addEventListener(event, e => e.stopPropagation());
+  }
+  box.querySelector(".primary").addEventListener("click", e => {
+    e.stopPropagation();
+    addCandidate(c);
+  });
+  if (phone.matches) {
+    box.style.maxHeight = "";
+    sheetTitle.textContent = `${c.dong.name} · 조건 ${e.total}개 중 ${e.passed}개`;
+    sheet.replaceChildren(sheetBar, box);
+    sheet.hidden = false;
+  } else {
+    popup.setContent(box);
+    fitPopup();
+  }
+  if (state.modes.rival !== "off") {
+    radiusCircle = new nm.Circle({map, center: latLng(c.lat, c.lon), radius: state.rivalRadius,
+      strokeColor: "#1c2230", strokeWeight: 1.5, strokeStyle: "dash", fillOpacity: 0, clickable: false});
+  }
+}
+function selectCell(cell, move) {
+  selected = cell;
+  if (move) {
+    map.setZoom(Math.max(map.getZoom(), cellZoom()), false);
+    map.setCenter(latLng(cell.lat, cell.lon));
+  }
+  renderPopup();
+  if (!phone.matches) {
+    sheet.hidden = true;
+    popup.open(map, latLng(cell.lat, cell.lon));
+    fitPopup();
+  } else popup.close();
+  mapElement.classList.add("popup-open");
+}
+function cellAtLatLng(lat, lon) {
+  for (const region of loaded.values()) {
+    const at = region.gridAt(lat, lon);
+    const cell = region.cellAt(at.r, at.c);
+    if (cell) return cell;
+  }
+  return null;
+}
+nm.Event.addListener(map, "click", e => {
+  const cell = cellAtLatLng(e.coord.lat(), e.coord.lng());
+  if (cell) selectCell(cell, false);
+  else closePopup();
+});
+
+// ---------- 후보 ----------
+// 예전에는 지역마다 따로 저장했다(location-map-candidates-v2-<지역>). 처음 한 번만 하나로 합친다.
+const OLD_REGION_IDS = {ansan: "41270", mapo: "11440", cheongju: "43110", yangpyeong: "41830"};
+function readCandidates() {
+  try {
+    const stored = localStorage.getItem(STORE_KEY);
+    if (stored) return JSON.parse(stored);
+    const merged = [];
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (!key?.startsWith("location-map-candidates-v2-")) continue;
+      const old = key.slice("location-map-candidates-v2-".length);
+      for (const item of JSON.parse(localStorage.getItem(key) || "[]")) merged.push({...item, region: OLD_REGION_IDS[old] || old});
+    }
+    const labels = ["A", "B", "C", "D", "E"];
+    return merged.slice(0, MAX_CANDIDATES).map((item, index) => ({...item, label: labels[index]}));
+  } catch {
+    return [];
+  }
+}
+const savedCandidates = readCandidates();
+// 후보마다 칸 크기를 저장한다. 크기가 없는 예전 후보는 200m 칸이다.
+const sizeOf = item => item.size || 200;
+function sameSize(item) { return sizeOf(item) === CELL_M; }
+// 지금 크기의 후보가 있는 지역을 불러온다(화면에서 멀어도 비교표에 보이도록).
+async function loadCandidateRegions(list) {
+  const size = CELL_M;
+  for (const id of new Set(list.filter(sameSize).map(item => item.region))) {
+    if (!id || loaded.has(id) || !hasSize(id, size)) continue;
+    try {
+      placeRegion(await fetchRegion(id, size));
+    } catch (error) {
+      console.error(error);
+    }
+  }
+}
+await loadCandidateRegions(savedCandidates);
+// 지금 크기 후보 중 지역 자료가 없어진 것만 뺀다. 다른 크기 후보는 그대로 둔다.
+function storedCandidates() {
+  return savedCandidates.filter(item => !sameSize(item) || cellById.has(item.id)).slice(0, MAX_CANDIDATES);
+}
+function saveCandidates() {
+  try { localStorage.setItem(STORE_KEY, JSON.stringify(candidates)); } catch {}
+}
+let candidates = storedCandidates();
+// 지도와 비교표에 보이는 후보: 지금 크기이고 칸 자료가 올라와 있는 것
+const shownCandidates = () => candidates.filter(item => sameSize(item) && cellById.has(item.id));
+const otherCandidates = () => candidates.filter(item => !sameSize(item));
+const candidateFor = cell => candidates.find(item => sameSize(item) && item.id === cell.id);
+
+function addCandidate(cell) {
+  if (candidateFor(cell) || candidates.length >= MAX_CANDIDATES) return;
+  const label = ["A", "B", "C", "D", "E"].find(l => !candidates.some(item => item.label === l));
+  candidates.push({label, id: cell.id, region: cell.region.id, size: CELL_M, site: "", checks: {}});
+  candidates.sort((a, b) => a.label.localeCompare(b.label));
+  saveCandidates();
+  compareOpen = true;
+  renderCandidates();
+  renderPopup();
+}
+function removeCandidate(label) {
+  candidates = candidates.filter(item => item.label !== label);
+  saveCandidates();
+  renderCandidates();
+  renderPopup();
+}
+function renderCandidates() {
+  candidateMarkers.forEach(marker => marker.setMap(null));
+  candidateMarkers = shownCandidates().map(item => {
+    const cell = cellById.get(item.id);
+    const marker = new nm.Marker({
+      map, position: latLng(cell.lat, cell.lon), title: `후보 ${item.label}`, zIndex: 100,
+      icon: {content: `<button type="button" class="pin" aria-label="후보 ${esc(item.label)}">${esc(item.label)}</button>`,
+        size: new nm.Size(26, 26), anchor: new nm.Point(13, 13)},
+    });
+    nm.Event.addListener(marker, "click", () => selectCell(cell, false));
+    return marker;
+  });
+  renderCompare();
+}
+let compareOpen = true;
+let compareMax = false; // 비교창이 지도를 덮고 크게 보이는지
+let compareTab = "conds";
+let checkPick = null; // 휴대폰 현장 확인에서 보고 있는 후보
+const compareTable = document.getElementById("compareTable");
+const compareTabs = document.getElementById("compareTabs");
+const otherNote = document.getElementById("otherCandidates");
+otherNote.addEventListener("click", e => {
+  const item = candidates.find(c => c.label === e.target.dataset.other);
+  if (item) setCellSize(sizeOf(item), item).catch(error => console.error(error));
+});
+const SITE_CHECKS = [
+  ["use", "업종과 건축물 용도", "계약 전에 그 주소로 구청 환경위생과 위생팀에 물어보세요.\n\"여기서 케이크 가게를 즉석판매업이나 제과점으로 신고할 수 있나요?\"\n호실에 따라 신고가 안 될 수도 있는데, 지도로는 알 수 없어요."],
+  ["unit", "호실 용도·300㎡ 합산·위반건축물"],
+  ["plan", "지구단위계획·상가 규약·산단 입점"],
+  ["floor", "층·출입구·소방"],
+  ["facility", "화장실·정화조·구획·배수·환기"],
+  ["pickup", "픽업 동선과 가시성"],
+  ["market", "상권 지표·폐업 이력·재건축 일정"],
+];
+const CHECK_STATUS = [["todo", "미확인"], ["ok", "문제없음"], ["bad", "문제있음"], ["na", "해당없음"]];
+const checkOf = (item, key) => ({status: "todo", memo: "", ...item.checks?.[key]});
+const checkedCount = item => SITE_CHECKS.filter(([key]) => checkOf(item, key).status !== "todo").length;
+const checkProgress = item => `${checkedCount(item)}/${SITE_CHECKS.length} 확인`;
+const compareTip = document.getElementById("compareTip");
+let tipPinned = false, tipButton = null;
+// 비교표가 스크롤 영역이라 안에 두면 잘려서, 화면 기준으로 버튼 옆에 띄운다.
+function showTip(button) {
+  tipButton = button;
+  compareTip.textContent = button.dataset.tip;
+  compareTip.hidden = false;
+  const box = button.getBoundingClientRect();
+  const left = Math.min(box.left, window.innerWidth - compareTip.offsetWidth - 8);
+  const above = box.top - compareTip.offsetHeight - 8;
+  compareTip.style.left = `${Math.max(8, left)}px`;
+  compareTip.style.top = `${above >= 8 ? above : box.bottom + 8}px`;
+}
+function hideTip() {
+  compareTip.hidden = true;
+  tipPinned = false;
+}
+// 누르는 순간의 작은 스크롤로 닫히지 않게, 버튼이 보이는 동안은 따라가고 가려지면 닫는다.
+function followTip() {
+  if (compareTip.hidden) return;
+  const box = tipButton.getBoundingClientRect();
+  if (document.elementFromPoint(box.left + box.width / 2, box.top + box.height / 2) === tipButton) showTip(tipButton);
+  else hideTip();
+}
+function renderCompare() {
+  hideTip();
+  // 다른 크기 후보는 표에 넣지 않고 아래에 '그 크기로 보기' 버튼만 둔다(칸 자료가 지금 지도에 없다).
+  const others = otherCandidates();
+  otherNote.hidden = !others.length || !compareOpen;
+  otherNote.innerHTML = others.length ? `다른 칸 크기로 저장한 후보: ${others.map(item =>
+    `<button class="link" type="button" data-other="${esc(item.label)}">후보 ${esc(item.label)} (${sizeOf(item)}m 칸) 보기</button>`).join(" · ")}` : "";
+  const candidates = shownCandidates();
+  const has = candidates.length > 0;
+  document.getElementById("candCount").textContent = `${candidates.length + others.length}/${MAX_CANDIDATES}곳`;
+  if (!has) compareMax = false;
+  document.getElementById("compare").classList.toggle("max", compareMax);
+  const maxButton = document.getElementById("compareMax");
+  maxButton.hidden = !has;
+  maxButton.textContent = compareMax ? "작게 보기" : "크게 보기";
+  maxButton.setAttribute("aria-expanded", String(compareMax));
+  const foldButton = document.getElementById("compareFold");
+  foldButton.hidden = compareMax;
+  foldButton.textContent = compareOpen ? "접기" : "펼치기";
+  foldButton.setAttribute("aria-expanded", String(compareOpen));
+  document.getElementById("compareBody").hidden = !compareOpen;
+  document.getElementById("compareEmpty").hidden = has;
+  document.getElementById("compareNote").hidden = !has;
+  compareTable.hidden = !has;
+  compareTabs.hidden = !has;
+  if (!has) { compareTable.replaceChildren(); return; }
+  compareTabs.querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.tab === compareTab)));
+  compareTable.classList.toggle("checks", compareTab === "checks");
+
+  // 기록을 입력하는 중에 표를 다시 그려도 입력 칸의 포커스를 잃지 않게 값만 맞춘다.
+  const focusKey = document.activeElement?.dataset?.focus;
+  const rows = candidates.map(item => ({item, cell: cellById.get(item.id)}));
+  const cols = fn => rows.map(fn).join("");
+  const actions = (item, cell) => `<div class="cand-actions"><button class="link" type="button" data-show="${esc(item.label)}">지도 보기</button><a class="link" href="${naverUrl(cell)}" target="_blank" rel="noopener">네이버</a><button class="link" type="button" data-remove="${esc(item.label)}">삭제</button></div>`;
+  const progressTag = item => `<small data-progress="${esc(item.label)}">${esc(checkProgress(item))}</small>`;
+  const head = progress => `<thead><tr><th>항목</th>${cols(({item, cell}) => `<th>후보 ${esc(item.label)}<small>${esc(cell.dong.name)}</small>
+      ${progress ? progressTag(item) : ""}
+      ${actions(item, cell)}</th>`)}</tr></thead>`;
+  if (compareTab === "checks") {
+    const checkFields = (item, key, title) => {
+      const {status, memo} = checkOf(item, key);
+      const name = `후보 ${esc(item.label)} ${esc(title)}`;
+      const base = `data-label="${esc(item.label)}" data-check="${key}"`;
+      return `<select aria-label="${name} 상태" ${base} data-part="status" data-status="${esc(status)}" data-focus="${esc(item.label)}:${key}:status">
+        ${CHECK_STATUS.map(([value, text]) => `<option value="${value}"${value === status ? " selected" : ""}>${text}</option>`).join("")}
+      </select><input type="text" placeholder="메모" aria-label="${name} 메모" ${base} data-part="memo" data-focus="${esc(item.label)}:${key}:memo" value="${esc(memo)}">`;
+    };
+    const siteInput = item => `<input type="text" placeholder="주소나 건물 이름" aria-label="후보 ${esc(item.label)} 확인한 건물·호실" data-label="${esc(item.label)}" data-site="1" data-focus="${esc(item.label)}:site" value="${esc(item.site)}">`;
+    const checkTitle = (title, tip) => `${esc(title)}${tip ? `<button class="tip-btn" type="button" aria-label="${esc(title)} 안내" aria-controls="compareTip" data-tip="${esc(tip)}">?</button>` : ""}`;
+    if (phone.matches) {
+      if (!candidates.some(c => c.label === checkPick)) checkPick = candidates[0].label;
+      const item = candidates.find(c => c.label === checkPick);
+      const cell = cellById.get(item.id);
+      compareTable.innerHTML = `<div class="mode pick" role="group" aria-label="기록할 후보">${candidates.map(c =>
+          `<button type="button" data-pick="${esc(c.label)}" aria-pressed="${c.label === checkPick}">후보 ${esc(c.label)}</button>`).join("")}</div>
+        <div class="one-head"><strong>후보 ${esc(item.label)}</strong><small>${esc(cell.dong.name)}</small>${progressTag(item)}${actions(item, cell)}</div>
+        <ul class="one-list">
+          <li><div class="one-title">확인한 건물·호실</div>${siteInput(item)}</li>
+          ${SITE_CHECKS.map(([key, title, tip]) => `<li><div class="one-title">${checkTitle(title, tip)}</div>${checkFields(item, key, title)}</li>`).join("")}
+        </ul>`;
+    } else {
+      compareTable.innerHTML = `<table>${head(true)}
+        <tbody>
+          <tr><td>확인한 건물·호실</td>${cols(({item}) => `<td>${siteInput(item)}</td>`)}</tr>
+          ${SITE_CHECKS.map(([key, title, tip]) => `<tr><td>${checkTitle(title, tip)}</td>${cols(({item}) => `<td>${checkFields(item, key, title)}</td>`)}</tr>`).join("")}
+        </tbody></table>`;
+    }
+  } else {
+    compareTable.innerHTML = `<table>${head(false)}
+      <tbody>
+        <tr><td>충족 조건</td>${cols(({cell}) => { const e = evaluate(cell); return `<td><strong>${e.passed} / ${e.total}</strong>${cell.hold ? `<small class="fail">보류: ${esc(cell.hold)}</small>` : e.requiredOk ? "" : '<small class="fail">필수 미충족</small>'}</td>`; })}</tr>
+        ${Object.keys(CHECKS).map(key => `<tr><td>${COND_NAMES[key]}</td>${cols(({cell}) => `<td>${statusTag(key, cell)}<small>${esc(DETAILS[key](cell))}</small></td>`)}</tr>`).join("")}
+        ${rows.some(({cell}) => populationNote(cell.dong)) ? `<tr><td>자료 주의</td>${cols(({cell}) => `<td><small>${esc(populationNote(cell.dong))}</small></td>`)}</tr>` : ""}
+      </tbody></table>`;
+  }
+  if (focusKey) compareTable.querySelector(`[data-focus="${CSS.escape(focusKey)}"]`)?.focus();
+}
+// 표를 다시 그리지 않고 저장해서 한글 입력과 스크롤 위치가 끊기지 않게 한다.
+function saveCheckInput(e) {
+  const {label, check, part, site} = e.target.dataset;
+  const item = candidates.find(c => c.label === label);
+  if (!item) return;
+  if (site) item.site = e.target.value;
+  else if (check) {
+    item.checks = {...item.checks, [check]: {...checkOf(item, check), [part]: e.target.value}};
+    if (part === "status") {
+      e.target.dataset.status = e.target.value;
+      compareTable.querySelector(`[data-progress="${label}"]`).textContent = checkProgress(item);
+    }
+  } else return;
+  saveCandidates();
+}
+compareTable.addEventListener("input", saveCheckInput);
+compareTabs.addEventListener("click", e => {
+  const {tab} = e.target.dataset;
+  if (!tab) return;
+  compareTab = tab;
+  renderCompare();
+});
+// 휴대폰에는 마우스 올리기가 없어서 누르면 열리고 다시 누르면 닫히게 한다.
+compareTable.addEventListener("mouseover", e => {
+  const button = e.target.closest(".tip-btn");
+  if (button && !tipPinned) showTip(button);
+});
+compareTable.addEventListener("mouseout", e => {
+  if (e.target.closest(".tip-btn") && !tipPinned) hideTip();
+});
+compareTable.addEventListener("scroll", followTip);
+window.addEventListener("scroll", followTip, {passive: true}); // 휴대폰은 페이지 전체가 스크롤된다.
+document.addEventListener("click", e => {
+  if (!e.target.closest(".tip-btn")) hideTip();
+});
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape") hideTip();
+});
+compareTable.addEventListener("click", e => {
+  const tipButton = e.target.closest(".tip-btn");
+  if (tipButton) {
+    if (tipPinned) hideTip();
+    else { showTip(tipButton); tipPinned = true; }
+    return;
+  }
+  const {show, remove, pick} = e.target.dataset;
+  if (pick) { checkPick = pick; renderCompare(); }
+  if (remove) removeCandidate(remove);
+  if (show) {
+    if (compareMax) { compareMax = false; renderCompare(); } // 지도가 가려져 있으면 먼저 비교창을 줄인다.
+    const item = candidates.find(c => c.label === show);
+    selectCell(cellById.get(item.id), true);
+  }
+});
+// 화면 폭이 800px을 넘나들면 비교표와 열린 상세창을 새 배치로 다시 그린다.
+let wasPhone = phone.matches;
+function relayout() {
+  if (phone.matches === wasPhone) return;
+  wasPhone = phone.matches;
+  renderCompare();
+  if (selected) selectCell(selected, false);
+}
+phone.addEventListener("change", relayout);
+window.addEventListener("resize", relayout);
+document.getElementById("compareFold").addEventListener("click", () => {
+  compareOpen = !compareOpen;
+  renderCompare();
+});
+document.getElementById("compareMax").addEventListener("click", () => {
+  compareMax = !compareMax;
+  if (compareMax) { compareOpen = true; closePopup(); }
+  renderCompare();
+});
+
+// ---------- 왼쪽 입력 ----------
+// 슬라이더에서 왼쪽 채워진 부분의 길이를 맞춘다.
+function paintRange(input) {
+  const pct = (input.value - input.min) / (input.max - input.min) * 100;
+  input.style.setProperty("--pct", `${pct}%`);
+}
+let scheduled = false;
+function schedule() {
+  if (scheduled) return;
+  scheduled = true;
+  requestAnimationFrame(() => { scheduled = false; draw(); });
+}
+for (const id of SLIDERS) {
+  document.getElementById(id).addEventListener("input", e => {
+    state[id] = Number(e.target.value);
+    document.querySelector(`output[for=${id}]`).textContent = fmt(id, state[id]);
+    paintRange(e.target);
+    schedule();
+  });
+}
+
+const BRIEFS = {
+  home: () => `주거·상업지역, 동 ${fmt("minHouseholds", state.minHouseholds)} 이상, 감소 ${state.maxDecline}% 이하, 주변 500m ${fmt("minAroundHouseholds", state.minAroundHouseholds)} 이상`,
+  guide: () => {
+    const count = Object.values(state.guideTypes).filter(Boolean).length;
+    return count ? `시설 ${count}종 중 하나가 ${metres(state.guideDist)} 안` : "선택한 시설 없음";
+  },
+  transit: () => `지하철 ${metres(state.subwayDist)} 또는 버스 ${metres(state.busDist)} 안`,
+  parking: () => `${metres(state.parkingDist)} 안`,
+  rival: () => `${metres(state.rivalRadius)} 안 ${state.countUnknown ? "케이크 판매·미확인 빵집" : "케이크 판매"} ${state.rivalMax}곳 이하, 폐업 ${state.closedMax}건 이하`,
+  shop: () => `칸 안 업소 ${state.minStores}곳 이상`,
+};
+function renderBriefs() {
+  document.querySelectorAll(".cond").forEach(section => {
+    const key = section.dataset.cond;
+    section.querySelector(".brief").textContent = state.modes[key] === "off" ? "계산에서 뺐어요" : BRIEFS[key]();
+  });
+}
+function setOpen(section, open) {
+  section.classList.toggle("open", open);
+  section.querySelector(".fold").setAttribute("aria-expanded", String(open));
+  section.querySelector(".body").hidden = !open;
+}
+const sections = [...document.querySelectorAll(".cond")];
+function syncFoldAll() {
+  document.getElementById("foldAll").textContent = sections.every(s => s.classList.contains("open")) ? "모두 접기" : "모두 펼치기";
+}
+sections.forEach((section, index) => {
+  const key = section.dataset.cond;
+  const box = section.querySelector(".mode");
+  box.setAttribute("role", "group");
+  box.setAttribute("aria-label", `${COND_NAMES[key]} 적용 방식`);
+  for (const [value, label] of MODES) {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.textContent = label;
+    button.dataset.value = value;
+    button.addEventListener("click", () => {
+      state.modes[key] = value;
+      syncInputs();
+      schedule();
+    });
+    box.append(button);
+  }
+  section.querySelector(".fold").addEventListener("click", () => {
+    setOpen(section, !section.classList.contains("open"));
+    syncFoldAll();
+  });
+  setOpen(section, index === 0);
+});
+document.getElementById("foldAll").addEventListener("click", () => {
+  const open = !sections.every(s => s.classList.contains("open"));
+  sections.forEach(s => setOpen(s, open));
+  syncFoldAll();
+});
+
+const countUnknownBox = document.getElementById("countUnknown");
+countUnknownBox.addEventListener("change", e => {
+  state.countUnknown = e.target.checked;
+  schedule();
+});
+document.getElementById("countUnknownNote").textContent =
+  "이름만으로는 케이크를 파는지 알 수 없는 동네 빵집이에요. 켜면 경쟁이 실제보다 많게 셀 수 있어요.";
+const guideBox = document.getElementById("guideTypes");
+for (const [type, label] of Object.entries(GUIDE_TYPES)) {
+  const item = document.createElement("label");
+  item.innerHTML = `<input type="checkbox" data-type="${type}"> ${label}`;
+  item.querySelector("input").addEventListener("change", e => {
+    state.guideTypes[type] = e.target.checked;
+    schedule();
+  });
+  guideBox.append(item);
+}
+const layerBox = document.getElementById("layerChecks");
+for (const [key, spec] of Object.entries(LAYERS)) {
+  const item = document.createElement("label");
+  item.innerHTML = `<input type="checkbox" data-layer="${key}" ${spec.on ? "checked" : ""}><i style="display:inline-block;width:9px;height:9px;border-radius:50%;background:${spec.color}"></i> ${spec.label}`;
+  item.querySelector("input").addEventListener("change", e => {
+    layerGroups[key].markers.forEach(marker => marker.setMap(e.target.checked ? map : null));
+    if (e.target.checked) makeMarkers(key);
+  });
+  layerBox.append(item);
+}
+function syncInputs() {
+  for (const id of SLIDERS) {
+    document.getElementById(id).value = state[id];
+    document.querySelector(`output[for=${id}]`).textContent = fmt(id, state[id]);
+    paintRange(document.getElementById(id));
+  }
+  sections.forEach(section => {
+    const mode = state.modes[section.dataset.cond];
+    section.classList.toggle("off", mode === "off");
+    section.querySelectorAll(".mode button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.value === mode)));
+    section.querySelectorAll(".body input").forEach(i => { i.disabled = mode === "off"; });
+  });
+  guideBox.querySelectorAll("input").forEach(i => { i.checked = state.guideTypes[i.dataset.type]; });
+  countUnknownBox.checked = state.countUnknown;
+}
+document.getElementById("reset").addEventListener("click", () => {
+  state = structuredClone(DEFAULTS);
+  syncInputs();
+  schedule();
+});
+
+// ---------- 칸 크기 ----------
+// 크기를 바꾸면 올라와 있는 지역 자료를 모두 내리고, 같은 화면 근처 지역을 새 크기로 다시 불러온다.
+// 시설 표시 점은 두 크기 자료가 같아서 그대로 둔다. 조건 설정도 그대로 쓴다.
+const cellSizeBox = document.getElementById("cellSize");
+function syncCellSize() {
+  cellSizeBox.querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", String(Number(b.dataset.size) === CELL_M)));
+  document.getElementById("cellSizeText").textContent = `${CELL_M}m`;
+}
+async function setCellSize(size, focusItem) {
+  if (!CELL_SIZES.includes(size)) return;
+  if (size !== CELL_M) {
+    CELL_M = size;
+    try { localStorage.setItem(CELL_SIZE_KEY, String(size)); } catch {}
+    syncCellSize();
+    closePopup();
+    for (const id of [...loaded.keys()]) removeRegion(id);
+    gridPeople.clear();
+    const status = document.getElementById("mapStatus");
+    status.textContent = `${size}m 칸을 불러오는 중이에요.`;
+    status.hidden = false;
+    cellSizeBox.querySelectorAll("button").forEach(b => { b.disabled = true; });
+    try {
+      // 화면 근처 지역(넓게 보는 단계라도 화면 가운데 지역은 포함)과 지금 크기 후보의 지역을 한꺼번에 받는다.
+      // 가운데 지역이 그려지면 '불러오는 중' 안내를 내리고, 나머지는 그려지는 대로 이어 붙인다.
+      const center = map.getCenter(), here = {south: center.lat(), north: center.lat(), west: center.lng(), east: center.lng()};
+      const box = map.getZoom() < LOAD_ZOOM ? here : viewBox(.25);
+      const candidateIds = new Set(candidates.filter(sameSize).map(item => item.region));
+      const wanted = REGION_INDEX.filter(entry => entry.bounds && sizesOf(entry).includes(size)
+        && (overlaps(box, boxOf(entry.bounds)) || overlaps(here, boxOf(entry.bounds)) || candidateIds.has(entry.id)));
+      await placeInOrder(wanted, size, () => { status.hidden = true; });
+      if (size === CELL_M) unloadFar();
+    } finally {
+      status.hidden = true;
+      cellSizeBox.querySelectorAll("button").forEach(b => { b.disabled = false; });
+    }
+    renderCandidates();
+    draw();
+  }
+  if (focusItem) {
+    const cell = cellById.get(focusItem.id);
+    if (cell) selectCell(cell, true);
+  }
+}
+cellSizeBox.addEventListener("click", e => {
+  const size = Number(e.target.closest("button")?.dataset.size);
+  if (size) setCellSize(size).catch(error => { console.error(error); showMapError(); });
+});
+cellSizeBox.hidden = false;
+syncCellSize();
+
+syncInputs();
+syncFoldAll();
+renderCandidates();
+draw();
+// 처음 화면이 멈추는 순간은 위 설정보다 먼저 지나갈 수 있어 한 번 직접 불러온다.
+loadNearby().catch(error => console.error(error));
+}
+</script>
+<script src="https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=9uj2i52z6t" onload="initMap().catch(error => { console.error(error); showMapError(); })" onerror="showMapError()"></script>
+</body>
+</html>

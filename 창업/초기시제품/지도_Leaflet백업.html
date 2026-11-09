@@ -1,0 +1,908 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>안산 입지 지도</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<style>
+/* 색상은 토스 디자인 시스템(TDS)의 공개 팔레트 값이다. */
+:root {
+  --grey50: #f9fafb; --grey100: #f2f4f6; --grey200: #e5e8eb; --grey300: #d1d6db; --grey400: #b0b8c1;
+  --grey500: #8b95a1; --grey600: #6b7684; --grey700: #4e5968; --grey800: #333d4b; --grey900: #191f28;
+  --blue50: #e8f3ff; --blue500: #3182f6; --blue600: #2272eb; --blue700: #1b64da;
+  --red50: #ffeeee; --red500: #f04452; --red700: #d22030;
+  --green50: #f0faf6; --green800: #028450;
+  --best: #d9480f; --best-line: #7a2a00; --white: #fff;
+  --shadow-float: 0 8px 24px rgba(2, 32, 71, .12);
+}
+* { box-sizing: border-box; }
+html, body { height: 100%; margin: 0; }
+body { background: var(--white); color: var(--grey900); line-height: 1.5; font-size: 15px; letter-spacing: -.01em;
+  font-family: "Pretendard", -apple-system, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+  -webkit-font-smoothing: antialiased; }
+button, input { font-family: inherit; letter-spacing: inherit; }
+:focus-visible { outline: 2px solid var(--blue500); outline-offset: 2px; }
+.app { display: grid; grid-template-columns: 380px minmax(0, 1fr); height: 100vh; }
+aside { background: var(--white); border-right: 1px solid var(--grey200); overflow-y: auto; padding: 24px 20px 32px; }
+h1 { font-size: 22px; font-weight: 700; letter-spacing: -.02em; margin: 0 0 12px; }
+.fake { background: var(--red50); color: var(--red700); font-weight: 600; padding: 12px 14px; border-radius: 12px; font-size: 13px; line-height: 1.45; }
+
+.summary { position: sticky; top: -24px; z-index: 5; background: var(--white); margin: 8px -20px 0; padding: 16px 20px; border-bottom: 8px solid var(--grey100); }
+.summary-label { font-size: 14px; font-weight: 600; color: var(--grey600); }
+.summary-value { display: flex; align-items: baseline; gap: 2px; font-size: 18px; font-weight: 700; }
+.summary strong { font-size: 32px; font-weight: 700; letter-spacing: -.03em; line-height: 1.25; color: var(--best); font-variant-numeric: tabular-nums; }
+.summary .note { margin-top: 2px; }
+
+.block { margin: 0 -20px; padding: 16px 20px; border-bottom: 8px solid var(--grey100); }
+.block > summary { font-weight: 700; font-size: 17px; cursor: pointer; list-style: none; display: flex; align-items: center; gap: 6px; }
+.block > summary::-webkit-details-marker { display: none; }
+.block > summary .note { font-weight: 500; margin: 0 0 0 auto; }
+.regions { list-style: none; margin: 8px -8px 0; padding: 0; max-height: 200px; overflow-y: auto; }
+.regions button { width: 100%; display: flex; justify-content: space-between; align-items: center; gap: 8px; text-align: left;
+  font-size: 15px; font-weight: 500; border: 0; border-radius: 10px; background: none; color: inherit; padding: 10px 8px; cursor: pointer; transition: background .12s; }
+.regions button:hover { background: var(--grey100); }
+.regions .size { color: var(--grey500); font-size: 13px; font-weight: 400; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.regions li.note { padding: 6px 8px; }
+
+.conds-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding-top: 20px; }
+.conds-head h2 { font-size: 17px; font-weight: 700; margin: 0; }
+.link { font-size: 13px; font-weight: 600; background: none; border: 0; color: var(--blue600); text-decoration: none; cursor: pointer; padding: 2px 0; }
+.link:hover { color: var(--blue700); }
+.mode-help { margin: 8px 0 4px; padding: 12px 14px; background: var(--grey50); border-radius: 12px; font-size: 13px; line-height: 1.6; color: var(--grey600); }
+.mode-help b { color: var(--grey800); font-weight: 600; }
+.cond { border-bottom: 1px solid var(--grey100); padding: 14px 0; }
+.cond-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.cond-head h3 { font-size: 15px; margin: 0; min-width: 0; }
+.fold { font-size: 15px; font-weight: 600; background: none; border: 0; color: inherit; padding: 4px 0; cursor: pointer; text-align: left; display: inline-flex; align-items: center; gap: 8px; }
+.fold::before { content: ""; width: 7px; height: 7px; flex: none; margin-left: 2px; border-right: 2px solid var(--grey400); border-bottom: 2px solid var(--grey400); transform: rotate(-45deg); transition: transform .15s; }
+.fold[aria-expanded=true]::before { transform: translateY(-2px) rotate(45deg); }
+.brief { margin: 2px 0 0 19px; font-size: 13px; color: var(--grey500); }
+.cond.open .brief { display: none; }
+.mode { display: inline-flex; gap: 2px; padding: 2px; background: var(--grey100); border-radius: 8px; flex: none; }
+.mode button { font-size: 12px; font-weight: 500; border: 0; border-radius: 6px; background: none; color: var(--grey600); padding: 4px 10px; cursor: pointer; }
+.mode button[aria-pressed=true] { background: var(--white); color: var(--blue600); font-weight: 700; box-shadow: 0 1px 3px rgba(0, 27, 55, .14); }
+.cond.off .body { opacity: .4; }
+.row { margin-top: 14px; }
+.row label { display: flex; justify-content: space-between; gap: 8px; font-size: 14px; color: var(--grey700); }
+.row output { font-weight: 700; color: var(--blue600); font-variant-numeric: tabular-nums; white-space: nowrap; }
+input[type=range] { -webkit-appearance: none; appearance: none; width: 100%; height: 22px; margin: 4px 0 0; background: none; cursor: pointer; }
+input[type=range]::-webkit-slider-runnable-track { height: 6px; border-radius: 3px;
+  background: linear-gradient(to right, var(--blue500) var(--pct, 0%), var(--grey200) var(--pct, 0%)); }
+input[type=range]::-moz-range-track { height: 6px; border-radius: 3px; background: var(--grey200); }
+input[type=range]::-moz-range-progress { height: 6px; border-radius: 3px; background: var(--blue500); }
+input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 22px; height: 22px; margin-top: -8px; border-radius: 50%; background: var(--white); border: 0; box-shadow: 0 1px 5px rgba(0, 27, 55, .32); }
+input[type=range]::-moz-range-thumb { width: 22px; height: 22px; border-radius: 50%; background: var(--white); border: 0; box-shadow: 0 1px 5px rgba(0, 27, 55, .32); }
+input[type=range]:disabled { cursor: default; }
+input[type=checkbox] { -webkit-appearance: none; appearance: none; width: 20px; height: 20px; flex: none; margin: 0; border-radius: 6px; background: var(--grey200); cursor: pointer;
+  background-position: center; background-repeat: no-repeat; background-size: 14px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 14'%3E%3Cpath d='M3 7.3l2.8 2.7L11 4.5' fill='none' stroke='%23fff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); }
+input[type=checkbox]:checked { background-color: var(--blue500); }
+.checks { display: flex; flex-wrap: wrap; gap: 8px 14px; margin-top: 12px; font-size: 14px; color: var(--grey700); }
+.checks label { display: inline-flex; align-items: center; gap: 6px; cursor: pointer; }
+.note { color: var(--grey500); font-size: 13px; line-height: 1.5; margin: 6px 0 0; }
+.btn { font-size: 15px; font-weight: 600; border: 0; background: var(--grey100); color: var(--grey700); border-radius: 10px; padding: 10px 16px; cursor: pointer; transition: background .12s; }
+.btn:hover { background: var(--grey200); }
+.btn:disabled { color: var(--grey500); background: var(--grey100); cursor: default; }
+.btn.primary { background: var(--blue500); color: var(--white); width: 100%; }
+.btn.primary:hover { background: var(--blue600); }
+.btn.primary:disabled { background: var(--grey100); color: var(--grey500); }
+h4.sub { font-size: 17px; font-weight: 700; margin: 24px 0 0; }
+.foot { margin-top: 16px; display: grid; gap: 12px; }
+
+.right { display: grid; grid-template-rows: minmax(0, 1fr) auto; min-width: 0; height: 100vh; }
+.mapwrap { position: relative; min-width: 0; min-height: 0; }
+#map { position: absolute; inset: 0; background: var(--grey100); font-family: inherit; }
+.map-fake { position: absolute; top: 12px; left: 60px; z-index: 900; pointer-events: none; padding: 6px 12px; border-radius: 999px; box-shadow: var(--shadow-float); }
+.leaflet-bar { border: 0 !important; border-radius: 10px !important; overflow: hidden; box-shadow: var(--shadow-float) !important; }
+.leaflet-bar a { border-bottom-color: var(--grey100) !important; color: var(--grey800) !important; }
+.leaflet-popup-content-wrapper { border-radius: 16px; box-shadow: var(--shadow-float); }
+.leaflet-popup-content { margin: 16px; line-height: 1.5; font-family: inherit; }
+.leaflet-popup-tip { box-shadow: none; }
+.legend { background: var(--white); border-radius: 14px; box-shadow: var(--shadow-float); padding: 12px 14px; font-size: 13px; color: var(--grey700); display: grid; gap: 6px; }
+.legend i { display: inline-block; width: 14px; height: 14px; border-radius: 4px; }
+.legend i.best { border: 2px solid var(--best-line); background: var(--best); }
+.legend label { display: flex; align-items: center; gap: 6px; cursor: pointer; }
+.legend input[type=checkbox] { width: 16px; height: 16px; border-radius: 5px; background-size: 12px; }
+.legend .presets { display: flex; gap: 10px; margin-top: 4px; }
+.pop { min-width: 250px; font-size: 14px; color: var(--grey800); }
+.pop h4 { margin: 0; font-size: 17px; font-weight: 700; color: var(--grey900); }
+.pop ul { list-style: none; margin: 8px 0 10px; padding: 0; display: grid; gap: 5px; }
+.pop .btn { padding: 8px 12px; font-size: 14px; }
+.pop small { font-size: 12px; line-height: 1.4; }
+.badge { display: inline-block; padding: 1px 7px; margin-right: 4px; border-radius: 6px; font-size: 12px; font-weight: 700; }
+.badge.pass { background: var(--green50); color: var(--green800); }
+.badge.fail { background: var(--red50); color: var(--red700); }
+.badge.skip { background: var(--grey100); color: var(--grey600); }
+small.fail { color: var(--red700); font-weight: 600; }
+.compare small { font-size: 13px; }
+.pop small, .compare small { display: block; color: var(--grey500); }
+.pop .naver { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px 14px; margin-top: 10px; font-size: 13px; font-weight: 600; }
+.pop .naver a { color: var(--blue600); text-decoration: none; }
+.grid-layer { image-rendering: pixelated; }
+.pin { display: flex; align-items: center; justify-content: center; width: 26px; height: 26px; border-radius: 50%;
+  background: var(--grey900); color: var(--white); font-weight: 700; font-size: 13px; border: 2px solid var(--white); box-shadow: 0 2px 6px rgba(0, 27, 55, .4); }
+
+.compare { background: var(--white); border-top: 1px solid var(--grey200); padding: 14px 20px; }
+.compare-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.compare-head h2 { font-size: 17px; font-weight: 700; margin: 0; display: flex; align-items: baseline; gap: 6px; }
+.compare-head .note { margin: 0; font-weight: 500; }
+.compare-body { max-height: 24vh; overflow: auto; margin-top: 8px; }
+.compare table { border-collapse: collapse; width: 100%; font-size: 14px; }
+.compare th, .compare td { text-align: left; vertical-align: top; padding: 10px 12px; border-bottom: 1px solid var(--grey100); min-width: 170px; font-weight: 500; }
+.compare th { font-weight: 700; }
+.compare th:first-child, .compare td:first-child { min-width: 100px; color: var(--grey600); font-weight: 500; position: sticky; left: 0; background: var(--white); }
+.compare thead th { position: sticky; top: 0; background: var(--white); z-index: 1; }
+.compare thead th:first-child { z-index: 2; }
+.compare input { width: 100%; max-width: 130px; font-size: 14px; border: 0; border-radius: 8px; padding: 7px 10px; color: var(--grey900); background: var(--grey100); }
+.cand-actions { display: flex; gap: 10px; margin-top: 4px; }
+
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+@media (max-width: 800px) {
+  .app { display: flex; flex-direction: column; height: auto; }
+  .right { display: contents; }
+  .mapwrap { order: 1; height: 62vh; flex: none; position: sticky; top: 0; z-index: 10; }
+  aside { order: 2; border-right: 0; overflow: visible; padding-inline: 16px; }
+  .summary, .block { margin-inline: -16px; padding-inline: 16px; }
+  .compare { order: 3; padding-inline: 16px; }
+  .summary { position: static; }
+  .popup-open .legend { display: none; }
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside>
+    <h1>안산 입지 지도</h1>
+    <div class="fake">지금 보이는 가게·역·인구는 모두 무작위로 만든 가짜 값이에요. 실제 입지 판단에는 쓰지 마세요.</div>
+
+    <div class="summary" role="status">
+      <div class="summary-label">모든 조건을 맞춘 곳</div>
+      <div class="summary-value"><strong id="allCount">0</strong>칸</div>
+      <div class="note" id="allArea"></div>
+      <div class="note" id="sumNote"></div>
+    </div>
+
+    <details class="block" open>
+      <summary>모두 맞춘 구역 <span id="regionCount"></span> <span class="note">넓은 순</span></summary>
+      <ul class="regions" id="regions"></ul>
+      <p class="note" id="regionEmpty" hidden></p>
+    </details>
+
+    <div class="conds-head">
+      <h2>조건</h2>
+      <button class="link" id="foldAll" type="button"></button>
+    </div>
+    <div class="mode-help"><b>필수</b> 못 맞추면 회색으로 표시해요<br><b>참고</b> 맞춘 개수에만 반영해요<br><b>끔</b> 계산에서 빼요</div>
+
+    <section class="cond" data-cond="home">
+      <div class="cond-head"><h3><button class="fold" type="button">1. 거주지역</button></h3><div class="mode"></div></div>
+      <p class="brief"></p>
+      <div class="body">
+        <div class="row"><label for="minHouseholds">동 최소 세대수 <output for="minHouseholds"></output></label>
+          <input type="range" id="minHouseholds" min="0" max="25000" step="500"></div>
+        <div class="row"><label for="maxDecline">4년 인구 감소율 상한 <output for="maxDecline"></output></label>
+          <input type="range" id="maxDecline" min="0" max="20" step="1"></div>
+      </div>
+    </section>
+
+    <section class="cond" data-cond="guide">
+      <div class="cond-head"><h3><button class="fold" type="button">2. 안내 기준점</button></h3><div class="mode"></div></div>
+      <p class="brief"></p>
+      <div class="body">
+        <div class="row"><label for="guideDist">기준점까지 거리 <output for="guideDist"></output></label>
+          <input type="range" id="guideDist" min="100" max="1000" step="50"></div>
+        <div class="checks" id="guideTypes"></div>
+      </div>
+    </section>
+
+    <section class="cond" data-cond="transit">
+      <div class="cond-head"><h3><button class="fold" type="button">3. 대중교통</button></h3><div class="mode"></div></div>
+      <p class="brief"></p>
+      <div class="body">
+        <div class="row"><label for="subwayDist">지하철역까지 거리 <output for="subwayDist"></output></label>
+          <input type="range" id="subwayDist" min="100" max="2000" step="50"></div>
+        <div class="row"><label for="busDist">버스 정류장까지 거리 <output for="busDist"></output></label>
+          <input type="range" id="busDist" min="50" max="1000" step="50"></div>
+        <p class="note">둘 중 하나만 맞아도 통과해요.</p>
+      </div>
+    </section>
+
+    <section class="cond" data-cond="parking">
+      <div class="cond-head"><h3><button class="fold" type="button">4. 주차장</button></h3><div class="mode"></div></div>
+      <p class="brief"></p>
+      <div class="body">
+        <div class="row"><label for="parkingDist">주차장까지 거리 <output for="parkingDist"></output></label>
+          <input type="range" id="parkingDist" min="50" max="1000" step="50"></div>
+      </div>
+    </section>
+
+    <section class="cond" data-cond="rival">
+      <div class="cond-head"><h3><button class="fold" type="button">5. 경쟁·폐업</button></h3><div class="mode"></div></div>
+      <p class="brief"></p>
+      <div class="body">
+        <div class="row"><label for="rivalRadius">조사 반경 <output for="rivalRadius"></output></label>
+          <input type="range" id="rivalRadius" min="200" max="3000" step="100"></div>
+        <div class="row"><label for="rivalMax">레터링 가게 허용 수 <output for="rivalMax"></output></label>
+          <input type="range" id="rivalMax" min="0" max="5" step="1"></div>
+        <div class="row"><label for="closedMax">최근 3년 제과점 폐업 허용 수 <output for="closedMax"></output></label>
+          <input type="range" id="closedMax" min="0" max="10" step="1"></div>
+      </div>
+    </section>
+
+    <h4 class="sub">지도에 표시</h4>
+    <div class="checks" id="layerChecks"></div>
+
+    <div class="foot">
+      <button class="btn" id="reset" type="button">시작값으로 되돌리기</button>
+      <p class="note" style="margin:0">시작값은 비교를 시작하려고 정한 값이라 통계 근거가 없어요. 칸 크기는 200m예요. 색칠한 범위는 대략 그린 거라 실제 행정구역과 달라요.</p>
+    </div>
+  </aside>
+
+  <div class="right">
+    <div class="mapwrap">
+      <div id="map"></div>
+      <div class="map-fake fake">가짜 데이터</div>
+    </div>
+    <section class="compare" id="compare" aria-label="후보 비교">
+      <div class="compare-head">
+        <h2>후보 비교 <span class="note" id="candCount"></span></h2>
+        <button class="link" id="compareFold" type="button" aria-controls="compareBody"></button>
+      </div>
+      <div id="compareBody">
+        <p class="note" id="compareEmpty">지도에서 칸을 누르고 "후보로 저장"을 누르면 최대 5곳까지 비교할 수 있어요.</p>
+        <div class="compare-body" id="compareTable" hidden></div>
+        <p class="note" id="compareNote" hidden>월세·보증금은 직접 적는 메모예요. 조건 계산에는 쓰지 않아요. 후보와 메모는 이 브라우저에만 저장돼요.</p>
+      </div>
+    </section>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script>
+"use strict";
+// ---------- 설정 ----------
+const CELL_M = 200;
+const CELL_KM2 = (CELL_M / 1000) ** 2;
+const BOUNDS = {south: 37.26, north: 37.375, west: 126.73, east: 126.91};
+// 대략의 범위. 실제 행정구역 경계가 아니다. 실제 데이터 단계에서 행정동 경계로 바꾼다.
+const AREA = [[37.355,126.755],[37.365,126.80],[37.37,126.84],[37.36,126.88],[37.335,126.905],[37.30,126.905],
+  [37.265,126.885],[37.265,126.85],[37.285,126.825],[37.295,126.79],[37.30,126.75],[37.325,126.735]];
+
+const DEFAULTS = {
+  modes: {home: "required", guide: "optional", transit: "required", parking: "optional", rival: "required"},
+  minHouseholds: 5000, maxDecline: 10, guideDist: 300, subwayDist: 800, busDist: 300, parkingDist: 300,
+  rivalRadius: 1000, rivalMax: 0, closedMax: 2,
+  guideTypes: {subway: true, mart: true, school: true, office: true, apartment: true},
+  visible: {best: true, 4: true, 3: true, 2: true, 1: true, 0: true, missed: true},
+};
+const MODES = [["required", "필수"], ["optional", "참고"], ["off", "끔"]];
+const GUIDE_TYPES = {subway: "지하철역", mart: "대형마트", school: "학교", office: "공공기관", apartment: "아파트 단지"};
+const LAYERS = {
+  rival: {label: "레터링 가게", color: "#1957c2", on: true},
+  closed: {label: "폐업 제과점", color: "#f04452", on: true},
+  subway: {label: "지하철역", color: "#6b3fa0", on: false},
+  bus: {label: "버스 정류장", color: "#a06a00", on: false},
+  parking: {label: "주차장", color: "#4e5968", on: false},
+  landmark: {label: "기타 기준점", color: "#c2410c", on: false},
+};
+const FORMAT = {
+  minHouseholds: v => `${v.toLocaleString("ko-KR")}세대`,
+  maxDecline: v => `${v}%`,
+  rivalMax: v => `${v}곳`,
+  closedMax: v => `${v}건`,
+};
+const SLIDERS = ["minHouseholds", "maxDecline", "guideDist", "subwayDist", "busDist", "parkingDist", "rivalRadius", "rivalMax", "closedMax"];
+const MAX_CANDIDATES = 5;
+const MAX_REGIONS_SHOWN = 30;
+const STORE_KEY = "ansan-map-fake-candidates-v1";
+const metres = v => v >= 1000 ? `${(v / 1000).toFixed(v % 1000 ? 1 : 0)}km` : `${v}m`;
+const fmt = (id, v) => (FORMAT[id] || metres)(v);
+const esc = v => String(v ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+
+// ---------- 가짜 데이터 (고정 시드) ----------
+function makeRandom(seed) {
+  return () => {
+    seed = (seed + 0x6D2B79F5) | 0;
+    let t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+const random = makeRandom(20261102);
+
+function inArea(lat, lon) {
+  let inside = false;
+  for (let i = 0, j = AREA.length - 1; i < AREA.length; j = i++) {
+    const [ai, oi] = AREA[i], [aj, oj] = AREA[j];
+    if ((oi > lon) !== (oj > lon) && lat < ((aj - ai) * (lon - oi)) / (oj - oi) + ai) inside = !inside;
+  }
+  return inside;
+}
+function randomPoints(count, label) {
+  const points = [];
+  while (points.length < count) {
+    const lat = BOUNDS.south + random() * (BOUNDS.north - BOUNDS.south);
+    const lon = BOUNDS.west + random() * (BOUNDS.east - BOUNDS.west);
+    if (inArea(lat, lon)) points.push({lat, lon, name: `가짜 ${label} ${points.length + 1}`});
+  }
+  return points;
+}
+const DATA = {
+  rival: randomPoints(9, "레터링 가게"),
+  closed: randomPoints(32, "폐업 제과점"),
+  subway: randomPoints(9, "지하철역"),
+  bus: randomPoints(170, "버스 정류장"),
+  parking: randomPoints(60, "주차장"),
+  mart: randomPoints(6, "대형마트"),
+  school: randomPoints(35, "학교"),
+  office: randomPoints(14, "공공기관"),
+  apartment: randomPoints(30, "아파트 단지"),
+};
+const DONGS = randomPoints(20, "동").map((d, i) => ({
+  ...d,
+  name: `가짜 동 ${String(i + 1).padStart(2, "0")}`,
+  households: Math.round(2000 + random() * 22000),
+  decline: Math.round(random() * 190) / 10,
+}));
+
+// ---------- 격자 계산 ----------
+const midLat = (BOUNDS.south + BOUNDS.north) / 2;
+const M_LAT = 111320;
+const M_LON = 111320 * Math.cos(midLat * Math.PI / 180);
+const ROWS = Math.ceil((BOUNDS.north - BOUNDS.south) * M_LAT / CELL_M);
+const COLS = Math.ceil((BOUNDS.east - BOUNDS.west) * M_LON / CELL_M);
+const dist = (lat1, lon1, lat2, lon2) => Math.hypot((lat1 - lat2) * M_LAT, (lon1 - lon2) * M_LON);
+const rowLat = r => BOUNDS.north - r * CELL_M / M_LAT;
+const colLon = c => BOUNDS.west + c * CELL_M / M_LON;
+
+const cells = [];
+const cellIndex = new Int32Array(ROWS * COLS).fill(-1);
+for (let r = 0; r < ROWS; r++) {
+  for (let c = 0; c < COLS; c++) {
+    const lat = rowLat(r + .5);
+    const lon = colLon(c + .5);
+    if (!inArea(lat, lon)) continue;
+    const nearest = {};
+    for (const key of ["subway", "bus", "parking", "mart", "school", "office", "apartment"]) {
+      nearest[key] = Math.min(...DATA[key].map(p => dist(lat, lon, p.lat, p.lon)));
+    }
+    let dong = DONGS[0], best = Infinity;
+    for (const d of DONGS) {
+      const m = dist(lat, lon, d.lat, d.lon);
+      if (m < best) { best = m; dong = d; }
+    }
+    cellIndex[r * COLS + c] = cells.length;
+    cells.push({
+      r, c, lat, lon, nearest, dong,
+      rivals: DATA.rival.map(p => dist(lat, lon, p.lat, p.lon)),
+      closed: DATA.closed.map(p => dist(lat, lon, p.lat, p.lon)),
+    });
+  }
+}
+const cellAt = (r, c) => {
+  if (r < 0 || r >= ROWS || c < 0 || c >= COLS) return null;
+  const index = cellIndex[r * COLS + c];
+  return index < 0 ? null : cells[index];
+};
+
+// ---------- 조건 판정 ----------
+let state = structuredClone(DEFAULTS);
+const COND_NAMES = {home: "거주지역", guide: "안내 기준점", transit: "대중교통", parking: "주차장", rival: "경쟁·폐업"};
+
+function guideNearest(cell) {
+  let best = null;
+  for (const [type, label] of Object.entries(GUIDE_TYPES)) {
+    if (state.guideTypes[type] && (!best || cell.nearest[type] < best.m)) best = {m: cell.nearest[type], label};
+  }
+  return best;
+}
+const countWithin = (list, radius) => { let n = 0; for (const m of list) if (m <= radius) n++; return n; };
+
+const CHECKS = {
+  home: c => c.dong.households >= state.minHouseholds && c.dong.decline <= state.maxDecline,
+  guide: c => { const g = guideNearest(c); return !!g && g.m <= state.guideDist; },
+  transit: c => c.nearest.subway <= state.subwayDist || c.nearest.bus <= state.busDist,
+  parking: c => c.nearest.parking <= state.parkingDist,
+  rival: c => countWithin(c.rivals, state.rivalRadius) <= state.rivalMax && countWithin(c.closed, state.rivalRadius) <= state.closedMax,
+};
+const DETAILS = {
+  home: c => `${c.dong.households.toLocaleString("ko-KR")}세대, 4년 감소 ${c.dong.decline}%`,
+  guide: c => { const g = guideNearest(c); return g ? `가장 가까운 ${g.label} ${Math.round(g.m)}m` : "선택한 시설 종류 없음"; },
+  transit: c => `지하철역 ${Math.round(c.nearest.subway)}m, 버스 정류장 ${Math.round(c.nearest.bus)}m`,
+  parking: c => `주차장 ${Math.round(c.nearest.parking)}m`,
+  rival: c => `반경 ${metres(state.rivalRadius)} 안 레터링 ${countWithin(c.rivals, state.rivalRadius)}곳, 폐업 ${countWithin(c.closed, state.rivalRadius)}건`,
+};
+function evaluate(cell) {
+  let passed = 0, total = 0, requiredOk = true;
+  for (const [key, check] of Object.entries(CHECKS)) {
+    const mode = state.modes[key];
+    if (mode === "off") continue;
+    total++;
+    if (check(cell)) passed++;
+    else if (mode === "required") requiredOk = false;
+  }
+  return {passed, total, requiredOk};
+}
+// 칸 위치를 실제 네이버 지도로 연다. 경도,위도,줌 순서다.
+function naverUrl(cell, keyword) {
+  const view = `c=${cell.lon.toFixed(6)},${cell.lat.toFixed(6)},16,0,0,0,dh`;
+  return keyword
+    ? `https://map.naver.com/p/search/${encodeURIComponent(keyword)}?${view}`
+    : `https://map.naver.com/p/?${view}`;
+}
+function statusTag(key, cell) {
+  const mode = state.modes[key];
+  if (mode === "off") return '<span class="badge skip">끔</span>';
+  if (CHECKS[key](cell)) return '<span class="badge pass">통과</span>';
+  return `<span class="badge fail">${mode === "required" ? "탈락" : "미충족"}</span>`;
+}
+
+// ---------- 지도 ----------
+const VIEW = [[BOUNDS.south, BOUNDS.west], [BOUNDS.north, BOUNDS.east]];
+const map = L.map("map", {preferCanvas: true, zoomControl: true}).fitBounds(VIEW);
+// 창이 숨겨진 채 열리면 지도 크기가 0이라, 크기가 처음 잡힐 때 안산으로 다시 맞춘다.
+let fitted = false;
+new ResizeObserver(() => {
+  map.invalidateSize();
+  const box = map.getContainer();
+  // 후보 비교표가 열려 지도가 줄어도 팝업이 지도 안에 들어오게 한다.
+  popup.options.maxHeight = Math.max(200, box.clientHeight - 90);
+  if (map.hasLayer(popup)) popup.update();
+  if (!fitted && box.clientWidth > 0 && box.clientHeight > 0) {
+    fitted = true;
+    map.fitBounds(VIEW);
+  }
+}).observe(map.getContainer());
+L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {maxZoom: 19, attribution: "&copy; OpenStreetMap"}).addTo(map);
+map.createPane("grid").style.zIndex = 350;
+map.getPane("grid").style.pointerEvents = "none";
+
+const canvas = document.createElement("canvas");
+canvas.width = COLS;
+canvas.height = ROWS;
+canvas.className = "grid-layer";
+const ctx = canvas.getContext("2d");
+const CanvasOverlay = L.ImageOverlay.extend({
+  _initImage() {
+    this._image = canvas;
+    L.DomUtil.addClass(canvas, "leaflet-image-layer");
+    if (this._zoomAnimated) L.DomUtil.addClass(canvas, "leaflet-zoom-animated");
+  },
+});
+const gridBounds = [[rowLat(ROWS), BOUNDS.west], [BOUNDS.north, colLon(COLS)]];
+new CanvasOverlay("", gridBounds, {pane: "grid", opacity: 1, interactive: false}).addTo(map);
+const BEST_FILL = [217, 72, 15];
+const bestOutline = L.polyline([], {color: "#7a2a00", weight: 2.5, interactive: false}).addTo(map);
+
+const layerGroups = {};
+for (const [key, spec] of Object.entries(LAYERS)) {
+  const group = L.layerGroup();
+  const points = key === "landmark" ? [...DATA.mart, ...DATA.school, ...DATA.office, ...DATA.apartment] : DATA[key];
+  for (const p of points) {
+    L.circleMarker([p.lat, p.lon], {radius: key === "bus" ? 3 : 5, color: "#fff", weight: 1, fillColor: spec.color, fillOpacity: .95})
+      .bindTooltip(p.name).addTo(group);
+  }
+  layerGroups[key] = group;
+  if (spec.on) group.addTo(map);
+}
+const candidateLayer = L.layerGroup().addTo(map);
+
+// 충족 개수별로 색상 자체를 다르게 한다. 주황은 항상 '모두 충족'이다.
+const COUNT_COLORS = {4: [49, 130, 246], 3: [240, 194, 10], 2: [142, 68, 173], 1: [3, 178, 108], 0: [51, 61, 75]};
+const MISSED_COLOR = [120, 120, 120];
+const image = ctx.createImageData(COLS, ROWS);
+const bestFlags = new Uint8Array(ROWS * COLS);
+
+function draw() {
+  image.data.fill(0);
+  bestFlags.fill(0);
+  let all = 0, total = 0;
+  for (const cell of cells) {
+    const e = evaluate(cell);
+    total = e.total;
+    const at = (cell.r * COLS + cell.c) * 4;
+    if (e.total === 0) continue;
+    if (!e.requiredOk) {
+      if (state.visible.missed) image.data.set([...MISSED_COLOR, 50], at);
+    } else if (e.passed === e.total) {
+      all++;
+      bestFlags[cell.r * COLS + cell.c] = 1;
+      if (state.visible.best) image.data.set([...BEST_FILL, 225], at);
+    } else if (state.visible[e.passed]) {
+      image.data.set([...COUNT_COLORS[e.passed], 200], at);
+    }
+  }
+  ctx.putImageData(image, 0, 0);
+  const regions = findRegions();
+  document.getElementById("allCount").textContent = all.toLocaleString("ko-KR");
+  document.getElementById("allArea").textContent = `약 ${(all * CELL_KM2).toFixed(1)}㎢ · 전체 ${cells.length.toLocaleString("ko-KR")}칸 중`;
+  document.getElementById("sumNote").textContent = total
+    ? `조건 ${total}개로 계산했어요. 필수 조건을 놓친 칸은 회색이에요.`
+    : "켜 둔 조건이 없어요. 조건을 하나 이상 켜 주세요.";
+  renderRegions(regions, total);
+  renderLegend(total);
+  renderBriefs();
+  renderPopup();
+  renderCompare();
+}
+
+// 위아래·좌우로 붙은 칸을 한 구역으로 묶고 바깥 테두리를 그린다.
+function findRegions() {
+  const seen = new Uint8Array(ROWS * COLS);
+  const regions = [];
+  const edges = [];
+  const steps = [[-1, 0], [1, 0], [0, -1], [0, 1]];
+  for (const start of cells) {
+    const startAt = start.r * COLS + start.c;
+    if (!bestFlags[startAt] || seen[startAt]) continue;
+    seen[startAt] = 1;
+    const stack = [start], members = [];
+    while (stack.length) {
+      const cell = stack.pop();
+      members.push(cell);
+      for (const [dr, dc] of steps) {
+        const next = cellAt(cell.r + dr, cell.c + dc);
+        const nextAt = next ? next.r * COLS + next.c : -1;
+        if (next && bestFlags[nextAt]) {
+          if (!seen[nextAt]) { seen[nextAt] = 1; stack.push(next); }
+          continue;
+        }
+        const n = rowLat(cell.r), s = rowLat(cell.r + 1), w = colLon(cell.c), e = colLon(cell.c + 1);
+        if (dr === -1) edges.push([[n, w], [n, e]]);
+        if (dr === 1) edges.push([[s, w], [s, e]]);
+        if (dc === -1) edges.push([[n, w], [s, w]]);
+        if (dc === 1) edges.push([[n, e], [s, e]]);
+      }
+    }
+    const lat = members.reduce((sum, m) => sum + m.lat, 0) / members.length;
+    const lon = members.reduce((sum, m) => sum + m.lon, 0) / members.length;
+    const center = members.reduce((best, m) => dist(lat, lon, m.lat, m.lon) < dist(lat, lon, best.lat, best.lon) ? m : best);
+    const dongCount = {};
+    for (const m of members) dongCount[m.dong.name] = (dongCount[m.dong.name] || 0) + 1;
+    const dongs = Object.entries(dongCount).sort((a, b) => b[1] - a[1]).map(([name]) => name);
+    regions.push({size: members.length, center, dongs});
+  }
+  bestOutline.setLatLngs(state.visible.best ? edges : []);
+  return regions.sort((a, b) => b.size - a.size || a.center.r - b.center.r || a.center.c - b.center.c);
+}
+
+const regionList = document.getElementById("regions");
+function renderRegions(regions, total) {
+  document.getElementById("regionCount").textContent = `${regions.length}곳`;
+  const empty = document.getElementById("regionEmpty");
+  empty.hidden = regions.length > 0;
+  if (!regions.length) {
+    empty.textContent = total ? "모든 조건을 맞춘 곳이 없어요. 조건을 조금 풀어 보세요." : "켜 둔 조건이 없어요.";
+  }
+  regionList.replaceChildren(...regions.slice(0, MAX_REGIONS_SHOWN).map(region => {
+    const item = document.createElement("li");
+    const button = document.createElement("button");
+    button.type = "button";
+    const others = region.dongs.length > 1 ? ` 외 ${region.dongs.length - 1}개 동` : "";
+    button.innerHTML = `<span>${esc(region.dongs[0])} 일대${others}</span><span class="size">${(region.size * CELL_KM2).toFixed(2)}㎢ · ${region.size}칸</span>`;
+    button.addEventListener("click", () => selectCell(region.center, true));
+    item.append(button);
+    return item;
+  }));
+  if (regions.length > MAX_REGIONS_SHOWN) {
+    const item = document.createElement("li");
+    item.className = "note";
+    item.textContent = `나머지 ${regions.length - MAX_REGIONS_SHOWN}곳은 생략했어요. 조건을 좁혀 보세요.`;
+    regionList.append(item);
+  }
+}
+
+const legend = L.control({position: "bottomright"});
+legend.onAdd = () => {
+  const box = L.DomUtil.create("div", "legend");
+  L.DomEvent.disableClickPropagation(box);
+  box.addEventListener("change", e => {
+    state.visible[e.target.dataset.show] = e.target.checked;
+    schedule();
+  });
+  box.addEventListener("click", e => {
+    const preset = e.target.dataset.preset;
+    if (!preset) return;
+    for (const key of Object.keys(state.visible)) state.visible[key] = preset === "all" || key === "best";
+    schedule();
+  });
+  return box;
+};
+legend.addTo(map);
+let legendTotal = null;
+function renderLegend(total) {
+  const box = legend.getContainer();
+  // 켜고 끌 때 체크박스 포커스가 사라지지 않도록, 조건 개수가 바뀔 때만 새로 만든다.
+  if (total !== legendTotal) {
+    legendTotal = total;
+    const row = (key, swatch, text) => `<label><input type="checkbox" data-show="${key}">${swatch}${text}</label>`;
+    const rows = [row("best", '<i class="best"></i>', `모두 충족 (${total}개)`)];
+    for (let k = total - 1; k >= 0; k--) {
+      rows.push(row(k, `<i style="background:rgb(${COUNT_COLORS[k].join(",")})"></i>`, `${k}개 충족`));
+    }
+    rows.push(row("missed", `<i style="background:rgba(${MISSED_COLOR.join(",")},.35)"></i>`, "필수 미충족"));
+    box.innerHTML = total
+      ? rows.join("") + '<div class="presets"><button class="link" type="button" data-preset="best">모두 충족만</button><button class="link" type="button" data-preset="all">전체 보기</button></div>'
+      : "조건 없음";
+  }
+  box.querySelectorAll("input").forEach(input => { input.checked = state.visible[input.dataset.show]; });
+}
+
+// ---------- 칸 선택 ----------
+let selected = null;
+let radiusCircle = null;
+const popup = L.popup({maxWidth: 320, autoPan: true, autoPanPaddingTopLeft: [10, 56]});  // 가짜 데이터 표시를 가리지 않게 한다.
+
+function popupRow(key, cell) {
+  const optional = state.modes[key] === "optional" ? " (참고)" : "";
+  return `<li>${statusTag(key, cell)} ${COND_NAMES[key]}${optional}<small>${esc(DETAILS[key](cell))}</small></li>`;
+}
+function renderPopup() {
+  if (radiusCircle) { radiusCircle.remove(); radiusCircle = null; }
+  if (!selected) return;
+  const c = selected, e = evaluate(c);
+  const saved = candidateFor(c);
+  const full = candidates.length >= MAX_CANDIDATES;
+  const box = document.createElement("div");
+  box.className = "pop";
+  box.innerHTML = `
+    <h4>${esc(c.dong.name)}</h4>
+    <small>조건 ${e.total}개 중 ${e.passed}개를 맞췄어요 · 가짜 데이터</small>
+    <ul>${Object.keys(CHECKS).map(key => popupRow(key, c)).join("")}</ul>
+    <button class="btn primary" type="button" ${saved || full ? "disabled" : ""}>${saved ? `후보 ${saved.label}로 저장했어요` : full ? `후보는 ${MAX_CANDIDATES}곳까지 저장할 수 있어요` : "후보로 저장"}</button>
+    <div class="naver">
+      <a href="${naverUrl(c)}" target="_blank" rel="noopener">네이버 지도로 보기</a>
+      <a href="${naverUrl(c, "레터링케이크")}" target="_blank" rel="noopener">근처 레터링케이크 검색</a>
+    </div>`;
+  // 저장하면 버튼이 새로 그려져, 막지 않으면 이 클릭이 지도 클릭으로 처리되어 다른 칸이 선택된다.
+  box.querySelector("button").addEventListener("click", e => {
+    e.stopPropagation();
+    addCandidate(c);
+  });
+  popup.setContent(box);
+  if (state.modes.rival !== "off") {
+    radiusCircle = L.circle([c.lat, c.lon], {radius: state.rivalRadius, color: "#191f28", weight: 1.5, dashArray: "5 5", fill: false, interactive: false}).addTo(map);
+  }
+}
+function selectCell(cell, move) {
+  selected = cell;
+  // 이동 애니메이션 중에는 팝업 자동 맞춤이 건너뛰어져 윗부분이 잘리므로 바로 이동한다.
+  if (move) map.setView([cell.lat, cell.lon], Math.max(map.getZoom(), 14), {animate: false});
+  renderPopup();
+  popup.setLatLng([cell.lat, cell.lon]).openOn(map);
+  // 처음 열 때는 크기가 잡히기 전에 위치를 맞춰 잘릴 수 있어 한 번 더 맞춘다.
+  setTimeout(() => { if (selected === cell) popup.update(); }, 350);
+}
+map.on("click", e => {
+  const cell = cellAt(
+    Math.floor((BOUNDS.north - e.latlng.lat) * M_LAT / CELL_M),
+    Math.floor((e.latlng.lng - BOUNDS.west) * M_LON / CELL_M));
+  if (cell) selectCell(cell, false);
+});
+popup.on("add", () => map.getContainer().classList.add("popup-open"));
+popup.on("remove", () => {
+  map.getContainer().classList.remove("popup-open");
+  selected = null;
+  if (radiusCircle) { radiusCircle.remove(); radiusCircle = null; }
+});
+
+// ---------- 후보 ----------
+function storedCandidates() {
+  try {
+    const raw = JSON.parse(localStorage.getItem(STORE_KEY) || "[]");
+    return raw.filter(item => cellAt(item.r, item.c)).slice(0, MAX_CANDIDATES);
+  } catch {
+    return [];
+  }
+}
+function saveCandidates() {
+  try { localStorage.setItem(STORE_KEY, JSON.stringify(candidates)); } catch {}
+}
+let candidates = storedCandidates();
+const candidateFor = cell => candidates.find(item => item.r === cell.r && item.c === cell.c);
+
+function addCandidate(cell) {
+  if (candidateFor(cell) || candidates.length >= MAX_CANDIDATES) return;
+  const label = ["A", "B", "C", "D", "E"].find(l => !candidates.some(item => item.label === l));
+  candidates.push({label, r: cell.r, c: cell.c, rent: "", deposit: ""});
+  candidates.sort((a, b) => a.label.localeCompare(b.label));
+  saveCandidates();
+  compareOpen = true;
+  renderCandidates();
+  renderPopup();
+}
+function removeCandidate(label) {
+  candidates = candidates.filter(item => item.label !== label);
+  saveCandidates();
+  renderCandidates();
+  renderPopup();
+}
+function renderCandidates() {
+  candidateLayer.clearLayers();
+  for (const item of candidates) {
+    const cell = cellAt(item.r, item.c);
+    L.marker([cell.lat, cell.lon], {
+      icon: L.divIcon({className: "", html: `<span class="pin">${esc(item.label)}</span>`, iconSize: [26, 26], iconAnchor: [13, 13]}),
+      title: `후보 ${item.label}`,
+      keyboard: true,
+    }).on("click", () => selectCell(cell, false)).addTo(candidateLayer);
+  }
+  renderCompare();
+}
+let compareOpen = true;
+const compareTable = document.getElementById("compareTable");
+function renderCompare() {
+  const has = candidates.length > 0;
+  document.getElementById("candCount").textContent = `${candidates.length}/${MAX_CANDIDATES}곳`;
+  const foldButton = document.getElementById("compareFold");
+  foldButton.textContent = compareOpen ? "접기" : "펼치기";
+  foldButton.setAttribute("aria-expanded", String(compareOpen));
+  document.getElementById("compareBody").hidden = !compareOpen;
+  document.getElementById("compareEmpty").hidden = has;
+  document.getElementById("compareNote").hidden = !has;
+  compareTable.hidden = !has;
+  if (!has) { compareTable.replaceChildren(); return; }
+
+  // 메모를 입력하는 중에 표를 다시 그려도 입력 칸의 포커스를 잃지 않게 값만 맞춘다.
+  const active = document.activeElement;
+  const focusKey = active && active.dataset && active.dataset.memo ? `${active.dataset.label}:${active.dataset.memo}` : null;
+  const rows = candidates.map(item => ({item, cell: cellAt(item.r, item.c)}));
+  const cols = fn => rows.map(fn).join("");
+  const memo = (field, title) => `<tr><td>${title}</td>${cols(({item}) =>
+    `<td><input type="number" min="0" step="1" inputmode="numeric" aria-label="후보 ${esc(item.label)} ${title}" data-label="${esc(item.label)}" data-memo="${field}" value="${esc(item[field])}"></td>`)}</tr>`;
+  compareTable.innerHTML = `<table>
+    <thead><tr><th>항목</th>${cols(({item, cell}) => `<th>후보 ${esc(item.label)}<small>${esc(cell.dong.name)}</small>
+      <div class="cand-actions"><button class="link" type="button" data-show="${esc(item.label)}">지도 보기</button><a class="link" href="${naverUrl(cell)}" target="_blank" rel="noopener">네이버</a><button class="link" type="button" data-remove="${esc(item.label)}">삭제</button></div></th>`)}</tr></thead>
+    <tbody>
+      <tr><td>충족 조건</td>${cols(({cell}) => { const e = evaluate(cell); return `<td><strong>${e.passed} / ${e.total}</strong>${e.requiredOk ? "" : '<small class="fail">필수 미충족</small>'}</td>`; })}</tr>
+      ${Object.keys(CHECKS).map(key => `<tr><td>${COND_NAMES[key]}</td>${cols(({cell}) => `<td>${statusTag(key, cell)}<small>${esc(DETAILS[key](cell))}</small></td>`)}</tr>`).join("")}
+      ${memo("rent", "월세(만원)")}
+      ${memo("deposit", "보증금(만원)")}
+    </tbody></table>`;
+  if (focusKey) {
+    const [label, field] = focusKey.split(":");
+    compareTable.querySelector(`input[data-label="${label}"][data-memo="${field}"]`)?.focus();
+  }
+}
+compareTable.addEventListener("input", e => {
+  const {label, memo} = e.target.dataset;
+  const item = candidates.find(c => c.label === label);
+  if (item && memo) { item[memo] = e.target.value; saveCandidates(); }
+});
+compareTable.addEventListener("click", e => {
+  const {show, remove} = e.target.dataset;
+  if (remove) removeCandidate(remove);
+  if (show) {
+    const item = candidates.find(c => c.label === show);
+    selectCell(cellAt(item.r, item.c), true);
+  }
+});
+document.getElementById("compareFold").addEventListener("click", () => {
+  compareOpen = !compareOpen;
+  renderCompare();
+});
+
+// ---------- 왼쪽 입력 ----------
+// 슬라이더에서 왼쪽 채워진 부분의 길이를 맞춘다.
+function paintRange(input) {
+  const pct = (input.value - input.min) / (input.max - input.min) * 100;
+  input.style.setProperty("--pct", `${pct}%`);
+}
+let scheduled = false;
+function schedule() {
+  if (scheduled) return;
+  scheduled = true;
+  requestAnimationFrame(() => { scheduled = false; draw(); });
+}
+for (const id of SLIDERS) {
+  document.getElementById(id).addEventListener("input", e => {
+    state[id] = Number(e.target.value);
+    document.querySelector(`output[for=${id}]`).textContent = fmt(id, state[id]);
+    paintRange(e.target);
+    schedule();
+  });
+}
+
+const BRIEFS = {
+  home: () => `${fmt("minHouseholds", state.minHouseholds)} 이상, 감소 ${state.maxDecline}% 이하`,
+  guide: () => {
+    const count = Object.values(state.guideTypes).filter(Boolean).length;
+    return count ? `시설 ${count}종 중 하나가 ${metres(state.guideDist)} 안` : "선택한 시설 없음";
+  },
+  transit: () => `지하철 ${metres(state.subwayDist)} 또는 버스 ${metres(state.busDist)} 안`,
+  parking: () => `${metres(state.parkingDist)} 안`,
+  rival: () => `${metres(state.rivalRadius)} 안 레터링 ${state.rivalMax}곳 이하, 폐업 ${state.closedMax}건 이하`,
+};
+function renderBriefs() {
+  document.querySelectorAll(".cond").forEach(section => {
+    const key = section.dataset.cond;
+    section.querySelector(".brief").textContent = state.modes[key] === "off" ? "계산에서 뺐어요" : BRIEFS[key]();
+  });
+}
+function setOpen(section, open) {
+  section.classList.toggle("open", open);
+  section.querySelector(".fold").setAttribute("aria-expanded", String(open));
+  section.querySelector(".body").hidden = !open;
+}
+const sections = [...document.querySelectorAll(".cond")];
+function syncFoldAll() {
+  document.getElementById("foldAll").textContent = sections.every(s => s.classList.contains("open")) ? "모두 접기" : "모두 펼치기";
+}
+sections.forEach((section, index) => {
+  const key = section.dataset.cond;
+  const box = section.querySelector(".mode");
+  box.setAttribute("role", "group");
+  box.setAttribute("aria-label", `${COND_NAMES[key]} 적용 방식`);
+  for (const [value, label] of MODES) {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.textContent = label;
+    button.dataset.value = value;
+    button.addEventListener("click", () => {
+      state.modes[key] = value;
+      syncInputs();
+      schedule();
+    });
+    box.append(button);
+  }
+  section.querySelector(".fold").addEventListener("click", () => {
+    setOpen(section, !section.classList.contains("open"));
+    syncFoldAll();
+  });
+  setOpen(section, index === 0);
+});
+document.getElementById("foldAll").addEventListener("click", () => {
+  const open = !sections.every(s => s.classList.contains("open"));
+  sections.forEach(s => setOpen(s, open));
+  syncFoldAll();
+});
+
+const guideBox = document.getElementById("guideTypes");
+for (const [type, label] of Object.entries(GUIDE_TYPES)) {
+  const item = document.createElement("label");
+  item.innerHTML = `<input type="checkbox" data-type="${type}"> ${label}`;
+  item.querySelector("input").addEventListener("change", e => {
+    state.guideTypes[type] = e.target.checked;
+    schedule();
+  });
+  guideBox.append(item);
+}
+const layerBox = document.getElementById("layerChecks");
+for (const [key, spec] of Object.entries(LAYERS)) {
+  const item = document.createElement("label");
+  item.innerHTML = `<input type="checkbox" ${spec.on ? "checked" : ""}><i style="display:inline-block;width:9px;height:9px;border-radius:50%;background:${spec.color}"></i> ${spec.label}`;
+  item.querySelector("input").addEventListener("change", e => {
+    if (e.target.checked) layerGroups[key].addTo(map);
+    else layerGroups[key].remove();
+  });
+  layerBox.append(item);
+}
+function syncInputs() {
+  for (const id of SLIDERS) {
+    document.getElementById(id).value = state[id];
+    document.querySelector(`output[for=${id}]`).textContent = fmt(id, state[id]);
+    paintRange(document.getElementById(id));
+  }
+  sections.forEach(section => {
+    const mode = state.modes[section.dataset.cond];
+    section.classList.toggle("off", mode === "off");
+    section.querySelectorAll(".mode button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.value === mode)));
+    section.querySelectorAll(".body input").forEach(i => { i.disabled = mode === "off"; });
+  });
+  guideBox.querySelectorAll("input").forEach(i => { i.checked = state.guideTypes[i.dataset.type]; });
+}
+document.getElementById("reset").addEventListener("click", () => {
+  state = structuredClone(DEFAULTS);
+  syncInputs();
+  schedule();
+});
+
+syncInputs();
+syncFoldAll();
+renderCandidates();
+draw();
+</script>
+</body>
+</html>

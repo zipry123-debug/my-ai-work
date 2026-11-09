@@ -1,0 +1,6 @@
+{
+  "enabledMcpjsonServers": [
+    "openai-gpt-image"
+  ],
+  "enableAllProjectMcpServers": true
+}

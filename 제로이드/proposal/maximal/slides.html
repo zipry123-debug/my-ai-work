@@ -1,0 +1,534 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ZEROID 맥시멀 제안서</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Noto+Sans+KR:wght@400;500;700;900&display=swap">
+<style>
+/* Layout: 1920×1080 슬라이드를 세로로 쌓아 화면 폭에 맞춰 축소. 진 콜라주(찢은 종이·랜섬 띠지·하프톤·체커보드·원형 스티커), 데이터 장은 장식 최소.
+   단일 테마(종이 바탕)로 의도적으로 고정 */
+:root{
+  --cobalt:#1B3FB0; --paper:#F1E9D8; --pink:#FF3D8B; --yellow:#FFD43B; --ink:#0D1220; --white:#FFFFFF;
+  --paper-2:#E6DBC4; --mute:#4A4F5C;
+  --disp:"Black Han Sans","Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  --body:"Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  color-scheme:light;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:#2a2a2a}
+body{font-family:var(--body);color:var(--ink);word-break:keep-all;-webkit-print-color-adjust:exact;print-color-adjust:exact;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:24px}
+.deck{display:grid;gap:24px;justify-items:center}
+.frame{width:100%;max-width:1920px;position:relative}
+.frame::before{content:"";display:block;padding-top:56.25%}
+.slide{position:absolute;left:0;top:0;width:1920px;height:1080px;transform-origin:0 0;overflow:hidden;background:var(--paper)}
+.memo{max-width:1920px;width:100%;color:#e8e8e8;font-size:14px;line-height:1.6;margin-top:-12px}
+.memo b{color:var(--yellow)}
+
+/* 공통 장치 */
+.disp{font-family:var(--disp);font-weight:400;letter-spacing:-.02em;line-height:.95}
+.halftone{background-image:radial-gradient(var(--ink) 1.6px,transparent 2px);background-size:16px 16px}
+.checker{background:repeating-conic-gradient(var(--ink) 0 25%,var(--paper) 0 50%) 0 0/36px 36px}
+.torn{position:absolute}
+.strip{position:absolute;display:inline-block;padding:.08em .28em .14em;white-space:nowrap}
+.sticker{position:absolute;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+.card{position:absolute;background:var(--white);display:flex;align-items:center;justify-content:center}
+.card img{max-width:78%;max-height:82%;object-fit:contain}
+.label{font-family:var(--body);font-weight:700;letter-spacing:.06em}
+.src{position:absolute;font-size:18px;color:var(--mute);line-height:1.4}
+.tape{position:absolute;width:150px;height:44px;background:rgba(255,212,59,.85)}
+.cut{position:absolute;width:auto;display:block}
+
+/* 페르소나 카드 */
+.pgrid{position:absolute;left:80px;right:80px;display:grid;gap:36px}
+.pcard{background:var(--white);padding:30px 32px 28px;display:flex;flex-direction:column;gap:18px;height:740px}
+.pcard.hyp{background:var(--paper);outline:4px dashed var(--ink);outline-offset:-4px}
+.phead{display:flex;gap:22px;align-items:center}
+.pL{font-size:150px;color:var(--cobalt);line-height:.8}
+.pcard.hyp .pL{color:var(--ink)}
+.phead h3{font-size:40px;line-height:1.1}
+.phead p{font-size:21px;color:var(--mute);margin-top:8px;line-height:1.35}
+.pprod{display:flex;gap:16px;align-items:flex-end;height:170px}
+.pprod img{height:100%;width:auto}
+.pstep{list-style:none;display:grid;gap:10px}
+.pstep li{font-size:25px;font-weight:700;line-height:1.3;border-left:6px solid var(--ink);padding-left:14px}
+.pstep li span{display:block;font-size:18px;font-weight:700;color:var(--mute)}
+.pstep li.pop{border-color:var(--pink);background:var(--paper);padding:6px 14px}
+.pstat{margin-top:auto;border-top:3px solid var(--ink);padding-top:14px;display:flex;gap:18px;align-items:baseline}
+.pstat b{font-size:84px;color:var(--cobalt);line-height:.9;flex:none}
+.pcard.hyp .pstat b{color:var(--ink);font-size:64px}
+.pstat p{font-size:19px;line-height:1.4}
+.pnote{background:var(--ink);color:var(--white);padding:34px;display:flex;flex-direction:column;gap:20px;height:740px;transform:rotate(1deg)}
+.pnote p{font-size:25px;line-height:1.5}
+.pnote b{color:var(--yellow)}
+
+/* 데이터 장 공통 */
+.band-h{position:absolute;left:80px;top:100px;font-size:80px;color:var(--white)}
+.kpi4{position:absolute;left:80px;right:80px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-top:4px solid var(--ink)}
+.kpi4>div{padding:22px 26px 0 0}
+.kpi4>div+div{padding-left:26px;border-left:2px solid var(--ink)}
+.kpi4 span{font-size:22px;font-weight:700;color:var(--mute)}
+.kpi4 b{display:block;font-size:120px;color:var(--cobalt);line-height:1;margin-top:10px}
+.kpi4 b small{font-size:48px}
+.kpi4 p{font-size:21px;margin-top:8px}
+.zone{position:absolute;background:var(--white);padding:22px 26px;display:flex;flex-direction:column;gap:6px;border-left:12px solid var(--cobalt)}
+.zone .zn{font-size:76px;line-height:.85;color:var(--cobalt)}
+.zone h4{font-size:32px;line-height:1.15}
+.zone p{font-size:20px;line-height:1.4}
+.zone em{font-style:normal;font-size:19px;font-weight:700;color:var(--mute)}
+.zone.end{border-left-color:var(--ink)}.zone.end .zn{color:var(--ink)}
+.qa{background:var(--white);padding:30px 34px;display:flex;flex-direction:column;gap:14px;height:340px}
+.qa span{font-size:24px;font-weight:700;color:var(--cobalt)}
+.qa h4{font-size:38px;line-height:1.2}
+.qa p{font-size:24px;line-height:1.5}
+.wall{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;padding:10px}
+.wall i{height:62px;background:var(--white)}
+.wall.broken{outline:3px dashed var(--ink)}
+.wall.broken i.g{visibility:hidden}
+.wall.fixed{background:var(--cobalt)}
+.crow2{display:grid;grid-template-columns:560px 1fr 140px 140px;gap:20px;align-items:center;font-size:25px;font-weight:500}
+.crow2>span:nth-child(2){display:flex;align-items:center;gap:14px}
+.crow2 i{display:block;height:34px;background:var(--paper-2);max-width:80%}
+.crow2 b{font-size:24px}
+.crow2>span:nth-child(3),.crow2>span:nth-child(4){text-align:right}
+.crow2.me{font-weight:900;color:var(--cobalt)}
+.crow2.me i{background:var(--cobalt)}
+.crow2.me>span:last-child{background:var(--pink);color:var(--ink);padding:2px 8px;justify-self:end}
+
+[hidden]{display:none!important}
+.solo{padding:0}.solo .memo{display:none}.solo .deck{gap:0}
+/* 인쇄: 슬라이드 1장 = 1쪽 */
+@page{size:1920px 1080px;margin:0}
+@media print{
+  html,body{background:none}body{padding:0}
+  .deck{display:block}.memo{display:none}
+  .frame{max-width:none;width:1920px;height:1080px;page-break-after:always;break-after:page}
+  .frame::before{display:none}
+  .slide{transform:none!important}
+}
+</style>
+</head>
+<body>
+<main class="deck">
+
+<!-- ========== 1. 표지 ========== -->
+<div class="frame"><section class="slide" aria-label="표지">
+  <div class="halftone" style="position:absolute;inset:0;opacity:.13"></div>
+  <div class="checker" style="position:absolute;right:0;top:0;width:96px;height:100%"></div>
+  <!-- 찢은 코발트 대형 종이 -->
+  <div class="torn" data-torn="7" style="left:-40px;top:150px;width:1150px;height:760px;background:var(--cobalt)"></div>
+  <div class="torn" data-torn="3" style="left:980px;top:-30px;width:380px;height:300px;background:var(--pink);transform:rotate(4deg)"></div>
+  <div class="torn" data-torn="11" style="left:1060px;top:720px;width:620px;height:420px;background:var(--yellow);transform:rotate(-3deg)"></div>
+
+  <!-- 상단 메타 -->
+  <div style="position:absolute;left:72px;top:56px;display:flex;gap:28px;align-items:center;font-size:22px;font-weight:700">
+    <span class="strip" style="position:static;background:var(--ink);color:var(--white);font-size:22px">ZEROID × MUSINSA BEAUTY</span>
+    <span>입점 제안서 · 무신사뷰티 성수 팝업스토어 · 2026.10</span>
+  </div>
+
+  <!-- 랜섬 헤드라인 (주인공) -->
+  <span class="strip disp" style="left:96px;top:236px;font-size:132px;background:var(--ink);color:var(--white);transform:rotate(-2.5deg)">옷은 핏으로,</span>
+  <span class="strip disp" style="left:150px;top:420px;font-size:132px;background:var(--paper);color:var(--ink);transform:rotate(1.5deg)">크림은</span>
+  <span class="strip disp" style="left:520px;top:378px;font-size:250px;background:var(--yellow);color:var(--ink);transform:rotate(-3deg);padding:.02em .16em .08em">장벽</span>
+  <span class="strip disp" style="left:120px;top:668px;font-size:132px;background:var(--white);color:var(--ink);transform:rotate(-1deg)">으로 고릅니다.</span>
+  <svg style="position:absolute;left:520px;top:640px" width="470" height="40" viewBox="0 0 470 40" aria-hidden="true"><path d="M4 26 C80 6, 160 38, 240 18 S400 8, 466 22" fill="none" stroke="var(--pink)" stroke-width="9" stroke-linecap="round"/></svg>
+
+  <!-- 제품 콜라주: 누끼를 크게 겹쳐 쌓음 -->
+  <img class="cut" src="cut/cream_mist.png" alt="크림 미스트" style="left:1530px;top:170px;height:700px;transform:rotate(9deg)">
+  <img class="cut" src="cut/daily_sun.png" alt="데일리 선크림" style="left:1095px;top:470px;height:560px;transform:rotate(-14deg)">
+  <img class="cut" src="cut/intensive_cream.png" alt="인텐시브 크림" style="left:1210px;top:40px;height:930px;transform:rotate(6deg)">
+  <img class="cut" src="cut/soothing_cream.png" alt="수딩 크림" style="left:1420px;top:520px;height:560px;transform:rotate(-8deg)">
+  <img class="cut" src="cut/calming_ampoule.png" alt="카밍 앰플" style="left:1030px;top:190px;height:400px;transform:rotate(-22deg)">
+  <div class="tape" style="left:1300px;top:70px;transform:rotate(-8deg)"></div>
+  <div class="tape" style="left:1560px;top:880px;transform:rotate(10deg)"></div>
+
+  <!-- 스티커 -->
+  <div class="sticker" style="left:1600px;top:88px;width:210px;height:210px;background:var(--pink);color:var(--ink);transform:rotate(12deg)"><b class="disp" style="font-size:66px">4.9만</b><span class="label" style="font-size:20px">올리브영 리뷰</span></div>
+  <svg style="position:absolute;left:1000px;top:250px" width="120" height="120" viewBox="0 0 100 100" aria-hidden="true"><path d="M50 2 L61 38 L98 38 L68 60 L79 96 L50 74 L21 96 L32 60 L2 38 L39 38 Z" fill="var(--ink)"/></svg>
+  <span class="strip label" style="left:1170px;top:930px;font-size:26px;background:var(--ink);color:var(--yellow);transform:rotate(-2deg)">BARRIER FIT · SEONGSU</span>
+
+  <!-- 제안 한 줄 -->
+  <div style="position:absolute;left:96px;top:900px;background:var(--paper);padding:18px 26px;font-size:27px;font-weight:700;max-width:1060px;line-height:1.45;white-space:nowrap">
+    <span style="background:var(--pink);color:var(--ink);padding:2px 10px;margin-right:10px">제안</span>① 성수 팝업·온라인 동시 테스트 ② 성과 확인 후 온라인 상시 운영 확대
+  </div>
+  <span class="src" style="left:96px;top:1030px;color:var(--ink)">교육 실습 과제로 작성한 가상 제안서 · 제로이드(네오팜)·무신사와 무관</span>
+</section></div>
+
+<!-- ========== 2. 문제 제기 ========== -->
+<div class="frame"><section class="slide" aria-label="문제 제기">
+  <div style="position:absolute;inset:0;background:var(--pink)"></div>
+  <div class="halftone" style="position:absolute;inset:0;opacity:.18"></div>
+  <div class="torn" data-torn="21" style="left:640px;top:70px;width:1220px;height:940px;background:var(--paper);transform:rotate(-1.5deg)"></div>
+  <div class="checker" style="position:absolute;left:0;bottom:0;width:100%;height:72px"></div>
+
+  <span class="strip label" style="left:80px;top:70px;font-size:28px;background:var(--ink);color:var(--white);transform:rotate(-2deg)">PROBLEM</span>
+  <span class="strip disp" style="left:80px;top:150px;font-size:84px;background:var(--white);color:var(--ink);transform:rotate(-1.5deg)">무신사에</span>
+  <span class="strip disp" style="left:110px;top:258px;font-size:84px;background:var(--yellow);color:var(--ink);transform:rotate(1.5deg)">제로이드는</span>
+
+  <!-- 주인공: 0개 -->
+  <div class="torn" data-torn="17" style="left:720px;top:120px;width:760px;height:820px;background:var(--cobalt);transform:rotate(2deg)"></div>
+  <b class="disp" style="position:absolute;left:770px;top:110px;font-size:860px;color:var(--white);line-height:.9">0</b>
+  <span class="strip disp" style="left:1330px;top:700px;font-size:150px;background:var(--ink);color:var(--white);transform:rotate(-4deg)">개</span>
+  <span class="strip label" style="left:820px;top:930px;font-size:28px;background:var(--white);color:var(--ink);transform:rotate(-1deg)">무신사 내 제로이드 판매 상품 수 (2026.10.29 검색)</span>
+
+  <!-- 주변 근거 띠지 -->
+  <div style="position:absolute;left:80px;top:420px;display:grid;gap:22px;width:600px">
+    <div style="background:var(--white);padding:22px 26px;transform:rotate(-1.5deg)"><span class="label" style="font-size:20px;color:var(--cobalt)">무신사뷰티 거래액</span><b class="disp" style="display:block;font-size:76px;margin-top:6px">2배 이상</b><span style="font-size:22px">2024년 · 2025년 1분기 +130%</span></div>
+    <div style="background:var(--ink);color:var(--white);padding:22px 26px;transform:rotate(1deg)"><span class="label" style="font-size:20px;color:var(--yellow)">경쟁 장벽 크림</span><b class="disp" style="display:block;font-size:64px;margin-top:6px">4개 브랜드 입점</b><span style="font-size:22px">피지오겔 · 일리윤 · 에스트라 · 아벤느</span></div>
+  </div>
+  <div class="sticker" style="left:1560px;top:90px;width:250px;height:250px;background:var(--yellow);color:var(--ink);transform:rotate(-10deg)"><span class="label" style="font-size:22px">그런데 올리브영엔</span><b class="disp" style="font-size:74px">4.9만</b><span class="label" style="font-size:22px">리뷰</span></div>
+  <img class="cut" src="cut/red_control.png" alt="레드 컨트롤 크림" style="left:1700px;top:470px;height:520px;transform:rotate(14deg)">
+  <img class="cut" src="cut/intensive_cream.png" alt="인텐시브 크림" style="left:1500px;top:380px;height:640px;transform:rotate(-9deg)">
+  <span class="strip label" style="left:1490px;top:330px;font-size:24px;background:var(--pink);color:var(--ink);transform:rotate(-4deg)">아직 무신사에서 못 사요</span>
+  <span class="src" style="left:80px;top:880px;max-width:580px;color:var(--ink);background:var(--white);padding:8px 12px">출처: ZDNet Korea(2025.05.23), 바이라인네트워크(2025.05) 무신사 발표 인용 · 무신사 브랜드 노출 기준(2026.10.29)</span>
+</section></div>
+
+<!-- ========== 3. 섹션 01 · 페르소나 (밀도 최대) ========== -->
+<div class="frame"><section class="slide" aria-label="섹션 01 페르소나">
+  <div style="position:absolute;inset:0;background:var(--yellow)"></div>
+  <div class="halftone" style="position:absolute;inset:0;opacity:.14"></div>
+  <div class="torn" data-torn="41" style="left:820px;top:-40px;width:1160px;height:700px;background:var(--pink);transform:rotate(3deg)"></div>
+  <div class="torn" data-torn="43" style="left:-60px;top:560px;width:1100px;height:600px;background:var(--cobalt);transform:rotate(-2deg)"></div>
+  <div class="checker" style="position:absolute;left:0;top:0;width:100%;height:60px"></div>
+  <b class="disp" style="position:absolute;left:60px;top:70px;font-size:460px;color:var(--ink);line-height:.8">01</b>
+  <span class="strip label" style="left:80px;top:470px;font-size:30px;background:var(--ink);color:var(--white);transform:rotate(-2deg)">PERSONA · 누가, 언제 쓰나</span>
+  <span class="strip disp" style="left:80px;top:640px;font-size:128px;background:var(--white);color:var(--ink);transform:rotate(-2deg)">제로이드가 필요한</span>
+  <span class="strip disp" style="left:150px;top:810px;font-size:150px;background:var(--yellow);color:var(--ink);transform:rotate(1.5deg)">5개의 순간</span>
+  <img class="cut" src="cut/foaming_cleanser.png" alt="" style="left:1000px;top:120px;height:560px;transform:rotate(-10deg)">
+  <img class="cut" src="cut/calming_ampoule.png" alt="" style="left:1300px;top:90px;height:470px;transform:rotate(14deg)">
+  <img class="cut" src="cut/soothing_cream.png" alt="" style="left:1440px;top:330px;height:600px;transform:rotate(-5deg)">
+  <img class="cut" src="cut/cream_mist.png" alt="" style="left:1700px;top:150px;height:640px;transform:rotate(8deg)">
+  <div class="sticker" style="left:1120px;top:700px;width:170px;height:170px;background:var(--cobalt);color:var(--white)"><b class="disp" style="font-size:96px">A</b></div>
+  <div class="sticker" style="left:1300px;top:820px;width:150px;height:150px;background:var(--ink);color:var(--white);transform:rotate(-8deg)"><b class="disp" style="font-size:84px">B</b></div>
+  <div class="sticker" style="left:1470px;top:880px;width:150px;height:150px;background:var(--white);color:var(--ink);transform:rotate(6deg)"><b class="disp" style="font-size:84px">C</b></div>
+  <div class="sticker" style="left:1640px;top:820px;width:150px;height:150px;background:var(--pink);color:var(--ink);transform:rotate(-4deg)"><b class="disp" style="font-size:84px">D</b></div>
+  <div class="sticker" style="left:1780px;top:690px;width:130px;height:130px;background:var(--paper);color:var(--ink);border:4px dashed var(--ink);transform:rotate(10deg)"><b class="disp" style="font-size:66px">E</b><span class="label" style="font-size:18px">가설</span></div>
+</section></div>
+
+<!-- ========== 4. 페르소나 A~C ========== -->
+<div class="frame"><section class="slide" aria-label="페르소나 A B C">
+  <div class="torn" data-torn="51" style="left:-20px;top:-30px;width:1960px;height:230px;background:var(--cobalt)"></div>
+  <span class="strip label" style="left:80px;top:46px;font-size:26px;background:var(--yellow);color:var(--ink);transform:rotate(-1.5deg)">01 · PERSONA</span>
+  <h2 class="disp" style="position:absolute;left:80px;top:100px;font-size:80px;color:var(--white)">고민 → 성수 팝업 → 무신사 재구매</h2>
+  <div class="pgrid" style="top:250px;grid-template-columns:repeat(3,minmax(0,1fr))">
+    <article class="pcard" style="transform:rotate(-.8deg)">
+      <div class="phead"><b class="disp pL">A</b><div><h3 class="disp">장벽 회복러</h3><p>29세 · 성수동 IT 마케터 · 건성·민감</p></div></div>
+      <div class="pprod"><img src="cut/foaming_cleanser.png" alt="포밍 클렌저"><img src="cut/intensive_cream.png" alt="인텐시브 크림"><img src="cut/daily_sun.png" alt="데일리 선크림"></div>
+      <ol class="pstep"><li><span>고민 심화</span>당김과 열감</li><li class="pop"><span>성수 팝업</span>배리어 리커버리 라운지</li><li><span>무신사뷰티</span>사용량에 맞춰 재구매</li></ol>
+      <div class="pstat"><b class="disp">74%</b><p>포밍 클렌저 ‘자극 없이 순해요’ 응답 (올리브영 구매자 설문)</p></div>
+    </article>
+    <article class="pcard" style="transform:rotate(.6deg)">
+      <div class="phead"><b class="disp pL">B</b><div><h3 class="disp">마감 주간 트러블러</h3><p>24세 · 프리랜서 디자이너 · 복합성</p></div></div>
+      <div class="pprod"><img src="cut/calming_ampoule.png" alt="카밍 앰플"><img src="cut/red_control.png" alt="레드 컨트롤 크림"></div>
+      <ol class="pstep"><li><span>고민 심화</span>강한 제품 역효과</li><li class="pop"><span>성수 팝업</span>레드 SOS 바</li><li><span>무신사뷰티</span>맞는 루틴만 재구매</li></ol>
+      <div class="pstat"><b class="disp">18%</b><p>도움순 리뷰 샘플의 트러블·붉은기 키워드 언급 · 재구매율과 구분</p></div>
+    </article>
+    <article class="pcard" style="transform:rotate(-.5deg)">
+      <div class="phead"><b class="disp pL">C</b><div><h3 class="disp">메이크업 베이스 민감러</h3><p>26세 · 패션 브랜드 MD · 수분 부족 지성</p></div></div>
+      <div class="pprod"><img src="cut/soothing_cream.png" alt="수딩 크림"><img src="cut/daily_sun.png" alt="데일리 선크림"></div>
+      <ol class="pstep"><li><span>고민 심화</span>점심 이후 밀림</li><li class="pop"><span>성수 팝업</span>베이스 테스트 미러</li><li><span>무신사뷰티</span>메이크업 구매 때 함께 탐색</li></ol>
+      <div class="pstat"><b class="disp">15%</b><p>도움순 리뷰 샘플의 산뜻·안 끈적 언급 · 메이크업 적합성은 체험으로 확인</p></div>
+    </article>
+  </div>
+  <span class="src" style="left:80px;top:1020px">A~C는 올리브영 리뷰 패턴으로 만든 가상 인물 · 리뷰 샘플 3,280건(2026.10.28 수집)</span>
+</section></div>
+
+<!-- ========== 5. 페르소나 D·E ========== -->
+<div class="frame"><section class="slide" aria-label="페르소나 D E">
+  <div class="torn" data-torn="53" style="left:-20px;top:-30px;width:1960px;height:230px;background:var(--cobalt)"></div>
+  <span class="strip label" style="left:80px;top:46px;font-size:26px;background:var(--yellow);color:var(--ink);transform:rotate(-1.5deg)">01 · PERSONA</span>
+  <h2 class="disp" style="position:absolute;left:80px;top:100px;font-size:80px;color:var(--white)">건조한 투어러, 그리고 러너(가설)</h2>
+  <div class="pgrid" style="top:250px;grid-template-columns:repeat(3,minmax(0,1fr))">
+    <article class="pcard" style="transform:rotate(.7deg)">
+      <div class="phead"><b class="disp pL">D</b><div><h3 class="disp">성수 투어러 · 환절기 건조러</h3><p>23세 · 대학생 · 건성 · 주말 팝업 투어</p></div></div>
+      <div class="pprod"><img src="cut/cream_mist.png" alt="크림 미스트"><img src="cut/cream_mask.png" alt="크림 마스크"></div>
+      <ol class="pstep"><li><span>고민 심화</span>화장 위 각질</li><li class="pop"><span>성수 팝업</span>미스트 스테이션</li><li><span>무신사뷰티</span>사용감 확인 뒤 본품 탐색</li></ol>
+      <div class="pstat"><b class="disp">21%</b><p>도움순 리뷰 샘플의 건조·환절기 언급 · 굿즈 구매 유도 효과는 미확인</p></div>
+    </article>
+    <article class="pcard hyp" style="transform:rotate(-.6deg)">
+      <div class="phead"><b class="disp pL">E</b><div><h3 class="disp">주말 러너 · 야외활동러</h3><p>27세 · 직장인 · 건성·민감 · 주말 한강 러닝</p></div></div>
+      <div class="pprod"><img src="cut/daily_sun.png" alt="데일리 선크림"><img src="cut/cream_mist.png" alt="크림 미스트"><img src="cut/intensive_cream.png" alt="인텐시브 크림"></div>
+      <ol class="pstep"><li><span>고민 심화</span>러닝 후 당김·화끈거림</li><li class="pop"><span>성수 팝업</span>미스트 스테이션 · 선크림 비교</li><li><span>무신사뷰티</span>러닝 기어와 함께 장바구니</li></ol>
+      <div class="pstat"><b class="disp">가설</b><p>러닝·야외활동 관련 리뷰 근거 없음 · 팝업 입구 질문으로 비중을 처음 측정</p></div>
+    </article>
+    <div class="pnote">
+      <span class="strip label" style="position:static;background:var(--ink);color:var(--white);font-size:24px">읽는 법</span>
+      <p><b>A~D</b>는 올리브영 리뷰 패턴으로 만든 가상 인물입니다.</p>
+      <p><b>E</b>는 리뷰 근거가 없는 확장 가설입니다.</p>
+      <p>시간·감정 곡선은 체험 설계용 시나리오입니다.</p>
+      <p><b>남성 고객</b>은 리뷰 샘플 3,280건 중 관련 언급 2%로 1차 타깃에서 제외하고, 온라인 이후 확장 대상으로 봅니다.</p>
+    </div>
+  </div>
+</section></div>
+
+<!-- ========== 6. 효능 (데이터 장, 장식 최소) ========== -->
+<div class="frame"><section class="slide" aria-label="효능 데이터">
+  <div class="torn" data-torn="31" style="left:-20px;top:-30px;width:1960px;height:250px;background:var(--cobalt)"></div>
+  <span class="strip label" style="left:80px;top:52px;font-size:26px;background:var(--yellow);color:var(--ink);transform:rotate(-1.5deg)">02 · EFFICACY</span>
+  <h2 class="disp" style="position:absolute;left:80px;top:108px;font-size:92px;color:var(--white)">순한데, 숫자로 증명합니다</h2>
+
+  <div style="position:absolute;left:80px;right:80px;top:250px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(0,1.3fr) minmax(0,1fr);border-top:4px solid var(--ink)">
+    <div style="padding:30px 30px 0 0"><img src="cut/intensive_cream.png" alt="" style="height:230px;display:block;transform:rotate(-6deg)"><p style="font-size:26px;font-weight:700;margin-top:18px">인텐시브 크림</p><b class="disp" style="display:block;font-size:136px;color:var(--cobalt);margin-top:10px">2.5<span style="font-size:80px">배</span></b><p style="font-size:24px;margin-top:14px;line-height:1.45">1회 사용<br>손상 피부장벽 개선</p></div>
+    <div style="padding:30px 30px 0;border-left:2px solid var(--ink)"><img src="cut/soothing_cream.png" alt="" style="height:230px;display:block;transform:rotate(-6deg)"><p style="font-size:26px;font-weight:700;margin-top:18px">수딩 크림</p><b class="disp" style="display:block;font-size:136px;color:var(--cobalt);margin-top:10px">54<span style="font-size:80px">%</span></b><p style="font-size:24px;margin-top:14px;line-height:1.45">1회 사용<br>피부 민감도 개선</p></div>
+    <div style="padding:30px 30px 0;border-left:2px solid var(--ink)"><img src="cut/red_control.png" alt="" style="height:230px;display:block;transform:rotate(-6deg)"><p style="font-size:26px;font-weight:700;margin-top:18px">레드 컨트롤 크림 pH4</p><b class="disp" style="display:block;font-size:136px;color:var(--cobalt);margin-top:10px">89.36<span style="font-size:80px">%</span></b><p style="font-size:24px;margin-top:14px;line-height:1.45">1주 사용<br>붉은기 진정</p></div>
+    <div style="padding:30px 0 0 30px;border-left:2px solid var(--ink)"><img src="cut/calming_ampoule.png" alt="" style="height:230px;display:block;transform:rotate(-6deg)"><p style="font-size:26px;font-weight:700;margin-top:18px">핌프로브 카밍 앰플</p><b class="disp" style="display:block;font-size:136px;color:var(--cobalt);margin-top:10px">111<span style="font-size:80px">%</span></b><p style="font-size:24px;margin-top:14px;line-height:1.45">1주 사용<br>손상 피부장벽 개선(사용 전 대비)</p></div>
+  </div>
+  <div style="position:absolute;left:80px;right:80px;top:880px;display:flex;gap:16px;align-items:center;font-size:24px">
+    <span style="background:var(--ink);color:var(--white);padding:6px 14px;font-weight:700">MLE® 장벽 기술</span><span>피부 지질을 닮은 구조로 장벽을 채움 · 디펜사마이드 · 레스토마이드 · 10가지 유해성분 무첨가</span>
+  </div>
+  <span class="src" style="left:80px;top:990px">출처: 제로이드 공식 홈페이지 제품 상세페이지(자사 인체적용시험). 시험 개요는 미팅 시 별도 제공.</span>
+  <div class="checker" style="position:absolute;right:0;bottom:0;width:180px;height:36px"></div>
+</section></div>
+
+<!-- ========== 7. MLE 장벽 개념 ========== -->
+<div class="frame"><section class="slide" aria-label="MLE 장벽 개념">
+  <div class="halftone" style="position:absolute;inset:0;opacity:.1"></div>
+  <span class="strip label" style="left:80px;top:70px;font-size:26px;background:var(--ink);color:var(--white);transform:rotate(-1.5deg)">02 · MLE® BARRIER</span>
+  <span class="strip disp" style="left:80px;top:150px;font-size:96px;background:var(--white);color:var(--ink);transform:rotate(-1.5deg)">각질세포는 벽돌,</span>
+  <span class="strip disp" style="left:120px;top:290px;font-size:96px;background:var(--yellow);color:var(--ink);transform:rotate(1deg)">지질은 시멘트.</span>
+  <p style="position:absolute;left:84px;top:450px;width:760px;font-size:28px;line-height:1.55;font-weight:500">피부 지질과 닮은 구조로 장벽을 채우는 것이 제로이드 전 라인의 출발점입니다.</p>
+  <div style="position:absolute;left:84px;top:600px;display:grid;gap:16px;width:760px">
+    <div style="display:flex;gap:18px;align-items:baseline;border-top:3px solid var(--ink);padding-top:12px"><b style="font-size:26px;width:170px;flex:none">독자 성분</b><span style="font-size:24px">디펜사마이드 · 레스토마이드</span></div>
+    <div style="display:flex;gap:18px;align-items:baseline;border-top:3px solid var(--ink);padding-top:12px"><b style="font-size:26px;width:170px;flex:none">저자극</b><span style="font-size:24px">10가지 유해성분 무첨가</span></div>
+    <div style="display:flex;gap:18px;align-items:baseline;border-top:3px solid var(--ink);padding-top:12px"><b style="font-size:26px;width:170px;flex:none">테스트</b><span style="font-size:24px">하이포알러제닉 테스트 완료</span></div>
+  </div>
+  <!-- 벽돌 도식 -->
+  <div class="torn" data-torn="61" style="left:960px;top:90px;width:880px;height:880px;background:var(--pink);transform:rotate(2deg)"></div>
+  <div style="position:absolute;left:1030px;top:150px;width:740px">
+    <span class="strip label" style="position:static;font-size:24px;background:var(--ink);color:var(--white)">장벽이 무너진 피부</span>
+    <div class="wall broken" style="margin-top:18px"><i></i><i></i><i class="g"></i><i></i><i></i><i class="g"></i><i></i><i></i><i></i><i class="g"></i><i></i><i></i><i class="g"></i><i></i><i></i></div>
+    <p style="font-size:22px;font-weight:700;margin-top:10px">↑ 틈으로 수분이 빠져나감</p>
+    <span class="strip label" style="position:static;display:inline-block;margin-top:44px;font-size:24px;background:var(--cobalt);color:var(--white)">지질 구조를 채운 피부</span>
+    <div class="wall fixed" style="margin-top:18px"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+    <p style="font-size:22px;font-weight:700;margin-top:10px">● 수분이 머무는 상태</p>
+  </div>
+  <span class="src" style="left:1030px;top:930px;color:var(--ink)">이해를 돕기 위한 개념 그림 · 출처: 제로이드 공식 홈페이지 피부과학 소개</span>
+</section></div>
+
+<!-- ========== 8. 섹션 03 · 팝업 구성도 ========== -->
+<div class="frame"><section class="slide" aria-label="팝업 공간 구성">
+  <div style="position:absolute;inset:0;background:var(--cobalt)"></div>
+  <div class="halftone" style="position:absolute;inset:0;opacity:.12;background-image:radial-gradient(var(--white) 1.6px,transparent 2px)"></div>
+  <span class="strip label" style="left:80px;top:56px;font-size:26px;background:var(--yellow);color:var(--ink);transform:rotate(-1.5deg)">03 · POP-UP · 약 15평 · 2주</span>
+  <span class="strip disp" style="left:80px;top:120px;font-size:92px;background:var(--white);color:var(--ink);transform:rotate(-1deg)">내 장벽에 맞는 루틴 찾기</span>
+  <p style="position:absolute;left:84px;top:262px;font-size:28px;font-weight:700;color:var(--white)">4분 공통 안내 + 8분 선택 체험 1곳 → 구매·온라인 연결</p>
+  <!-- 평면도 -->
+  <div class="torn" data-torn="71" style="left:60px;top:320px;width:1800px;height:690px;background:var(--paper)"></div>
+  <div class="zone" style="left:110px;top:360px;width:540px;height:300px"><b class="disp zn">1</b><h4 class="disp">배리어 리커버리 라운지</h4><em>A 장벽 회복러 · 약 8분</em><p>거품 세안 시연 · 인텐시브 크림 손등 테스트</p></div>
+  <div class="zone" style="left:690px;top:360px;width:540px;height:300px"><b class="disp zn">2</b><h4 class="disp">레드 SOS 바</h4><em>B 트러블러 · 약 8분</em><p>카밍 앰플 + 레드 컨트롤 크림 2단계 · 루틴 카드</p></div>
+  <div class="zone" style="left:1270px;top:360px;width:540px;height:300px"><b class="disp zn">3</b><h4 class="disp">베이스 테스트 미러</h4><em>C 메이크업 · 약 8분</em><p>수딩 크림 → 선크림 사용감 비교 · 쿠션 협업은 별도 협의</p></div>
+  <div class="zone end" style="left:110px;top:690px;width:540px;height:280px"><b class="disp zn">0</b><h4 class="disp">배리어 체크 · 입구</h4><em>모두 · 약 4분</em><p>피부 고민 3문항 → 체험 1곳 안내 · 진단·측정 없음</p></div>
+  <div style="position:absolute;left:690px;top:690px;width:540px;height:280px;border:4px dashed var(--ink);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px"><b class="disp" style="font-size:44px">A~E 루틴 포토월</b><span style="font-size:21px">인증 이벤트는 협찬 표기</span></div>
+  <div class="zone" style="left:1270px;top:690px;width:255px;height:280px;padding:18px"><b class="disp zn" style="font-size:60px">4</b><h4 class="disp" style="font-size:26px">미스트 스테이션</h4><em style="font-size:18px">D · E</em><p style="font-size:18px">분사감 체험 · 샘플 준비 수량 내</p></div>
+  <div class="zone end" style="left:1555px;top:690px;width:255px;height:280px;padding:18px"><b class="disp zn" style="font-size:60px">5</b><h4 class="disp" style="font-size:26px">구매 · 온라인 연결</h4><em style="font-size:18px">출구</em><p style="font-size:18px">한정 구성 · QR로 무신사 온라인</p></div>
+  <span class="strip label" style="left:110px;top:1000px;font-size:20px;background:var(--ink);color:var(--white)">입구 ↑</span>
+  <span class="strip label" style="left:1700px;top:1000px;font-size:20px;background:var(--pink);color:var(--ink)">출구 ↓</span>
+  <span class="src" style="left:300px;top:1006px;color:var(--white)">개념 배치도 · 실제 면적·피난 동선 확인 후 확정</span>
+</section></div>
+
+<!-- ========== 9. 판매 구성 ========== -->
+<div class="frame"><section class="slide" aria-label="판매 구성">
+  <div class="torn" data-torn="81" style="left:-20px;top:-30px;width:1960px;height:230px;background:var(--cobalt)"></div>
+  <span class="strip label" style="left:80px;top:46px;font-size:26px;background:var(--yellow);color:var(--ink);transform:rotate(-1.5deg)">03 · LINE-UP</span>
+  <h2 class="disp band-h">검증된 만큼 크게 팝니다</h2>
+  <div style="position:absolute;left:80px;right:80px;top:250px;display:grid;grid-template-columns:1.3fr 1.3fr 1fr 1fr;gap:28px;height:760px">
+    <div style="background:var(--white);padding:28px;display:flex;flex-direction:column;gap:14px"><span class="strip label" style="position:static;align-self:flex-start;background:var(--cobalt);color:var(--white);font-size:22px">주력 · 체험·패키지</span>
+      <div style="display:flex;gap:18px;align-items:flex-end;height:300px"><img src="cut/intensive_cream.png" alt="인텐시브 크림" style="height:100%"><img src="cut/soothing_cream.png" alt="수딩 크림" style="height:92%"></div>
+      <b class="disp" style="font-size:40px">인텐시브 · 수딩 크림</b><b class="disp" style="font-size:70px;color:var(--cobalt);line-height:1;white-space:nowrap">14,336 · 10,452</b><p style="font-size:21px">올리브영 리뷰 수(건)</p></div>
+    <div style="background:var(--white);padding:28px;display:flex;flex-direction:column;gap:14px"><span class="strip label" style="position:static;align-self:flex-start;background:var(--ink);color:var(--white);font-size:22px">루틴 · 고민별 짝</span>
+      <div style="display:flex;gap:12px;align-items:flex-end;height:300px"><img src="cut/foaming_cleanser.png" alt="포밍 클렌저" style="height:88%"><img src="cut/daily_sun.png" alt="데일리 선크림" style="height:82%"><img src="cut/red_control.png" alt="레드 컨트롤 크림" style="height:84%"><img src="cut/calming_ampoule.png" alt="카밍 앰플" style="height:76%"></div>
+      <b class="disp" style="font-size:40px">클렌저 · 선크림 · 레드 컨트롤 · 앰플</b><b class="disp" style="font-size:70px;line-height:1;white-space:nowrap">405~7,617</b><p style="font-size:21px">올리브영 리뷰 수(건)</p></div>
+    <div style="background:var(--paper);outline:3px solid var(--ink);outline-offset:-3px;padding:28px;display:flex;flex-direction:column;gap:14px"><span class="strip label" style="position:static;align-self:flex-start;background:var(--yellow);color:var(--ink);font-size:22px">테스트 · 샘플 위주</span>
+      <div style="display:flex;gap:12px;align-items:flex-end;height:300px"><img src="cut/cream_mist.png" alt="크림 미스트" style="height:100%"><img src="cut/cream_mask.png" alt="크림 마스크" style="height:62%"></div>
+      <b class="disp" style="font-size:40px">크림 미스트 · 크림 마스크</b><b class="disp" style="font-size:70px;line-height:1;white-space:nowrap">86 · 202</b><p style="font-size:21px">리뷰가 적어 반응만 확인</p></div>
+    <div style="background:var(--paper);outline:3px dashed var(--ink);outline-offset:-3px;padding:28px;display:flex;flex-direction:column;gap:14px"><span class="strip label" style="position:static;align-self:flex-start;background:var(--pink);color:var(--ink);font-size:22px">제외 · 혼동 방지</span>
+      <div style="height:300px;border:3px dashed var(--mute);display:flex;align-items:center;justify-content:center;text-align:center;font-size:20px;color:var(--mute);padding:10px">[이미지 없음]<br>의료기기(MD) 라인</div>
+      <b class="disp" style="font-size:40px">의료기기(MD) 라인</b><p style="font-size:21px;line-height:1.5">2014년 의료기기 인증 라인. 화장품과 판매·광고 기준이 달라 팝업에서 제외</p></div>
+  </div>
+  <span class="src" style="left:80px;top:1030px">리뷰 수: 올리브영 2026.10.28 기준</span>
+</section></div>
+
+<!-- ========== 10. 시뮬레이션 ========== -->
+<div class="frame"><section class="slide" aria-label="입점 시뮬레이션">
+  <div class="torn" data-torn="91" style="left:-20px;top:-30px;width:1960px;height:230px;background:var(--cobalt)"></div>
+  <span class="strip label" style="left:80px;top:46px;font-size:26px;background:var(--yellow);color:var(--ink);transform:rotate(-1.5deg)">04 · SIMULATION · 기준 시나리오</span>
+  <h2 class="disp band-h">동시 운영이어야 재구매가 보입니다</h2>
+  <div class="kpi4" style="top:250px">
+    <div><span>2주 현장 매출</span><b class="disp">3,675<small>만 원</small></b><p>방문 7,000 × 전환 15% × 35,000원</p></div>
+    <div><span>현장 구매자</span><b class="disp">1,050<small>명</small></b><p>1인 1건 가정</p></div>
+    <div><span>첫 온라인 구매자</span><b class="disp">525<small>명</small></b><p>현장 구매자 중 50%</p></div>
+    <div><span>90일 재구매</span><b class="disp">158<small>명</small></b><p>첫 온라인 구매자 중 30%</p></div>
+  </div>
+  <!-- 비교: 동시 vs 팝업만 -->
+  <div style="position:absolute;left:80px;top:560px;width:1030px;height:400px;background:var(--white);padding:30px 34px">
+    <span class="strip label" style="position:static;background:var(--cobalt);color:var(--white);font-size:22px">팝업 + 온라인 동시</span>
+    <div style="display:grid;gap:16px;margin-top:26px">
+      <div style="display:grid;grid-template-columns:200px 1fr 120px;gap:16px;align-items:center;font-size:22px"><span>방문</span><i style="display:block;height:34px;background:var(--mute);width:100%"></i><b style="text-align:right">7,000</b></div>
+      <div style="display:grid;grid-template-columns:200px 1fr 120px;gap:16px;align-items:center;font-size:22px"><span>현장 구매</span><i style="display:block;height:34px;background:var(--ink);width:15%"></i><b style="text-align:right">1,050</b></div>
+      <div style="display:grid;grid-template-columns:200px 1fr 120px;gap:16px;align-items:center;font-size:22px"><span>첫 온라인 구매</span><i style="display:block;height:34px;background:var(--ink);width:7.5%"></i><b style="text-align:right">525</b></div>
+      <div style="display:grid;grid-template-columns:200px 1fr 120px;gap:16px;align-items:center;font-size:22px;color:var(--cobalt);font-weight:700"><span>90일 재구매</span><i style="display:block;height:34px;background:var(--cobalt);width:2.25%;min-width:6px"></i><b style="text-align:right">158</b></div>
+    </div>
+    <p style="font-size:19px;color:var(--mute);margin-top:16px">막대 길이는 방문 대비 비율</p>
+  </div>
+  <div class="torn" data-torn="93" style="left:1160px;top:540px;width:690px;height:440px;background:var(--pink);transform:rotate(1.5deg)"></div>
+  <div style="position:absolute;left:1210px;top:580px;width:600px">
+    <span class="strip label" style="position:static;background:var(--ink);color:var(--white);font-size:22px">팝업만 하면?</span>
+    <b class="disp" style="display:block;font-size:92px;line-height:1;margin-top:22px">재구매<br>측정 불가</b>
+    <p style="font-size:23px;line-height:1.5;margin-top:18px;font-weight:500">온라인 주문 이력이 없어 상시 입점 여부를 데이터로 판단할 수 없습니다.</p>
+  </div>
+  <span class="src" style="left:80px;top:990px">모든 값은 기획 가정이며 실적이 아닙니다 · 확대 판단선(가정): 구매 전환 15% 이상, 90일 재구매 30% 이상 · 비용·반품 반영 후 최종 결정</span>
+</section></div>
+
+<!-- ========== 11. 일정 ========== -->
+<div class="frame"><section class="slide" aria-label="제안 일정">
+  <div style="position:absolute;inset:0;background:var(--ink)"></div>
+  <div class="checker" style="position:absolute;left:0;top:0;width:100%;height:48px;background:repeating-conic-gradient(var(--paper) 0 25%,var(--ink) 0 50%) 0 0/36px 36px"></div>
+  <span class="strip label" style="left:80px;top:110px;font-size:26px;background:var(--yellow);color:var(--ink);transform:rotate(-1.5deg)">04 · TIMELINE · 가정 일정</span>
+  <span class="strip disp" style="left:80px;top:180px;font-size:110px;background:var(--white);color:var(--ink);transform:rotate(-1.5deg)">12주 준비, 2주 운영,</span>
+  <span class="strip disp" style="left:140px;top:340px;font-size:110px;background:var(--pink);color:var(--ink);transform:rotate(1deg)">90일 평가</span>
+  <div style="position:absolute;left:80px;right:80px;top:600px;height:6px;background:var(--paper)"></div>
+  <div style="position:absolute;left:80px;right:80px;top:560px;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));color:var(--white)">
+    <div><i style="display:block;width:86px;height:86px;border-radius:50%;background:var(--ink);border:6px solid var(--paper)"></i><b class="disp" style="display:block;font-size:78px;margin-top:22px">D-12W</b><p style="font-size:20px;color:var(--yellow);font-weight:700;margin-top:8px">공동</p><p style="font-size:27px;font-weight:700">조건·예산·KPI 합의</p></div>
+    <div><i style="display:block;width:86px;height:86px;border-radius:50%;background:var(--ink);border:6px solid var(--paper)"></i><b class="disp" style="display:block;font-size:78px;margin-top:22px">D-8W</b><p style="font-size:20px;color:var(--yellow);font-weight:700;margin-top:8px">제로이드</p><p style="font-size:27px;font-weight:700">패키지·굿즈 확정</p></div>
+    <div><i style="display:block;width:86px;height:86px;border-radius:50%;background:var(--ink);border:6px solid var(--paper)"></i><b class="disp" style="display:block;font-size:78px;margin-top:22px">D-4W</b><p style="font-size:20px;color:var(--yellow);font-weight:700;margin-top:8px">공동</p><p style="font-size:27px;font-weight:700">리허설·온라인 판매 준비</p></div>
+    <div><i style="display:block;width:86px;height:86px;border-radius:50%;background:var(--pink);border:6px solid var(--pink)"></i><b class="disp" style="display:block;font-size:78px;margin-top:22px;color:var(--pink)">D-DAY</b><p style="font-size:20px;color:var(--yellow);font-weight:700;margin-top:8px">공동</p><p style="font-size:27px;font-weight:700">팝업·온라인 동시 운영</p></div>
+    <div><i style="display:block;width:86px;height:86px;border-radius:50%;background:var(--ink);border:6px solid var(--paper)"></i><b class="disp" style="display:block;font-size:78px;margin-top:22px">+90D</b><p style="font-size:20px;color:var(--yellow);font-weight:700;margin-top:8px">무신사뷰티</p><p style="font-size:27px;font-weight:700">재구매 평가·확대 결정</p></div>
+  </div>
+  <span class="src" style="left:80px;top:1010px;color:var(--paper)">가정 일정 · 협의 후 확정</span>
+</section></div>
+
+<!-- ========== 12. 부록 A · 경쟁 비교 ========== -->
+<div class="frame"><section class="slide" aria-label="부록 A 경쟁 비교">
+  <div class="torn" data-torn="101" style="left:-20px;top:-30px;width:1960px;height:230px;background:var(--ink)"></div>
+  <span class="strip label" style="left:80px;top:46px;font-size:26px;background:var(--yellow);color:var(--ink);transform:rotate(-1.5deg)">부록 A · 경쟁 장벽 크림</span>
+  <h2 class="disp band-h">경쟁사는 이미 무신사에 있습니다</h2>
+  <div style="position:absolute;left:80px;right:80px;top:250px;display:grid;gap:14px">
+    <div style="display:grid;grid-template-columns:560px 1fr 140px 140px;gap:20px;font-size:20px;font-weight:700;color:var(--mute);border-bottom:3px solid var(--ink);padding-bottom:10px"><span>제품</span><span>올리브영 리뷰 수(건)</span><span style="text-align:right">순해요</span><span style="text-align:right">무신사</span></div>
+    <div class="crow2"><span>일리윤 세라마이드 아토 집중크림</span><span><i style="width:100%"></i><b>38,553</b></span><span>–</span><span>입점</span></div>
+    <div class="crow2"><span>피지오겔 DMT 페이셜 크림</span><span><i style="width:60.6%"></i><b>23,347</b></span><span>76%</span><span>입점</span></div>
+    <div class="crow2 me"><span>제로이드 인텐시브 크림</span><span><i style="width:37.2%"></i><b>14,350</b></span><span>75%</span><span>미입점</span></div>
+    <div class="crow2 me"><span>제로이드 수딩 크림</span><span><i style="width:27.2%"></i><b>10,476</b></span><span>75%</span><span>미입점</span></div>
+    <div class="crow2"><span>아벤느 시칼파트 플러스 크림</span><span><i style="width:25.8%"></i><b>9,945</b></span><span>70%</span><span>입점</span></div>
+    <div class="crow2"><span>에스트라 아토베리어365 크림</span><span><i style="width:22.8%"></i><b>8,780</b></span><span>79%</span><span>입점</span></div>
+    <div class="crow2"><span>아토팜 MLE 크림(같은 네오팜)</span><span><i style="width:3.6%"></i><b>1,379</b></span><span>–</span><span>입점</span></div>
+  </div>
+  <p style="position:absolute;left:80px;top:870px;width:1500px;font-size:25px;line-height:1.5;font-weight:500">순함과 평점은 경쟁 크림과 비슷합니다. 차이는 <b style="background:var(--yellow)">복합성에 맞는 수딩 크림</b>, <b style="background:var(--yellow)">라인 루틴</b>, 그리고 <b style="background:var(--yellow)">무신사 첫 입점</b>입니다.</p>
+  <span class="src" style="left:80px;top:990px">2026.10.29 기준 · 용량·구성은 제품마다 다름 · ‘–’는 해당 설문 문항 없음 · 무신사 입점 여부는 무신사 브랜드 노출 기준</span>
+</section></div>
+
+<!-- ========== 13. 부록 B · MD 질문 ========== -->
+<div class="frame"><section class="slide" aria-label="부록 B MD 질문">
+  <div style="position:absolute;inset:0;background:var(--pink)"></div>
+  <div class="halftone" style="position:absolute;inset:0;opacity:.14"></div>
+  <span class="strip label" style="left:80px;top:56px;font-size:26px;background:var(--ink);color:var(--white);transform:rotate(-1.5deg)">부록 B · Q&amp;A</span>
+  <span class="strip disp" style="left:80px;top:116px;font-size:84px;background:var(--white);color:var(--ink);transform:rotate(-1deg)">결정 전에 물으실 6가지</span>
+  <div style="position:absolute;left:80px;right:80px;top:270px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:30px">
+    <div class="qa"><span>Q1</span><h4 class="disp">아토팜과 겹치지 않나요?</h4><p>아토팜은 유아·가족 보습, 제로이드는 2030 민감 피부의 데일리 장벽 케어입니다. 기술(MLE)은 같아도 고객과 사용 상황이 다릅니다.</p></div>
+    <div class="qa"><span>Q2</span><h4 class="disp">올리브영보다 비싸 보이지 않을까요?</h4><p>정가는 같게 두고, 할인 대신 무신사 전용 구성(패키지·파우치)으로 차별합니다. 세일 기간 실구매가는 사전에 함께 점검합니다.</p></div>
+    <div class="qa"><span>Q3</span><h4 class="disp">비용은 누가 부담하나요?</h4><p>BA 4명·샘플 3,000개·파우치 제작은 브랜드 부담으로 제안합니다. 임대·시공·수수료(30% 가정)는 견적 후 협의합니다.</p></div>
+    <div class="qa"><span>Q4</span><h4 class="disp">왜 지금인가요?</h4><p>환절기는 리뷰에서 가장 많이 언급된 고민(건조·환절기)과 맞닿습니다. 겨울 전 운영을 희망하며 시기는 협의합니다.</p></div>
+    <div class="qa"><span>Q5</span><h4 class="disp">성과가 안 나오면요?</h4><p>2주 뒤 구매 전환·온라인 유입으로 1차 판단하고, 목표에 못 미치면 확대를 보류합니다. 상시 입점을 먼저 요구하지 않습니다.</p></div>
+    <div class="qa"><span>Q6</span><h4 class="disp">무신사뷰티에는 무엇이 남나요?</h4><p>아직 무신사에 없는 장벽 크림 라인, 목표 기준 첫 온라인 구매자 525명·리뷰 260건, 그리고 성수 팝업 콘텐츠입니다.</p></div>
+  </div>
+</section></div>
+
+<!-- ========== 14. 부록 C · 약점과 대응 ========== -->
+<div class="frame"><section class="slide" aria-label="부록 C 약점과 대응">
+  <div class="torn" data-torn="111" style="left:-20px;top:-30px;width:1960px;height:230px;background:var(--ink)"></div>
+  <span class="strip label" style="left:80px;top:46px;font-size:26px;background:var(--yellow);color:var(--ink);transform:rotate(-1.5deg)">부록 C · 약점과 대응</span>
+  <h2 class="disp band-h">고객이 말한 아쉬움, 체험으로 답합니다</h2>
+  <div style="position:absolute;left:80px;right:80px;top:260px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:30px">
+    <div style="background:var(--white);padding:32px;height:720px;display:flex;flex-direction:column;gap:18px;position:relative">
+      <b class="disp" style="font-size:46px">세정 기대치의 차이</b>
+      <div style="display:flex;height:56px;font-size:21px;font-weight:700"><i style="flex:50;background:var(--cobalt);color:var(--white);display:flex;align-items:center;padding-left:12px;font-style:normal">만족 50%</i><i style="flex:48;background:var(--paper-2);display:flex;align-items:center;padding-left:12px;font-style:normal">보통 48%</i><i style="flex:2;background:var(--ink)"></i></div>
+      <p style="font-size:22px;color:var(--mute)">포밍 클렌저 세정력 응답 · 보통은 불만이 아님 · 아쉬움 2%</p><img src="cut/foaming_cleanser.png" alt="포밍 클렌저" style="height:250px;align-self:center;transform:rotate(-6deg)">
+      <p style="margin-top:auto;font-size:26px;font-weight:700;background:var(--yellow);padding:16px 18px;line-height:1.4">메이크업·선크림 사용 여부를 묻고 세안 순서 안내</p>
+    </div>
+    <div style="background:var(--white);padding:32px;height:720px;display:flex;flex-direction:column;gap:18px;position:relative">
+      <b class="disp" style="font-size:46px">“향이 별로예요”</b>
+      <b class="disp" style="font-size:64px;color:var(--cobalt);line-height:1.1">원료 향 체험<br>→ 취향 확인</b>
+      <p style="font-size:22px;color:var(--mute)">향 선호에 대한 정량 근거 없음</p><img src="cut/intensive_cream.png" alt="인텐시브 크림" style="height:250px;align-self:center;transform:rotate(5deg)">
+      <p style="margin-top:auto;font-size:26px;font-weight:700;background:var(--yellow);padding:16px 18px;line-height:1.4">구매 전에 향을 맡고 고를 수 있게 안내</p>
+    </div>
+    <div style="background:var(--white);padding:32px;height:720px;display:flex;flex-direction:column;gap:18px;position:relative">
+      <b class="disp" style="font-size:46px">“가격만 조금 더 착하면”</b>
+      <div><s style="font-size:34px;color:var(--mute)">63,000원</s><b class="disp" style="display:block;font-size:110px;color:var(--cobalt);line-height:1">49,000원</b></div>
+      <p style="font-size:22px;color:var(--mute)">한정 패키지(크림+미스트+파우치) 가정 · 원가 확인 전</p><div style="display:flex;gap:10px;align-self:center;align-items:flex-end;height:230px"><img src="cut/intensive_cream.png" alt="" style="height:100%;transform:rotate(-5deg)"><img src="cut/cream_mist.png" alt="" style="height:100%;transform:rotate(6deg)"></div>
+      <p style="margin-top:auto;font-size:26px;font-weight:700;background:var(--yellow);padding:16px 18px;line-height:1.4">할인 대신 팝업 한정 구성 · 정가 유지</p>
+    </div>
+  </div>
+</section></div>
+
+<!-- ========== 15. 부록 D · 데이터 한계와 출처 ========== -->
+<div class="frame"><section class="slide" aria-label="부록 D 데이터 한계와 출처">
+  <div class="torn" data-torn="121" style="left:-20px;top:-30px;width:1960px;height:230px;background:var(--ink)"></div>
+  <span class="strip label" style="left:80px;top:46px;font-size:26px;background:var(--yellow);color:var(--ink);transform:rotate(-1.5deg)">부록 D · 데이터</span>
+  <h2 class="disp band-h">확인한 것과 확인하지 못한 것</h2>
+  <div style="position:absolute;left:80px;top:270px;width:840px;background:var(--white);padding:36px;height:700px">
+    <span class="strip label" style="position:static;background:var(--pink);color:var(--ink);font-size:24px">확인하지 못한 것</span>
+    <p style="font-size:32px;line-height:1.6;margin-top:28px">올리브영 리뷰에는 연령 정보가 없고, 무신사 고객과 얼마나 겹치는지도 공개 데이터로는 알 수 없습니다.</p>
+    <p style="font-size:32px;line-height:1.6;margin-top:22px">팝업 입구 질문에 <b style="background:var(--yellow)">연령대 · 주로 쇼핑하는 채널 · 주로 하는 활동</b> 3문항(선택 응답)을 넣어 처음으로 측정합니다.</p>
+  </div>
+  <div style="position:absolute;left:980px;top:270px;width:860px;height:700px;padding:36px;outline:3px solid var(--ink);outline-offset:-3px">
+    <span class="strip label" style="position:static;background:var(--ink);color:var(--white);font-size:24px">출처</span>
+    <ul style="list-style:none;display:grid;gap:18px;margin-top:28px;font-size:27px;line-height:1.5">
+      <li>· 제로이드 공식 홈페이지 제품 상세페이지(성분·시험 결과 표기), 브랜드 연혁</li>
+      <li>· 올리브영 제로이드 17개 제품 구매자 통계 · 리뷰 샘플 3,280건(2026.10.28 수집, 작성자 정보 제외)</li>
+      <li>· 무신사뷰티 거래액: ZDNet Korea(2025.05.23), 바이라인네트워크(2025.05) 무신사 발표 인용</li>
+      <li>· 무신사·무신사뷰티 명칭은 제안 대상을 밝히기 위한 표기이며, 로고·상표 사용은 계약 시 승인받습니다.</li>
+    </ul>
+  </div>
+</section></div>
+
+<!-- ========== 16. 클로징 (밀도 최대) ========== -->
+<div class="frame"><section class="slide" aria-label="클로징 한 장 요약">
+  <div style="position:absolute;inset:0;background:var(--cobalt)"></div>
+  <div class="halftone" style="position:absolute;inset:0;opacity:.12;background-image:radial-gradient(var(--white) 1.6px,transparent 2px)"></div>
+  <div class="checker" style="position:absolute;right:0;top:0;width:96px;height:100%"></div>
+  <span class="strip label" style="left:80px;top:60px;font-size:26px;background:var(--yellow);color:var(--ink);transform:rotate(-2deg)">ONE PAGE SUMMARY</span>
+  <span class="strip disp" style="left:80px;top:120px;font-size:112px;background:var(--ink);color:var(--white);transform:rotate(-2deg)">옷은 핏으로,</span>
+  <span class="strip disp" style="left:720px;top:150px;font-size:112px;background:var(--white);color:var(--ink);transform:rotate(1.5deg)">크림은 장벽으로.</span>
+  <div style="position:absolute;left:80px;right:180px;top:330px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:22px">
+    <div class="torn" data-torn="131" style="position:relative;background:var(--paper);padding:30px 26px;height:430px;transform:rotate(-1.5deg)"><span class="label" style="font-size:22px">왜</span><b class="disp" style="display:block;font-size:180px;line-height:1">0<small style="font-size:60px">개</small></b><p style="font-size:23px;line-height:1.45;font-weight:500">거래액 2배 성장한 무신사뷰티에 제로이드는 아직 0개</p></div>
+    <div class="torn" data-torn="133" style="position:relative;background:var(--yellow);padding:30px 26px;height:430px;transform:rotate(1deg)"><span class="label" style="font-size:22px">무엇을</span><b class="disp" style="display:block;font-size:150px;line-height:1.1">4.9<small style="font-size:60px">만</small></b><p style="font-size:23px;line-height:1.45;font-weight:500">리뷰로 이미 검증된 장벽 크림을</p></div>
+    <div class="torn" data-torn="135" style="position:relative;background:var(--pink);padding:30px 26px;height:430px;transform:rotate(-1deg)"><span class="label" style="font-size:22px">어떻게</span><b class="disp" style="display:block;font-size:180px;line-height:1">2<small style="font-size:60px">주</small></b><p style="font-size:23px;line-height:1.45;font-weight:500">성수 팝업에서 발라 보고, 온라인에서 바로 산다</p></div>
+    <div class="torn" data-torn="137" style="position:relative;background:var(--white);padding:30px 26px;height:430px;transform:rotate(2deg)"><span class="label" style="font-size:22px;color:var(--cobalt)">그래서</span><b class="disp" style="display:block;font-size:150px;line-height:1.1;color:var(--cobalt)">525<small style="font-size:60px">명</small></b><p style="font-size:23px;line-height:1.45;font-weight:500">첫 온라인 구매 고객 목표 · 현장 매출 3,675만 원(가정)</p></div>
+  </div>
+  <img class="cut" src="cut/intensive_cream.png" alt="인텐시브 크림" style="left:1640px;top:720px;height:360px;transform:rotate(-12deg)">
+  <div style="position:absolute;left:80px;top:820px;background:var(--white);padding:20px 26px;font-size:30px;font-weight:700;white-space:nowrap;transform:rotate(-1deg)"><span style="background:var(--pink);padding:2px 12px;margin-right:12px">제안</span>① 성수 팝업·온라인 동시 테스트 → ② 성과 확인 후 온라인 상시 운영 확대</div>
+  <p style="position:absolute;left:84px;top:950px;font-size:21px;color:var(--white);line-height:1.5">㈜네오팜 제로이드 영업 MD · 담당자 ○○○ · 연락처 ○○○-○○○○-○○○○ · 이메일 ○○○@○○○<br>교육 실습 과제로 작성한 가상 제안서 · 제로이드(네오팜)·무신사와 무관</p>
+</section></div>
+
+</main>
+<script>
+// 찢은 종이: 요소마다 시드로 들쭉날쭉한 clip-path를 만든다(인쇄에서도 그대로 유지)
+document.querySelectorAll("[data-torn]").forEach(function(el){
+  var seed=+el.dataset.torn||1; function r(){seed=(seed*9301+49297)%233280;return seed/233280}
+  var p=[],n=18,j=1.6;
+  for(var i=0;i<=n;i++)p.push((i/n*100)+"% "+(r()*j*2)+"%");
+  for(i=1;i<=n;i++)p.push((100-r()*j)+"% "+(i/n*100)+"%");
+  for(i=n;i>=0;i--)p.push((i/n*100)+"% "+(100-r()*j*2)+"%");
+  for(i=n-1;i>0;i--)p.push((r()*j)+"% "+(i/n*100)+"%");
+  el.style.clipPath="polygon("+p.join(",")+")";
+});
+// ?s=N 이면 N번째 슬라이드만 1:1로 보여 준다(장별 캡처용)
+(function(){var m=location.search.match(/s=(\d+)/);if(!m)return;document.body.classList.add("solo");
+  document.querySelectorAll(".frame").forEach(function(f,i){f.hidden=i!==m[1]-1});})();
+// 화면 폭에 맞춰 1920×1080 슬라이드 축소
+function fit(){document.querySelectorAll(".frame").forEach(function(f){f.querySelector(".slide").style.transform="scale("+(f.clientWidth/1920)+")"})}
+addEventListener("resize",fit);fit();
+// 발표용: ←/→, PageUp/PageDown으로 슬라이드 단위 이동
+addEventListener("keydown",function(e){
+  var d={ArrowRight:1,PageDown:1,ArrowLeft:-1,PageUp:-1}[e.key]; if(!d)return;
+  var fs=[].slice.call(document.querySelectorAll(".frame")), y=scrollY+10;
+  var i=fs.findIndex(function(f){return f.getBoundingClientRect().top+scrollY>y});
+  var cur=i<0?fs.length-1:Math.max(0,i-1), nx=fs[Math.min(fs.length-1,Math.max(0,cur+d))];
+  scrollTo({top:nx.getBoundingClientRect().top+scrollY-12,behavior:"smooth"}); e.preventDefault();
+});
+</script>
+</body>
+</html>

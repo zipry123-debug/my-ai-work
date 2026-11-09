@@ -1,0 +1,1507 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>크리스마스 이브 와인 나이트</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Noto+Serif+KR:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    color-scheme: dark;
+    --bg:#221a15; --surface:#2e231c; --surface2:#3a2d24; --fg:#f6ede3; --sub:#cdbfb0; --muted:#998b7d;
+    --grid:#45372d; --axis:#57473b; --line:rgba(255,240,224,.10);
+    --brand:#7e6956; --brand-dk:#483c36; --sand:#dfc9b2; --cream:#fff0e0;
+    --accent:#c0574c; --gold:#dfc9b2; --ok:#6f9a6f; --pine:#4f6f58; --glow:#f2c27a;
+    --red:#c0574c; --white:#d4a95e; --spk:#86a9bf; --sweet:#b48aa8;
+    --buffet:#6e6259;
+  }
+  * { box-sizing:border-box; }
+  html, body { margin:0; height:100%; }
+  body { color:var(--fg);
+    background:
+      radial-gradient(1100px 600px at 88% -8%, rgba(242,194,122,.09), transparent 60%),
+      radial-gradient(1400px 900px at 50% 50%, rgba(126,105,86,.10), transparent 70%),
+      radial-gradient(900px 520px at -8% 108%, rgba(79,111,88,.16), transparent 60%),
+      var(--bg);
+    background-attachment:fixed;
+    font-family:"Pretendard","Malgun Gothic","Apple SD Gothic Neo",system-ui,sans-serif; line-height:1.55; }
+  h1 { font-family:"Cormorant Garamond","Noto Serif KR",Georgia,serif; font-weight:600 !important; letter-spacing:.005em !important; }
+  h2 { font-family:"Noto Serif KR","Cormorant Garamond",Georgia,serif; font-weight:600 !important; }
+  .cover h1 { font-size:clamp(3rem,7.5vw,5.6rem); }
+  .cover h1 span { font-style:italic; color:var(--glow) !important; }
+  /* Christmas Eve atmosphere: warm bokeh + string lights */
+  .cover::before { content:""; position:absolute; inset:0; z-index:0; pointer-events:none;
+    background:
+      radial-gradient(180px 180px at 12% 22%, rgba(242,194,122,.16), transparent 70%),
+      radial-gradient(120px 120px at 30% 80%, rgba(192,87,76,.14), transparent 70%),
+      radial-gradient(220px 220px at 78% 30%, rgba(242,194,122,.12), transparent 70%),
+      radial-gradient(160px 160px at 90% 78%, rgba(79,111,88,.22), transparent 70%),
+      radial-gradient(90px 90px at 55% 12%, rgba(223,201,178,.12), transparent 70%); }
+  .lights { position:absolute; left:200px; right:0; top:0; width:calc(100% - 200px); height:90px; z-index:1; pointer-events:none; }
+  .lights path { fill:none; stroke:rgba(223,201,178,.35); stroke-width:1.2; }
+  .lights circle { fill:var(--glow); filter:drop-shadow(0 0 6px rgba(242,194,122,.9)); animation:twinkle 2.6s ease-in-out infinite; }
+  .lights circle:nth-of-type(3n) { fill:#e9897c; animation-delay:.8s; }
+  .lights circle:nth-of-type(3n+1) { fill:#a9c7a4; animation-delay:1.6s; }
+  @keyframes twinkle { 0%,100% { opacity:1; } 50% { opacity:.35; } }
+  #brand b { font-family:"Cormorant Garamond",Georgia,serif; font-size:1.15rem; font-weight:600; letter-spacing:.02em; }
+  .panel, .tile, .scard, .tier, .rcol, .gate, .kc { box-shadow:inset 0 1px 0 rgba(255,240,224,.04); }
+  #progress { background:linear-gradient(90deg,var(--brand),var(--glow)) !important; }
+  #deck { height:100vh; overflow-y:auto; scroll-snap-type:y proximity; scroll-behavior:smooth; }
+  .slide { position:relative; min-height:100vh; scroll-snap-align:start; display:flex; align-items:center; padding:80px 16px; overflow:hidden; }
+  .inner { width:100%; max-width:1040px; margin:0 auto; position:relative; z-index:1; }
+  .head { text-align:center; margin-bottom:28px; }
+  .eyebrow { color:var(--gold); letter-spacing:.2em; font-size:.75rem; font-weight:600; margin:0 0 8px; }
+  h1 { font-size:clamp(2.4rem,6vw,4.4rem); line-height:1.12; margin:0; font-weight:800; letter-spacing:-.01em; }
+  h2 { font-size:clamp(1.5rem,3.2vw,2.1rem); margin:0; font-weight:700; }
+  .lead { color:var(--sub); margin-top:8px; font-size:.95rem; }
+  .foot { color:var(--muted); font-size:.88rem; text-align:center; margin-top:16px; }
+  .panel { background:var(--surface); border-radius:16px; padding:22px 24px; }
+  .ptitle { font-size:.95rem; font-weight:700; margin:0 0 14px; }
+  .ex { display:inline-block; font-size:.68rem; color:var(--gold); border:1px solid rgba(223,201,178,.45); border-radius:5px; padding:0 5px; margin-left:6px; vertical-align:middle; font-weight:600; }
+
+  .rv { opacity:0; transform:translateY(24px); transition:opacity .7s cubic-bezier(.2,.7,.2,1), transform .7s cubic-bezier(.2,.7,.2,1); transition-delay:calc(var(--i,0) * 100ms); }
+  .slide.on .rv { opacity:1; transform:none; }
+
+  /* cover */
+  canvas.snow { position:absolute; inset:0; width:100%; height:100%; z-index:0; }
+  .cover-grid { display:grid; grid-template-columns:1fr; gap:28px; align-items:center; justify-items:center; text-align:center; }
+  .cover h1 span { color:var(--accent); }
+  .meta { margin-top:24px; display:flex; flex-wrap:wrap; gap:8px; justify-content:center; }
+  .pill { border:1px solid var(--line); background:rgba(255,255,255,.04); border-radius:99px; padding:5px 14px; font-size:.85rem; color:var(--sub); }
+  .pill b { color:var(--fg); font-weight:600; }
+  @media (min-width:900px) {
+    .cover-grid { grid-template-columns:1.3fr 1fr; justify-items:start; text-align:left; }
+    .cover-grid .meta { justify-content:flex-start; }
+    .cover-grid .glass { justify-self:center; }
+  }
+  .glass { width:min(190px,38vw); }
+  .glass .fill { transform-origin:50% 100%; transform:scaleY(0); animation:pour 2.4s .6s cubic-bezier(.3,.6,.2,1) forwards; }
+  .glass .bub { animation:rise 3s infinite ease-in; opacity:0; }
+  .glass .bub:nth-child(3){ animation-delay:.9s } .glass .bub:nth-child(4){ animation-delay:1.8s }
+  @keyframes pour { to { transform:scaleY(1); } }
+  @keyframes rise { 0%{opacity:0;transform:translateY(0)} 20%{opacity:.8} 100%{opacity:0;transform:translateY(-40px)} }
+
+  /* summary */
+  .sum { display:grid; gap:14px; grid-template-columns:1fr; }
+  @media (min-width:760px) { .sum { grid-template-columns:1fr 1fr; } }
+  .sbox { background:var(--surface); border-radius:16px; padding:18px 20px; }
+  .sbox .k { font-size:.75rem; letter-spacing:.15em; color:var(--gold); font-weight:700; margin-bottom:6px; }
+  .sbox p { margin:0; font-size:.92rem; color:var(--sub); }
+  .sbox p b { color:var(--fg); }
+  .sbox .big { font-size:1.6rem; font-weight:800; color:var(--fg); margin:2px 0; }
+  .sbox.ask { border:1px solid var(--accent); }
+
+  /* summary v2 */
+  .s3 { display:grid; gap:14px; grid-template-columns:1fr; }
+  @media (min-width:760px) { .s3 { grid-template-columns:repeat(3,1fr); } }
+  .scard { background:var(--surface); border-radius:16px; padding:24px 18px; text-align:center; }
+  .sico { width:44px; height:44px; color:var(--accent); margin-bottom:8px; }
+  .sk { font-size:.85rem; color:var(--muted); letter-spacing:.1em; }
+  .sv { font-size:clamp(1.6rem,3.4vw,2.3rem); font-weight:800; margin:4px 0; }
+  .ss { font-size:.95rem; color:var(--sub); }
+  .sgauge { margin:22px auto 0; max-width:760px; }
+  .sgcap { margin:0 0 10px; text-align:center; font-size:.9rem; color:var(--sub); }
+  .sgt { position:relative; height:14px; border-radius:7px; background:var(--grid); }
+  .sgt #sgCur { position:absolute; left:0; top:0; bottom:0; border-radius:7px; width:0; transition:width 1.2s .4s cubic-bezier(.2,.7,.2,1); }
+  .sgt #sgCur.neg { background:var(--accent); } .sgt #sgCur.pos { background:#6f9a6f; }
+  .sgt #sgBe { position:absolute; top:-6px; bottom:-6px; width:3px; margin-left:-1px; background:var(--gold); border-radius:2px; }
+  .sgl { position:relative; height:40px; font-size:.85rem; color:var(--muted); }
+  .sgl span { position:absolute; top:8px; white-space:nowrap; transform:translateX(-50%); }
+  .sgl span:first-child { left:0; transform:none; } .sgl span:last-child { right:0; left:auto; transform:none; }
+  .sgl #sgCurL { top:22px; color:var(--sub); }
+  .sgl #sgBeL { color:var(--gold); font-weight:700; }
+  .sask { margin:18px auto 0; max-width:760px; border:1px solid var(--accent); border-radius:12px; padding:14px 18px; text-align:center; font-size:1rem; }
+  .sask b { color:var(--accent); margin-right:10px; } .sask span { color:var(--muted); margin:0 6px; }
+
+  /* tiles */
+  .tiles { display:grid; gap:14px; grid-template-columns:repeat(2,1fr); }
+  @media (min-width:900px) { .tiles { grid-template-columns:repeat(4,1fr); } }
+  .tiles.t3 { grid-template-columns:1fr; }
+  @media (min-width:640px) { .tiles.t3 { grid-template-columns:repeat(3,1fr); } }
+  .tile { background:var(--surface); border-radius:16px; padding:20px 16px; text-align:center; }
+  .tile .k { color:var(--muted); font-size:.86rem; }
+  .tile .v { font-size:clamp(1.4rem,3.2vw,2.2rem); font-weight:800; margin:6px 0 2px; }
+  .tile .v.sm { font-size:1.1rem; }
+  .tile .s { color:var(--sub); font-size:.88rem; }
+
+  .cols { display:grid; gap:16px; grid-template-columns:1fr; }
+  @media (min-width:860px) { .cols { grid-template-columns:1fr 1fr; } }
+  .cols3 { display:grid; gap:14px; grid-template-columns:1fr; }
+  @media (min-width:860px) { .cols3 { grid-template-columns:repeat(3,1fr); } }
+
+  /* decision tree */
+  .tree { display:grid; gap:12px; grid-template-columns:1fr; align-items:center; }
+  @media (min-width:760px) { .tree { grid-template-columns:1fr 40px 1fr; } }
+  .tree .root { background:var(--surface2); border-radius:12px; padding:14px; text-align:center; font-weight:700; }
+  .tree .root small { display:block; color:var(--muted); font-weight:400; font-size:.78rem; }
+  .tree .arrow { display:none; }
+  @media (min-width:760px) { .tree .arrow { display:grid; place-items:center; color:var(--muted); font-size:1.4rem; } }
+  .branch { display:grid; gap:8px; }
+  .leaf { border-left:3px solid var(--accent); background:var(--surface2); border-radius:8px; padding:10px 14px; font-size:.88rem; }
+  .leaf b { display:block; font-size:.78rem; color:var(--muted); font-weight:600; }
+  .leaf.alt { border-left-color:var(--spk); }
+
+  /* journey */
+  .journey { position:relative; display:grid; gap:18px; grid-template-columns:1fr; }
+  @media (min-width:860px) { .journey { grid-template-columns:repeat(4,1fr); } }
+  .jline { display:none; }
+  @media (min-width:860px) {
+    .jline { display:block; position:absolute; left:12.5%; right:12.5%; top:31px; height:2px; background:var(--axis); }
+    .jline::after { content:""; position:absolute; inset:0; background:linear-gradient(90deg,var(--accent),var(--gold)); transform:scaleX(0); transform-origin:left; transition:transform 1.6s .3s cubic-bezier(.2,.7,.2,1); }
+    .slide.on .jline::after { transform:scaleX(1); }
+  }
+  .step { text-align:center; position:relative; }
+  .node { width:64px; height:64px; border-radius:50%; margin:0 auto 12px; display:grid; place-items:center; background:var(--surface); border:2px solid var(--accent); font-weight:800; font-size:1.1rem; position:relative; z-index:1; }
+  .step .t { font-size:.78rem; color:var(--gold); letter-spacing:.1em; }
+  .step h3 { margin:2px 0 6px; font-size:1.02rem; }
+  .step .d { font-size:.9rem; color:var(--sub); margin:0; }
+  .badge { display:inline-block; font-size:.7rem; padding:0 7px; border-radius:99px; border:1px solid var(--gold); color:var(--gold); margin-left:4px; vertical-align:middle; }
+
+  /* hbar */
+  .hbar { display:grid; gap:10px; }
+  .hrow { display:grid; grid-template-columns:150px 1fr; gap:14px; align-items:center; }
+  .hrow .lab { font-size:.92rem; text-align:right; color:var(--sub); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .hrow .lab b { color:var(--fg); font-weight:600; }
+  .track { position:relative; height:26px; display:flex; gap:2px; }
+  .seg { position:relative; z-index:1; height:100%; width:0; transition:width 1.1s cubic-bezier(.2,.7,.2,1); cursor:default; }
+  .seg:first-of-type { border-radius:4px 0 0 4px; }
+  .seg.last { border-radius:0 4px 4px 0; }
+  .seg.only { border-radius:4px; }
+  .seg.tbd { background-image:repeating-linear-gradient(45deg, rgba(255,255,255,.25) 0 2px, transparent 2px 6px); border:1px dashed var(--muted); border-left:none; }
+  .val { font-size:.9rem; font-weight:600; padding-left:8px; align-self:center; white-space:nowrap; opacity:0; transition:opacity .4s 1.1s; position:relative; z-index:1; }
+  .val small { color:var(--muted); font-weight:400; margin-left:4px; }
+  .slide.on .val { opacity:1; }
+  .axis { display:grid; grid-template-columns:150px 1fr; gap:14px; margin-top:6px; }
+  .ticks { position:relative; height:20px; font-size:.8rem; color:var(--muted); border-top:1px solid var(--axis); }
+  .ticks span { position:absolute; top:4px; transform:translateX(-50%); white-space:nowrap; }
+  .gridbg { position:absolute; top:0; bottom:0; width:1px; background:var(--grid); }
+  .lgrow { display:flex; flex-wrap:wrap; gap:16px; justify-content:center; font-size:.88rem; color:var(--sub); margin-bottom:14px; }
+  .lg i { display:inline-block; width:10px; height:10px; border-radius:3px; margin-right:8px; vertical-align:middle; }
+  @media (max-width:640px) {
+    .hrow, .axis { grid-template-columns:96px 1fr; gap:8px; }
+    .hrow .lab { font-size:.76rem; }
+  }
+
+  /* package */
+  .tiers { display:grid; gap:12px; grid-template-columns:1fr; margin-bottom:14px; }
+  @media (min-width:760px) { .tiers { grid-template-columns:1fr 1fr; } }
+  .tier { background:var(--surface); border-radius:14px; padding:16px 18px; }
+  .tier .n { font-weight:700; text-align:center; margin-bottom:10px; } .tier .n small { color:var(--muted); font-weight:400; margin-left:4px; }
+  .plist { display:grid; gap:6px; font-size:.85rem; }
+  .plist div { display:flex; justify-content:space-between; gap:10px; border-bottom:1px solid var(--grid); padding-bottom:6px; }
+  .plist div:last-child { border-bottom:none; }
+  .plist span { color:var(--sub); }
+  .plist b { color:var(--accent); white-space:nowrap; font-variant-numeric:tabular-nums; }
+  .perkgrid { display:grid; gap:10px; grid-template-columns:1fr; }
+  @media (min-width:640px) { .perkgrid { grid-template-columns:repeat(2,1fr); } }
+  @media (min-width:960px) { .perkgrid { grid-template-columns:repeat(4,1fr); } }
+  .pk { background:var(--surface2); border-radius:12px; padding:12px 14px; font-size:.9rem; }
+  .pk b { display:block; font-size:.9rem; margin-bottom:2px; }
+  .pk span { color:var(--sub); }
+  .pk .who { display:inline-block; font-size:.68rem; color:var(--gold); margin-bottom:4px; }
+
+  /* sales page mock */
+  .mock { background:#faf5ef; color:#2a211c; border-radius:16px; overflow:hidden; max-width:820px; margin:0 auto; box-shadow:0 20px 50px rgba(0,0,0,.45); }
+  .mock .bar { background:#ece3d9; padding:8px 14px; display:flex; gap:6px; }
+  .mock .bar i { width:10px; height:10px; border-radius:50%; background:#cfc6be; }
+  .mock .body { display:grid; grid-template-columns:1fr; }
+  @media (min-width:760px) { .mock .body { grid-template-columns:1fr 1.25fr; } }
+  .mock .hero { background:radial-gradient(circle at 80% 20%, rgba(242,194,122,.35), transparent 40%), linear-gradient(160deg,#7e6956,#483c36 55%,#2a211c); color:#fff0e0; padding:26px 22px; display:flex; flex-direction:column; justify-content:flex-end; min-height:220px; position:relative; }
+  .mock .hero small { letter-spacing:.2em; font-size:.7rem; color:#dfc9b2; }
+  .mock .hero h3 { margin:6px 0 4px; font-size:1.5rem; line-height:1.2; }
+  .mock .hero p { margin:0; font-size:.85rem; opacity:.85; }
+  .mock .info { padding:20px 22px; font-size:.86rem; }
+  .mock .price { font-size:1.35rem; font-weight:800; color:#7e6956; }
+  .mock .price small { font-size:.8rem; color:#6b6360; font-weight:500; margin-left:4px; }
+  .mock ul { margin:10px 0; padding-left:1.1em; color:#3a3334; }
+  .mock ul li { margin:3px 0; }
+  .mock .note { font-size:.74rem; color:#7a7270; border-top:1px solid #e2dbd5; padding-top:8px; margin-top:8px; }
+  .mock .btn { display:inline-block; margin-top:10px; background:#7e6956; color:#fff; border-radius:8px; padding:8px 18px; font-weight:700; font-size:.85rem; }
+  .copy { display:grid; gap:10px; grid-template-columns:1fr; margin-top:18px; }
+  @media (min-width:760px) { .copy { grid-template-columns:repeat(3,1fr); } }
+  .copy div { background:var(--surface); border-radius:12px; padding:12px 14px; font-size:.84rem; }
+  .copy b { display:block; font-size:.72rem; color:var(--gold); letter-spacing:.1em; margin-bottom:4px; }
+
+  /* scenario calculator */
+  .calc { display:grid; gap:16px; grid-template-columns:1fr; }
+  @media (min-width:900px) { .calc { grid-template-columns:340px 1fr; } }
+  .inputs { display:grid; gap:5px; }
+  .inputs .inp { font-size:.82rem; } .inputs .inp small { font-size:.7rem; }
+  .inputs .inp input { padding:4px 8px; }
+  .inp { display:grid; grid-template-columns:1fr 92px; gap:8px; align-items:center; font-size:.88rem; color:var(--sub); }
+  .inp input { width:100%; background:var(--surface2); border:1px solid var(--axis); color:var(--fg); border-radius:8px; padding:6px 8px; font:inherit; font-size:.85rem; text-align:right; font-variant-numeric:tabular-nums; }
+  .inp input:focus { outline:2px solid var(--gold); outline-offset:1px; }
+  .inp small { display:block; color:var(--muted); font-size:.76rem; grid-column:1; grid-row:2; }
+  .inp input { grid-column:2; grid-row:1 / span 2; }
+  .outs { display:grid; gap:10px; grid-template-columns:repeat(2,1fr); margin-bottom:12px; }
+  @media (min-width:640px) { .outs { grid-template-columns:repeat(4,1fr); } }
+  .out { background:var(--surface2); border-radius:10px; padding:10px 12px; text-align:center; }
+  .out .k { font-size:.8rem; color:var(--muted); }
+  .out .v { font-size:1.15rem; font-weight:800; font-variant-numeric:tabular-nums; }
+  .out .v.neg { color:var(--accent); } .out .v.pos { color:#9cc79a; }
+  #curve { width:100%; height:auto; display:block; }
+  #curve .ln { fill:none; stroke:var(--gold); stroke-width:2.5; }
+  #curve .zero { stroke:var(--muted); stroke-width:1; stroke-dasharray:4 4; }
+  #curve .gl { stroke:var(--grid); stroke-width:1; }
+  #curve text { fill:var(--muted); font-size:13px; }
+  #curve .pt { stroke:var(--surface); stroke-width:2; }
+  #curve .be { stroke:var(--accent); stroke-width:1.5; }
+  #curve .lbl { fill:var(--fg); font-size:13px; font-weight:700; }
+
+  /* formula */
+  .formula { display:flex; flex-wrap:wrap; gap:6px; align-items:center; justify-content:center; font-size:.8rem; margin-bottom:14px; }
+  .formula .box { background:var(--surface2); border-radius:8px; padding:6px 10px; text-align:center; }
+  .formula .box.res { outline:1px solid var(--accent); }
+  .formula .op { color:var(--muted); }
+
+  /* pairing matrix */
+  .matrix { width:100%; border-collapse:separate; border-spacing:4px; }
+  .matrix th { font-size:.8rem; font-weight:600; color:var(--sub); padding:6px; }
+  .matrix th.rowh { text-align:left; font-weight:600; color:var(--fg); }
+  .matrix th.rowh small { display:block; color:var(--muted); font-weight:400; font-size:.8rem; }
+  .matrix td { background:var(--surface); border-radius:8px; height:56px; text-align:center; vertical-align:middle; }
+  .dot { width:0; height:0; border-radius:50%; margin:0 auto; display:grid; place-items:center; font-size:.78rem; font-weight:700; color:#fff; transition:width .5s, height .5s; transition-delay:calc(var(--d,0) * 60ms + 300ms); cursor:default; }
+  .slide.on .dot { width:30px; height:30px; }
+  .cellname { display:block; font-size:.76rem; color:var(--muted); margin-top:4px; }
+  @media (max-width:640px) { .cellname { display:none; } .matrix th.rowh small { display:none; } }
+
+  /* risk columns */
+  .rcol { background:var(--surface); border-radius:14px; padding:16px 18px; border-top:3px solid var(--accent); }
+  .rcol.mid { border-top-color:var(--gold); } .rcol.low { border-top-color:var(--spk); }
+  .rcol h3 { margin:0 0 2px; font-size:.98rem; } .rcol .why { color:var(--muted); font-size:.75rem; margin:0 0 12px; }
+  .ritem { border-top:1px solid var(--grid); padding:10px 0; font-size:.9rem; }
+  .ritem b { display:block; font-weight:600; }
+  .ritem span { color:var(--sub); display:block; }
+  .trg { display:inline-block; font-style:normal; margin-top:4px; font-size:.8rem; color:var(--gold); border:1px solid rgba(223,201,178,.4); border-radius:6px; padding:0 6px; }
+
+  /* go / no-go */
+  .gng { display:grid; gap:10px; }
+  .grw { display:grid; grid-template-columns:1fr; gap:6px; background:var(--surface); border-radius:12px; padding:14px 16px; align-items:center; }
+  @media (min-width:760px) { .grw { grid-template-columns:1.1fr 24px 1fr; gap:14px; } }
+  .grw .c { display:flex; gap:10px; align-items:center; font-size:.9rem; }
+  .grw .c i { flex:none; width:24px; height:24px; border-radius:50%; border:2px solid var(--ok); color:var(--ok); display:grid; place-items:center; font-style:normal; font-weight:800; font-size:.75rem; }
+  .grw .c small { display:block; color:var(--muted); font-size:.75rem; }
+  .grw .ar { color:var(--muted); text-align:center; display:none; }
+  @media (min-width:760px) { .grw .ar { display:block; } }
+  .grw .x { font-size:.85rem; color:var(--sub); border-left:3px solid var(--accent); padding-left:10px; }
+  .grw .x b { color:var(--accent); font-size:.75rem; display:block; }
+  .golive { margin-top:14px; text-align:center; background:rgba(111,154,111,.12); border:1px solid rgba(111,154,111,.4); border-radius:12px; padding:12px; font-size:.9rem; }
+  .golive b { color:#9cc79a; }
+
+  /* go / no-go pipeline */
+  .gpipe, .gfail { display:grid; grid-template-columns:repeat(4, 1fr 22px) 1fr; align-items:stretch; }
+  .gate { background:var(--surface); border-radius:14px; padding:18px 10px; text-align:center; border-top:3px solid var(--ok); display:flex; flex-direction:column; align-items:center; gap:2px; }
+  .gate .gico { width:38px; height:38px; color:#9cc79a; margin-bottom:6px; }
+  .gate b { font-size:1.25rem; }
+  .gate small { font-size:.9rem; color:var(--sub); }
+  .gate em { font-style:normal; font-size:.78rem; color:var(--muted); margin-top:4px; }
+  .gate.go { background:rgba(111,154,111,.14); border:1px solid rgba(111,154,111,.45); border-top-width:3px; }
+  .gate.go b { color:#9cc79a; font-size:1.5rem; }
+  .gate.go em { color:var(--sub); }
+  .garr { display:grid; place-items:center; color:var(--muted); font-size:1.6rem; font-weight:300; }
+  .gfail { margin-top:12px; }
+  .gf { position:relative; border:1px dashed rgba(192,87,76,.55); border-radius:12px; padding:12px 10px 10px; text-align:center; font-size:.88rem; color:var(--sub); line-height:1.45; }
+  .gf::before { content:""; position:absolute; left:50%; top:-13px; height:12px; border-left:1px dashed rgba(192,87,76,.55); }
+  .gf span { display:block; color:var(--accent); font-size:.76rem; font-weight:700; letter-spacing:.08em; margin-bottom:4px; }
+  .gf b { color:var(--fg); }
+  @media (max-width:760px) {
+    .gpipe { grid-template-columns:1fr; gap:6px; } .garr { font-size:0; } .garr::after { content:"↓"; font-size:1.2rem; }
+    .gfail { grid-template-columns:1fr 1fr; gap:8px; } .gfail > span, .gfail > div:empty { display:none; } .gf::before { display:none; }
+  }
+
+  /* gantt */
+  .grow { display:grid; grid-template-columns:150px 1fr; gap:12px; align-items:center; height:28px; }
+  .grow .lab { font-size:.8rem; text-align:right; color:var(--sub); }
+  .gtrack { position:relative; height:100%; }
+  .gbar { position:absolute; top:6px; height:16px; border-radius:4px; background:var(--accent); width:0; transition:width 1s cubic-bezier(.2,.7,.2,1); cursor:default; z-index:1; }
+  .gbar.chk { background:var(--spk); }
+  .gbar.ev { background:var(--gold); }
+  .gweeks { display:grid; grid-template-columns:150px 1fr; gap:12px; }
+  .gweeks .ticks span { transform:none; }
+  .gline { position:absolute; top:0; bottom:0; width:1px; background:var(--grid); }
+  .today { position:absolute; top:0; bottom:0; width:2px; background:var(--gold); z-index:2; }
+  @media (max-width:640px) { .grow, .gweeks { grid-template-columns:96px 1fr; gap:8px; } .grow .lab { font-size:.7rem; } }
+
+  /* table */
+  .tbl { width:100%; border-collapse:collapse; font-size:.9rem; }
+  .tbl th { text-align:left; color:var(--muted); font-weight:600; font-size:.82rem; padding:7px 10px; border-bottom:1px solid var(--axis); }
+  .tbl td { padding:7px 10px; border-bottom:1px solid var(--grid); vertical-align:middle; }
+  .tbl tr:last-child td { border-bottom:none; }
+  .tbl td.due { white-space:nowrap; font-variant-numeric:tabular-nums; color:var(--gold); font-weight:600; }
+  .owner { display:inline-block; background:var(--surface2); border-radius:6px; padding:2px 8px; font-size:.76rem; white-space:nowrap; }
+  .scroll-x { overflow-x:auto; }
+  .roles { display:grid; gap:10px; grid-template-columns:1fr; margin-bottom:14px; }
+  @media (min-width:640px) { .roles { grid-template-columns:repeat(3,1fr); } }
+  .role { background:var(--surface); border-radius:12px; padding:12px 14px; text-align:center; font-size:.85rem; }
+  .role small { display:block; color:var(--muted); font-size:.74rem; }
+  .role b { font-size:1rem; }
+
+  /* layout */
+  .lay { display:grid; gap:16px; grid-template-columns:1fr; }
+  @media (min-width:900px) { .lay { grid-template-columns:1.7fr 1fr; } }
+  .laysvg { width:100%; height:auto; display:block; }
+  .laysvg .sec { fill:var(--surface2); stroke:var(--axis); }
+  .laysvg .sl { fill:var(--sub); font-size:14px; font-weight:700; text-anchor:middle; }
+  .laysvg .mk circle { fill:var(--accent); stroke:var(--surface); stroke-width:3; }
+  .laysvg .mk text { fill:#fff; font-size:13px; font-weight:800; text-anchor:middle; }
+  .laysvg .mk { opacity:0; transition:opacity .5s; transition-delay:calc(var(--d,0) * 120ms + 300ms); }
+  .slide.on .laysvg .mk { opacity:1; }
+  .laylist { display:grid; gap:8px; align-content:start; font-size:.9rem; }
+  .laylist > div { display:grid; grid-template-columns:26px 1fr; gap:10px; align-items:start; }
+  .laylist i { width:24px; height:24px; border-radius:50%; background:var(--accent); color:#fff; font-style:normal; font-weight:800; font-size:.8rem; display:grid; place-items:center; }
+  .laylist p { margin:0; color:var(--sub); } .laylist p b { display:block; color:var(--fg); }
+  .laylist .staff { display:block; border-top:1px solid var(--grid); padding-top:10px; margin-top:4px; color:var(--sub); }
+  .laylist .staff b { display:block; color:var(--gold); }
+
+  /* P&L */
+  .pnl td { padding:8px 10px; }
+  .pnl td.amt { text-align:right; font-variant-numeric:tabular-nums; white-space:nowrap; }
+  .pnl tr.m td { color:var(--sub); }
+  .pnl tr.b td { font-weight:700; border-top:1px solid var(--axis); }
+  .pnl tr.neg td, .pnl tr.pos td { font-weight:800; font-size:1.05rem; border-top:2px solid var(--axis); }
+  .pnl tr.neg td.amt { color:var(--accent); } .pnl tr.pos td.amt { color:#9cc79a; }
+  .levers { display:grid; gap:9px; }
+  .lv { display:grid; grid-template-columns:170px 1fr 100px; gap:10px; align-items:center; font-size:.88rem; }
+  .lv .ln2 { color:var(--sub); text-align:right; }
+  .lv.base .ln2, .lv.all .ln2 { color:var(--fg); font-weight:700; }
+  .lt { position:relative; height:20px; }
+  .lt .zero { position:absolute; left:50%; top:-3px; bottom:-3px; width:1px; background:var(--muted); }
+  .lt .lb { position:absolute; top:0; bottom:0; border-radius:4px; cursor:default; }
+  .lt .lb.neg { background:var(--accent); } .lt .lb.pos { background:#6f9a6f; }
+  .lvv { font-weight:700; font-variant-numeric:tabular-nums; font-size:.86rem; }
+  .lvv.neg { color:var(--accent); } .lvv.pos { color:#9cc79a; }
+  .bezero { display:grid; gap:6px; margin-top:16px; border-top:1px solid var(--grid); padding-top:12px; font-size:.9rem; color:var(--sub); }
+  .bezero b { color:var(--gold); margin-right:8px; }
+  @media (max-width:640px) { .lv { grid-template-columns:110px 1fr 84px; font-size:.78rem; } }
+
+  /* P&L v2: waterfall + tiles + levers */
+  .pnlwrap { display:grid; gap:16px; grid-template-columns:1fr; }
+  @media (min-width:960px) { .pnlwrap { grid-template-columns:1.15fr 1fr; } }
+  .pnlside { display:grid; gap:14px; align-content:start; }
+  .ptsub { font-weight:400; color:var(--muted); font-size:.8rem; margin-left:8px; }
+  .wf { display:grid; gap:8px; }
+  .wfr { display:grid; grid-template-columns:130px 1fr 96px; gap:10px; align-items:center; }
+  .wfl { font-size:.92rem; color:var(--fg); line-height:1.25; }
+  .wfl small { display:block; font-size:.72rem; color:var(--muted); }
+  .wft { position:relative; height:24px; }
+  .wfz { position:absolute; top:-4px; bottom:-4px; width:1px; background:var(--axis); }
+  .wfb { position:absolute; top:0; bottom:0; border-radius:4px; cursor:default; }
+  .wfr.start .wfb { background:var(--sand); }
+  .wfr.up .wfb { background:var(--ok); }
+  .wfr.down .wfb { background:var(--accent); opacity:.85; }
+  .wfr.total { border-top:1px solid var(--axis); padding-top:10px; margin-top:2px; }
+  .wfr.total .wfl { font-weight:800; font-size:1rem; }
+  .wfr.total.pos .wfb { background:var(--ok); } .wfr.total.neg .wfb { background:var(--accent); }
+  .wfv { text-align:right; font-variant-numeric:tabular-nums; font-size:.95rem; font-weight:600; white-space:nowrap; }
+  .wfr.down .wfv { color:#e9a39b; } .wfr.up .wfv { color:#9cc79a; }
+  .wfr.total .wfv { font-size:1.15rem; font-weight:800; }
+  .wfr.total.pos .wfv { color:#9cc79a; } .wfr.total.neg .wfv { color:var(--accent); }
+  /* column waterfall */
+  .wfc-grid { display:grid; gap:6px; align-items:end; padding-top:26px; }
+  .wfc-t { position:relative; height:230px; }
+  .wfc-z { position:absolute; left:-3px; right:-3px; height:1px; background:var(--axis); }
+  .wfc-link { position:absolute; left:-6px; width:6px; border-top:1px dashed var(--muted); }
+  .wfc-b { position:absolute; left:12%; right:12%; border-radius:4px; cursor:default; }
+  .wfc.start .wfc-b { background:var(--sand); }
+  .wfc.up .wfc-b { background:var(--ok); }
+  .wfc.down .wfc-b { background:var(--accent); opacity:.85; }
+  .wfc.total.pos .wfc-b { background:var(--ok); } .wfc.total.neg .wfc-b { background:var(--accent); }
+  .wfc-v { position:absolute; left:-4px; right:-4px; text-align:center; font-size:.76rem; font-weight:700; font-variant-numeric:tabular-nums; white-space:nowrap; }
+  .wfc.down .wfc-v { color:#e9a39b; } .wfc.up .wfc-v { color:#9cc79a; }
+  .wfc.total .wfc-v { font-size:.92rem; } .wfc.total.pos .wfc-v { color:#9cc79a; } .wfc.total.neg .wfc-v { color:var(--accent); }
+  .wfc-l { text-align:center; font-size:.82rem; margin-top:8px; line-height:1.25; }
+  .wfc-l small { display:block; font-size:.68rem; color:var(--muted); }
+  .wfc.total .wfc-l { font-weight:800; }
+  .wfc.total { border-left:1px solid var(--axis); padding-left:6px; }
+  @media (max-width:640px) {
+    .wfc-grid { gap:2px; } .wfc-t { height:200px; }
+    .wfc-v { font-size:.56rem; letter-spacing:-.02em; } .wfc.total .wfc-v { font-size:.66rem; }
+    .wfc-l { font-size:.64rem; } .wfc-l small { display:none; }
+  }
+  .betiles { display:grid; gap:10px; grid-template-columns:repeat(3,1fr); }
+  .bt { background:var(--surface); border-radius:14px; padding:14px 10px; text-align:center; }
+  .bt span { display:block; font-size:.8rem; color:var(--muted); }
+  .bt b { display:block; font-size:clamp(1.2rem,2.4vw,1.6rem); font-weight:800; margin:4px 0 2px; font-variant-numeric:tabular-nums; }
+  .bt em { font-style:normal; font-size:.78rem; color:var(--sub); }
+  .bt.pos b { color:#9cc79a; } .bt.neg b { color:var(--accent); }
+  .levers2 { display:grid; gap:10px; }
+  .lv2 { display:grid; grid-template-columns:1fr 34% 92px; gap:10px; align-items:center; font-size:.9rem; }
+  .lv2 span { color:var(--sub); }
+  .lt2 { height:12px; background:var(--grid); border-radius:6px; overflow:hidden; }
+  .lt2 i { display:block; height:100%; background:var(--ok); border-radius:6px; cursor:default; }
+  .lv2 b { text-align:right; color:#9cc79a; font-variant-numeric:tabular-nums; }
+  @media (max-width:640px) { .wfr { grid-template-columns:96px 1fr 80px; } .betiles { grid-template-columns:1fr; } .lv2 { grid-template-columns:1fr 30% 80px; font-size:.8rem; } }
+
+  /* appendix C */
+  .qlist { margin:0; padding-left:1.2em; display:grid; gap:10px; font-size:.92rem; }
+  .qlist small { display:block; color:var(--gold); font-size:.8rem; }
+  .dlist { display:grid; gap:10px; }
+  .dlist div { background:var(--surface2); border-radius:10px; padding:10px 14px; font-size:.9rem; }
+  .dlist span { display:block; color:var(--muted); font-size:.8rem; }
+
+  /* brand + print button */
+  #brand { position:fixed; left:16px; top:12px; z-index:10; font-size:.8rem; letter-spacing:.08em; color:var(--sub); }
+  #brand b { color:var(--fg); font-weight:800; letter-spacing:.02em; }
+  #printBtn { position:fixed; right:16px; top:10px; z-index:10; background:var(--surface2); color:var(--sub); border:1px solid var(--axis); border-radius:8px; padding:5px 12px; font:inherit; font-size:.8rem; cursor:pointer; }
+  #printBtn:hover { color:var(--fg); border-color:var(--gold); }
+
+  /* print / PDF: one slide per landscape page, all content visible */
+  @page { size:A4 landscape; margin:8mm; }
+  @media print {
+    html, body { height:auto; background:#221a15 !important; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+    #deck { height:auto; overflow:visible; scroll-snap-type:none; }
+    .slide { min-height:auto; height:190mm; padding:12mm 10mm; page-break-after:always; break-after:page; overflow:hidden; }
+    .rv { opacity:1 !important; transform:none !important; transition:none !important; }
+    .seg, .gbar, .dot, .kbar, .val, .laysvg .mk { transition:none !important; }
+    .dot { width:30px !important; height:30px !important; }
+    .kbar { transform:scaleY(1) !important; }
+    .laysvg .mk { opacity:1 !important; }
+    .val { opacity:1 !important; }
+    #dots, #progress, #pageno, #tip, #printBtn, canvas.snow { display:none !important; }
+    #brand { position:absolute; }
+    .glass .fill { animation:none; transform:none; }
+  }
+
+  /* KPI */
+  .ktier { display:grid; gap:10px; }
+  .krow { display:grid; grid-template-columns:78px 1fr; gap:8px; align-items:stretch; }
+  .krow.main { grid-template-columns:78px 1fr 1fr; }
+  .kt { font-size:.8rem; font-weight:700; display:flex; flex-direction:column; justify-content:center; }
+  .kt small { color:var(--muted); font-weight:400; font-size:.78rem; }
+  .kblk { background:var(--surface2); border-radius:10px; padding:10px 12px; border-left:3px solid var(--accent); font-size:.85rem; }
+  .kblk i { font-style:normal; color:var(--accent); font-weight:800; margin-right:4px; }
+  .kblk small { display:block; color:var(--muted); font-size:.8rem; }
+  .krow.main .kblk { padding:14px 12px; }
+  .krow.main .kblk b { font-size:.9rem; }
+  .krow.main .kblk { border-left-color:var(--ok); }
+  .krow.main .kblk i { color:var(--ok); }
+  .krow.sub .kblk { border-left-color:var(--spk); }
+  .krow.ref .kblk { border-left:1px dashed var(--muted); background:transparent; border:1px dashed var(--axis); color:var(--sub); }
+  @media (max-width:640px) { .krow.main { grid-template-columns:1fr; } .krow { grid-template-columns:1fr; } }
+  .kchart { width:100%; height:auto; display:block; }
+  .kband { fill:rgba(223,201,178,.16); }
+  .kbar { transform-box:fill-box; transform-origin:50% 100%; transform:scaleY(0); transition:transform 1s cubic-bezier(.2,.7,.2,1); transition-delay:calc(var(--d,0) * 200ms + 300ms); }
+  .slide.on .kbar { transform:scaleY(1); }
+  .kflow { display:flex; flex-wrap:wrap; gap:8px; align-items:center; justify-content:center; margin-top:16px; }
+  .kc { background:var(--surface); border-radius:10px; padding:10px 14px; font-size:.88rem; }
+  .kc i { font-style:normal; color:var(--accent); font-weight:800; margin-right:6px; }
+  .kop { color:var(--gold); font-weight:800; font-size:.8rem; }
+  .kres { border-radius:10px; padding:10px 16px; font-size:.88rem; font-weight:700; }
+  .kres.ok { background:rgba(111,154,111,.14); border:1px solid rgba(111,154,111,.45); color:#9cc79a; }
+  .kres.ng { flex-basis:100%; text-align:center; background:transparent; color:var(--sub); font-weight:400; border:1px solid rgba(192,87,76,.4); font-size:.82rem; }
+  @media (prefers-reduced-motion: reduce) { .kbar { transition:none; } }
+
+  /* verdict */
+  .verdict { display:grid; gap:12px; grid-template-columns:1fr; margin-top:16px; }
+  @media (min-width:760px) { .verdict { grid-template-columns:1fr 1fr; } }
+  .vbox { border-radius:12px; padding:16px 18px; background:var(--surface); border-top:3px solid var(--spk); font-size:.88rem; }
+  .vbox.ng { border-top-color:var(--accent); }
+  .vbox b { display:block; margin-bottom:6px; }
+  .vbox span { color:var(--sub); }
+
+  #tip { position:fixed; z-index:50; pointer-events:none; background:#2e2620; border:1px solid var(--line); color:var(--fg); font-size:.8rem; padding:7px 10px; border-radius:8px; box-shadow:0 6px 20px rgba(0,0,0,.4); opacity:0; transition:opacity .15s; max-width:280px; }
+  #tip.show { opacity:1; }
+
+  #progress { position:fixed; left:0; top:0; height:3px; background:linear-gradient(90deg,var(--accent),var(--gold)); width:0; z-index:10; transition:width .3s; }
+  #dots { position:fixed; right:14px; top:50%; transform:translateY(-50%); display:flex; flex-direction:column; gap:9px; z-index:10; }
+  #dots button { width:8px; height:8px; border-radius:50%; border:1px solid var(--muted); background:transparent; padding:0; cursor:pointer; transition:all .3s; }
+  #dots button.act { background:var(--gold); border-color:var(--gold); transform:scale(1.4); }
+  #pageno { position:fixed; right:16px; bottom:12px; font-size:.75rem; color:var(--muted); z-index:10; }
+  @media (max-width:640px) { #dots { display:none; } }
+
+  @media (prefers-reduced-motion: reduce) {
+    .rv, .seg, .gbar, .dot, .jline::after, .val { transition:none !important; }
+    .glass .fill { animation:none; transform:none; } .glass .bub { animation:none; }
+    #deck { scroll-behavior:auto; }
+  }
+</style>
+</head>
+<body>
+<div id="progress"></div>
+<div id="brand"><b>nest hotel</b> · PLATZ</div>
+<button id="printBtn" type="button" onclick="window.print()">인쇄 · PDF 저장</button>
+<nav id="dots" aria-label="슬라이드 이동"></nav>
+<div id="pageno"></div>
+<div id="tip" role="tooltip"></div>
+
+<div id="deck">
+
+  <!-- 1 Cover -->
+  <section class="slide cover">
+    <canvas class="snow" aria-hidden="true"></canvas>
+    <svg class="lights" viewBox="0 0 1200 90" preserveAspectRatio="none" aria-hidden="true">
+      <path d="M0 10 Q100 60 200 18 T400 18 T600 18 T800 18 T1000 18 T1200 10"/>
+      <circle cx="50" cy="30" r="4"/><circle cx="100" cy="40" r="4"/><circle cx="150" cy="34" r="4"/><circle cx="250" cy="30" r="4"/><circle cx="300" cy="40" r="4"/><circle cx="350" cy="34" r="4"/>
+      <circle cx="450" cy="30" r="4"/><circle cx="500" cy="40" r="4"/><circle cx="550" cy="34" r="4"/><circle cx="650" cy="30" r="4"/><circle cx="700" cy="40" r="4"/><circle cx="750" cy="34" r="4"/>
+      <circle cx="850" cy="30" r="4"/><circle cx="900" cy="40" r="4"/><circle cx="950" cy="34" r="4"/><circle cx="1050" cy="30" r="4"/><circle cx="1100" cy="40" r="4"/><circle cx="1150" cy="34" r="4"/>
+    </svg>
+    <div class="inner cover-grid">
+      <div>
+        <p class="eyebrow rv">NEST HOTEL · PLATZ · BEVERAGE PROMOTION</p>
+        <h1 class="rv" style="--i:1">Christmas Eve<br><span>Wine Night</span></h1>
+        <p class="lead rv" style="--i:2">크리스마스 이브 디너 와인 사전 예약 상품 제안 · 수정안 5</p>
+        <div class="meta rv" style="--i:3">
+          <span class="pill"><b>2026.12.24</b> 목 · 이브 디너</span>
+          <span class="pill">패키지 <b>Classic · Premium</b></span>
+        </div>
+      </div>
+      <svg class="glass rv" style="--i:2" viewBox="0 0 120 220" aria-hidden="true">
+        <defs><clipPath id="bowl"><path d="M20 10 H100 Q104 70 60 100 Q16 70 20 10 Z"/></clipPath></defs>
+        <g clip-path="url(#bowl)">
+          <rect class="fill" x="0" y="40" width="120" height="70" fill="#a8443e"/>
+          <circle class="bub" cx="50" cy="90" r="2" fill="#f6ede3"/>
+          <circle class="bub" cx="64" cy="94" r="1.6" fill="#f6ede3"/>
+          <circle class="bub" cx="72" cy="86" r="1.8" fill="#f6ede3"/>
+        </g>
+        <path d="M20 10 H100 Q104 70 60 100 Q16 70 20 10 Z" fill="none" stroke="#f6ede3" stroke-opacity=".6" stroke-width="2"/>
+        <line x1="60" y1="100" x2="60" y2="195" stroke="#f6ede3" stroke-opacity=".6" stroke-width="2"/>
+        <ellipse cx="60" cy="200" rx="32" ry="6" fill="none" stroke="#f6ede3" stroke-opacity=".6" stroke-width="2"/>
+      </svg>
+    </div>
+  </section>
+
+  <!-- 2 Summary -->
+  <section class="slide">
+    <div class="inner">
+      <div class="head"><p class="eyebrow rv">00 · SUMMARY</p><h2 class="rv" style="--i:1">이브 디너에 와인을, 예약할 때 판다</h2></div>
+      <div class="s3">
+        <div class="scard rv" style="--i:2">
+          <svg class="sico" viewBox="0 0 48 48" aria-hidden="true"><path d="M14 6h20q1 11-10 17Q13 17 14 6z" fill="none" stroke="currentColor" stroke-width="2.5"/><path d="M15 12h18q-1 8-9 11-8-3-9-11z" fill="currentColor" opacity=".55"/><path d="M24 23v14M16 41h16" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>
+          <div class="sk">상품</div>
+          <div class="sv">236,000원~</div>
+          <div class="ss">디너 2인 + 와인 1병</div>
+        </div>
+        <div class="scard rv" style="--i:3">
+          <svg class="sico" viewBox="0 0 48 48" aria-hidden="true"><rect x="4" y="14" width="14" height="20" rx="3" fill="none" stroke="currentColor" stroke-width="2.5"/><rect x="30" y="14" width="14" height="20" rx="3" fill="currentColor" opacity=".55"/><path d="M20 24h8m-3-4 4 4-4 4" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <div class="sk">핵심</div>
+          <div class="sv">현장 → 예약</div>
+          <div class="ss">와인 구매 결정을 앞당김</div>
+        </div>
+        <div class="scard rv" style="--i:4">
+          <svg class="sico" viewBox="0 0 48 48" aria-hidden="true"><path d="M6 40h36" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/><rect x="10" y="26" width="7" height="14" rx="1.5" fill="currentColor" opacity=".55"/><rect x="21" y="18" width="7" height="22" rx="1.5" fill="currentColor" opacity=".55"/><rect x="32" y="9" width="7" height="31" rx="1.5" fill="currentColor"/></svg>
+          <div class="sk">흑자 조건 <span class="ex">예시값</span></div>
+          <div class="sv" id="sumBe">—</div>
+          <div class="ss">패키지 판매율 (손익분기)</div>
+        </div>
+      </div>
+      <div class="sgauge rv" style="--i:5">
+        <p class="sgcap">패키지 판매율 — 막대가 금색 선을 넘으면 흑자 <span class="ex">예시값</span></p>
+        <div class="sgt"><i id="sgCur"></i><i id="sgBe"></i></div>
+        <div class="sgl"><span>0%</span><span id="sgCurL">기준 20%</span><span id="sgBeL">손익분기</span><span>40%</span></div>
+      </div>
+      <div class="sask rv" style="--i:6"><b>오늘 결정</b>행사 방향 승인 <span>→</span> 11/13 Go/No-go에서 실제 원가·데이터로 수치 확정</div>
+    </div>
+  </section>
+
+  <!-- 3 Overview -->
+  <section class="slide">
+    <div class="inner">
+      <div class="head"><p class="eyebrow rv">01 · OVERVIEW</p><h2 class="rv" style="--i:1">행사 개요 · 전략 분기</h2></div>
+      <div class="tiles t3">
+        <div class="tile rv" style="--i:2"><div class="k">일시</div><div class="v">12.24</div><div class="s">목요일 · 크리스마스 이브 디너</div></div>
+        <div class="tile rv" style="--i:3"><div class="k">디너 1인</div><div class="v"><span data-count="88000">0</span></div><div class="s">평일 디너 요금 · 특별 요금 없음</div></div>
+        <div class="tile rv" style="--i:4"><div class="k">현재 와인 판매</div><div class="v sm" style="font-size:1.25rem; margin:12px 0 6px">병 판매 11종 · 잔 0종</div><div class="s">구매 결정은 현장에서만</div></div>
+      </div>
+      <div class="panel rv" style="--i:5; margin-top:16px">
+        <div class="tree">
+          <div class="root">작년 12/24 디너 좌석 점유율<small>11/6 POS 확인 후 전략 확정</small></div>
+          <div class="arrow">→</div>
+          <div class="branch">
+            <div class="leaf"><b>만석에 가까움</b>객단가 전략 — 기존 채널만 사용, 추가 홍보비 없음</div>
+            <div class="leaf alt"><b>여유 좌석 있음</b>집객 전략 병행 — 마케팅팀과 홍보 예산 별도 협의</div>
+          </div>
+        </div>
+      </div>
+      <p class="foot rv" style="--i:6">12/25 크리스마스 디너(금, 110,000원) 확장 여부는 11/13 보고 때 판단</p>
+    </div>
+  </section>
+
+  <!-- 3b Market -->
+  <section class="slide">
+    <div class="inner">
+      <div class="head"><p class="eyebrow rv">02 · MARKET</p><h2 class="rv" style="--i:1">영종도 · 인천 뷔페 디너 (1인 · 평일)</h2></div>
+      <div class="panel rv" style="--i:2">
+        <div class="lgrow">
+          <span class="lg"><i style="background:var(--buffet)"></i>경쟁 호텔 디너</span>
+          <span class="lg"><i style="background:var(--sand)"></i>네스트 디너</span>
+          <span class="lg"><i style="background:var(--accent)"></i>패키지 와인 (1인 환산)</span>
+        </div>
+        <div class="hbar" id="mktChart"></div>
+        <div class="axis"><span></span><div class="ticks" id="mktTicks"></div></div>
+      </div>
+      <div class="cols3" style="margin-top:14px">
+        <div class="pk rv" style="--i:3"><b>디너 기본가는 비교 대상 중 최저</b><span>와인을 더한 Classic 1인 118,000원도 파라다이스·인스파이어·쉐라톤 평일 기본가보다 낮음</span></div>
+        <div class="pk rv" style="--i:4; border:1px solid var(--gold)"><b style="color:var(--gold)">직접 경쟁: 그랜드 하얏트 인천</b><span>평일 99,000원에 웰컴 와인 1잔 + 생맥주 무제한 → Classic 1인 118,000원보다 저렴 · 03 가치 비교 참고</span></div>
+        <div class="pk rv" style="--i:5"><b>이브 특선가 미공개</b><span>2026.10.20 기준 인천 호텔 대부분 12월 가격 미발표 · 경쟁사는 이브에 할증할 가능성 있음 · 11/11 재조사</span></div>
+      </div>
+      <p class="foot rv" style="--i:6">출처: 인천일보(2026.10.20) · 나무위키 「호텔 뷔페/목록」 · 그랜드 하얏트 인천 공식 예약 페이지 · 쉐라톤 그랜드는 송도 소재</p>
+    </div>
+  </section>
+
+  <!-- 3c Value -->
+  <section class="slide">
+    <div class="inner">
+      <div class="head"><p class="eyebrow rv">03 · VALUE</p><h2 class="rv" style="--i:1">1인 기준 · 내는 돈 vs 받는 것</h2></div>
+      <div class="panel rv" style="--i:2">
+        <div class="lgrow">
+          <span class="lg"><i style="background:var(--buffet)"></i>하얏트 디너</span>
+          <span class="lg"><i style="background:var(--sand)"></i>네스트 디너</span>
+          <span class="lg"><i style="background:var(--accent)"></i>고른 와인 반 병 (375ml)</span>
+          <span class="lg"><i style="background:var(--glow)"></i>웰컴 스파클링 1잔</span>
+        </div>
+        <div class="hbar" id="valChart"></div>
+        <div class="axis"><span></span><div class="ticks" id="valTicks"></div></div>
+      </div>
+      <div class="cols3" style="margin-top:14px">
+        <div class="pk rv" style="--i:3"><b>내는 돈보다 받는 것이 8,700원 많음</b><span>디너 88,000 + 와인 반 병 30,000 + 웰컴 1잔 8,700 = 126,700원어치</span></div>
+        <div class="pk rv" style="--i:4"><b>하얏트와 차이 19,000원의 정체</b><span>메뉴가 60,000원 와인을 내가 골라 반 병씩 — 하얏트는 포함 주류를 고를 수 없음</span></div>
+        <div class="pk rv" style="--i:5"><b>금액에 넣지 않은 것</b><span>메시지 카드 · 맞춤 페어링 카드 · Premium 테이블 서비스</span></div>
+      </div>
+      <p class="foot rv" style="--i:6">받는 것은 메뉴가 기준(원가 아님) · 웰컴 1잔 = 카바 52,000원 ÷ 6잔 · 하얏트는 웰컴 와인 1잔 + 생맥주 무제한 포함</p>
+    </div>
+  </section>
+
+  <!-- 4 Program -->
+  <section class="slide">
+    <div class="inner">
+      <div class="head"><p class="eyebrow rv">04 · PROGRAM</p><h2 class="rv" style="--i:1">고객 동선별 경험</h2></div>
+      <div class="journey">
+        <div class="jline"></div>
+        <div class="step rv" style="--i:2"><div class="node">1</div><div class="t">예약</div><h3>와인 · 메시지 선택</h3><p class="d">예약 시 와인 선택<br>크리스마스 메시지 입력</p></div>
+        <div class="step rv" style="--i:3"><div class="node">2</div><div class="t">착석</div><h3>준비된 테이블</h3><p class="d">메시지 카드 · 와인 넥태그<br>웰컴 스파클링 (무알코올 선택)</p></div>
+        <div class="step rv" style="--i:4"><div class="node">3</div><div class="t">식사</div><h3>맞춤 페어링 카드</h3><p class="d">고른 와인에 맞는 뷔페 동선 안내<br>잔 판매 2종 <span class="badge">당일</span></p></div>
+        <div class="step rv" style="--i:5"><div class="node">4</div><div class="t">디저트</div><h3>스위트 페어링</h3><p class="d">모스카토 추천<br>Premium은 테이블 서비스</p></div>
+      </div>
+      <div class="panel rv" style="--i:6; margin-top:26px">
+        <p class="ptitle" style="text-align:center">잔 판매 가격 구조 — 125ml · 1병 6잔</p>
+        <div class="lgrow">
+          <span class="lg"><i style="background:var(--red)"></i>최저 기준 = 병가 ÷ 6</span>
+          <span class="lg"><i style="background:var(--glow)"></i>잔량 손실 보전 +2,000원</span>
+        </div>
+        <div class="hbar" id="glassChart"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4b Layout -->
+  <section class="slide">
+    <div class="inner">
+      <div class="head"><p class="eyebrow rv">05 · LAYOUT</p><h2 class="rv" style="--i:1">운영 배치도 (안)</h2></div>
+      <div class="lay">
+        <div class="panel rv" style="--i:2; padding:14px">
+          <svg class="laysvg" viewBox="0 0 720 360" role="img" aria-label="뷔페 섹션 배치와 와인 운영 지점">
+            <rect class="sec" x="20" y="30" width="70" height="250" rx="8"/><text class="sl" x="55" y="160" transform="rotate(-90 55 160)">DESSERTS</text>
+            <rect class="sec" x="140" y="30" width="380" height="50" rx="8"/><text class="sl" x="330" y="60">HOT</text>
+            <rect class="sec" x="125" y="110" width="410" height="80" rx="8"/><text class="sl" x="330" y="155">KOREAN · 일식 · 치즈·햄</text>
+            <rect class="sec" x="115" y="220" width="420" height="60" rx="8"/><text class="sl" x="325" y="255">COLD</text>
+            <rect class="sec" x="580" y="30" width="80" height="250" rx="8"/><text class="sl" x="620" y="160" transform="rotate(-90 620 160)">LIVE · 육류 · 랍스터</text>
+            <line x1="20" x2="700" y1="320" y2="320" stroke="var(--axis)" stroke-dasharray="6 6"/>
+            <text class="sl" x="470" y="348" style="fill:var(--muted); font-weight:400">입구 · 좌석 방향 (위치 가정)</text>
+            <g class="mk" style="--d:0"><circle cx="300" cy="320" r="16"/><text x="300" y="325">1</text></g>
+            <g class="mk" style="--d:1"><circle cx="690" cy="250" r="16"/><text x="690" y="255">2</text></g>
+            <g class="mk" style="--d:2"><circle cx="620" cy="14" r="13"/><text x="620" y="19">3</text></g>
+            <g class="mk" style="--d:3"><circle cx="125" cy="205" r="13"/><text x="125" y="210">4</text></g>
+            <g class="mk" style="--d:4"><circle cx="55" cy="300" r="13"/><text x="55" y="305">5</text></g>
+            <g class="mk" style="--d:5"><circle cx="555" cy="95" r="13"/><text x="555" y="100">6</text></g>
+          </svg>
+        </div>
+        <div class="panel rv laylist" style="--i:3">
+          <div><i>1</i><p><b>웰컴 스파클링 스테이션</b>입구 쪽 · 착석 후 테이블로 서빙</p></div>
+          <div><i>2</i><p><b>와인 칠링 · 오픈 스테이션</b>LIVE 옆 · 패키지 와인 사전 칠링</p></div>
+          <div><i>3</i><p><b>레드 페어링 POP</b>LIVE 육류 앞</p></div>
+          <div><i>4</i><p><b>화이트 페어링 POP</b>일식(초밥) 앞</p></div>
+          <div><i>5</i><p><b>스위트 페어링 POP</b>디저트 앞</p></div>
+          <div><i>6</i><p><b>잔 판매 안내</b>HOT·KOREAN 사이 동선</p></div>
+          <div class="staff"><b>인력 (가정)</b>웰컴 담당 1명 (18:00~19:30 집중) · 와인 서비스 2명</div>
+        </div>
+      </div>
+      <p class="foot rv" style="--i:4">받은 뷔페 섹션 배치표를 단순화한 도식 · 입구 · 좌석 · 동선 폭은 미반영 · 11/6 업장 매니저와 현장 확인 후 확정</p>
+    </div>
+  </section>
+
+  <!-- 5 Package -->
+  <section class="slide">
+    <div class="inner">
+      <div class="head"><p class="eyebrow rv">06 · PACKAGE</p><h2 class="rv" style="--i:1">패키지 · 디너 2인 + 와인 1병</h2></div>
+      <div class="tiers">
+        <div class="tier rv" style="--i:2">
+          <div class="n">Classic<small>기본 2종 + 레드 업그레이드</small></div>
+          <div class="plist">
+            <div><span>르 트리포터 루즈 (레드)</span><b>236,000</b></div>
+            <div><span>르 트리포터 블랑 (화이트)</span><b>236,000</b></div>
+            <div><span>이터 까베르네 쇼비뇽 (레드 · +10,000 업그레이드)</span><b>246,000</b></div>
+          </div>
+        </div>
+        <div class="tier rv" style="--i:3">
+          <div class="n">Premium<small>3종 · 수량 한정</small></div>
+          <div class="plist">
+            <div><span>뛰느방, 배드 보이 (레드)</span><b>286,000</b></div>
+            <div><span>도멘 데 꺄트르 쎄종 샤블리 (화이트)</span><b>336,000</b></div>
+            <div><span>떼땅져 리저브 브뤼 (샴페인)</span><b>426,000</b></div>
+          </div>
+        </div>
+      </div>
+      <div class="perkgrid rv" style="--i:4">
+        <div class="pk"><span class="who">전 패키지</span><b>웰컴 스파클링</b><span>패키지 1건당 2잔 (4인 구성 4잔) · 아동·비음주 무알코올</span></div>
+        <div class="pk"><span class="who">전 패키지</span><b>크리스마스 메시지 카드</b><span>예약 시 입력한 문구로 카드·와인 넥태그 제작 · 12/21 예약분까지</span></div>
+        <div class="pk"><span class="who">전 패키지</span><b>맞춤 페어링 카드</b><span>고른 와인에 맞는 뷔페 섹션 추천</span></div>
+        <div class="pk"><span class="who">Premium</span><b>테이블 와인 서비스</b><span>아이스 버킷 · 디캔팅 · 사전 확보</span></div>
+      </div>
+      <p class="foot rv" style="--i:5">3인 이상 = 디너 1인당 88,000원 추가 · 아동 요금 별도 · Premium 수량 = min(수입사 확보량, 작년 12월 판매량) · 11/13 확정</p>
+    </div>
+  </section>
+
+  <!-- 6 Sales page -->
+  <section class="slide">
+    <div class="inner">
+      <div class="head"><p class="eyebrow rv">07 · CUSTOMER VIEW</p><h2 class="rv" style="--i:1">판매 페이지 예시</h2></div>
+      <div class="mock rv" style="--i:2">
+        <div class="bar"><i></i><i></i><i></i></div>
+        <div class="body">
+          <div class="hero">
+            <small>CHRISTMAS EVE DINNER · 12.24 THU</small>
+            <h3>Christmas Eve Wine Night</h3>
+            <p>당신이 고른 와인과 메시지가<br>먼저 테이블에서 기다립니다</p>
+          </div>
+          <div class="info">
+            <div class="price">236,000원<small>디너 2인 + Classic 와인 1병부터</small></div>
+            <ul>
+              <li>웰컴 스파클링 패키지 1건당 2잔 (무알코올 선택 가능)</li>
+              <li>예약 시 입력한 메시지로 만든 크리스마스 카드 (12/21까지 예약 시)</li>
+              <li>고른 와인에 맞춘 뷔페 페어링 카드</li>
+              <li>Premium: 아이스 버킷·디캔팅 테이블 서비스</li>
+            </ul>
+            <span class="btn">와인 고르고 예약하기</span>
+            <p class="note">Premium 와인은 수량 한정 · 수급에 따라 조기 마감 · 미성년자 주류 제공 불가</p>
+          </div>
+        </div>
+      </div>
+      <div class="copy">
+        <div class="rv" style="--i:3"><b>핵심 메시지</b>할인이 아니라 "준비된 크리스마스 테이블"</div>
+        <div class="rv" style="--i:4"><b>쓰지 않는 표현</b>할인 · 특가 · 무료 증정 (가격 혜택 오해 방지)</div>
+        <div class="rv" style="--i:5"><b>게시 조건</b>법무 검토 통과 후 · 문구는 마케팅팀과 확정</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7 Scenario -->
+  <section class="slide">
+    <div class="inner">
+      <div class="head"><p class="eyebrow rv">08 · EXPECTED EFFECT</p><h2 class="rv" style="--i:1">기대 효과 시나리오 <span class="ex">예시값 · 직접 입력 가능</span></h2></div>
+      <div class="calc">
+        <div class="panel rv inputs" style="--i:2; padding:18px">
+          <p class="ptitle" style="margin-bottom:4px">입력값</p>
+          <label class="inp">판매 가능 패키지 수 (2인 단위)<small>4인 37개(=74) + 2인 15개 · 1회전</small><input id="iT" type="number" value="89" min="1"></label>
+          <label class="inp">패키지 판매율 %<small>기준 시나리오</small><input id="iR" type="number" value="20" min="0" max="100"></label>
+          <label class="inp">Classic 비중 %<small>가정 · 작년 12월 POS로 교체</small><input id="iM" type="number" value="70" min="0" max="100"></label>
+          <label class="inp">증분 비율 %<small>와인 음용률 20.4% 기반 · 상한값</small><input id="iI" type="number" value="63" min="0" max="100"></label>
+          <label class="inp">와인 원가율 %<small>순매출 기준 · 업계 사례 24~45%</small><input id="iC" type="number" value="30" min="0" max="100"></label>
+          <label class="inp">카드 수수료율 %<small>결제액 기준 · 일반가맹점</small><input id="iF" type="number" value="2" min="0" max="100" step="0.1"></label>
+          <label class="inp">고정비 (원)<small>카드 3종 13.5만 + POP 6개 10.8만</small><input id="iX" type="number" value="250000" min="0" step="50000"></label>
+          <label class="inp">추가 인건비 (원)<small>3명 × 4시간 × 최저시급 10,320원</small><input id="iL" type="number" value="123840" min="0" step="10000"></label>
+          <label class="inp">잔 판매 수 (잔)<small>12,000원 · 당일 실적 전까지 0</small><input id="iG" type="number" value="0" min="0"></label>
+          <label class="inp">신규 고객 비율 %<small>패키지로 새로 온 고객 · 집객</small><input id="iN" type="number" value="0" min="0" max="100"></label>
+          <label class="inp">디너 원가율 %<small>신규 고객 디너 이익용 · 가정</small><input id="iD" type="number" value="40" min="0" max="100"></label>
+        </div>
+        <div class="panel rv" style="--i:3">
+          <div class="outs">
+            <div class="out"><div class="k">패키지 판매</div><div class="v" id="oN">—</div></div>
+            <div class="out"><div class="k">증분 와인 순매출</div><div class="v" id="oInc">—</div></div>
+            <div class="out"><div class="k">증분 이익</div><div class="v" id="oP">—</div></div>
+            <div class="out"><div class="k">손익분기 판매율</div><div class="v" id="oBe">—</div></div>
+          </div>
+          <svg id="curve" viewBox="0 0 640 250" role="img" aria-label="패키지 판매율별 증분 이익 곡선"></svg>
+          <div class="formula" style="margin:10px 0 0">
+            <span class="box res">증분 이익</span><span class="op">=</span>
+            <span class="box">증분 순매출(÷1.1) × (1 − 원가율) − 결제액 × 수수료율</span><span class="op">−</span>
+            <span class="box">웰컴 원가</span><span class="op">−</span>
+            <span class="box">고정비 · 인건비</span><span class="op">+</span>
+            <span class="box">잔 판매 이익</span>
+          </div>
+        </div>
+      </div>
+      <p class="foot rv" style="--i:4">순매출 = 메뉴가 ÷ 1.1 · 원가율 30% = VinePair 레스토랑 사례 · 증분 63% = 1 − (1 − 와인 음용률 20.4%)², 오픈서베이 2024 · Classic 비중·판매율은 가정</p>
+    </div>
+  </section>
+
+  <!-- 7b P&L -->
+  <section class="slide">
+    <div class="inner">
+      <div class="head"><p class="eyebrow rv">09 · P&amp;L</p><h2 class="rv" style="--i:1">손익계산서 · 흑자 조건 <span class="ex">08 입력값 연동</span></h2></div>
+      <div class="pnlwrap">
+        <div class="panel rv" style="--i:2">
+          <p class="ptitle">돈이 어떻게 남나 <span class="ptsub" id="wfSub"></span></p>
+          <div id="wf" class="wf"></div>
+        </div>
+        <div class="pnlside">
+          <div class="betiles rv" style="--i:3" id="beTiles"></div>
+          <div class="panel rv" style="--i:4">
+            <p class="ptitle">이익을 키우는 방법 <span class="ptsub">하나씩 적용 · 효과 큰 순</span></p>
+            <div id="levers" class="levers2"></div>
+          </div>
+        </div>
+      </div>
+      <p class="foot rv" style="--i:4">기존 고객 디너 매출은 패키지 없이도 발생하므로 제외 · 08에서 신규 고객 비율을 넣으면 그 고객의 디너 이익을 더함(집객 전략) · 인건비는 최저시급 기준 하한값</p>
+    </div>
+  </section>
+
+  <!-- 8 Go / No-go -->
+  <section class="slide">
+    <div class="inner">
+      <div class="head"><p class="eyebrow rv">10 · GO / NO-GO</p><h2 class="rv" style="--i:1">11/13, 관문 4개를 통과하면 출시</h2></div>
+      <div class="gpipe">
+        <div class="gate rv" style="--i:2">
+          <svg class="gico" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="15" fill="none" stroke="currentColor" stroke-width="2.5"/><path d="M20 11v18M24.5 14.5q-1.5-2-4.5-2-4.5 0-4.5 3.5t4.5 3.5q5 0 5 4t-5 3.5q-3.5 0-5-2.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+          <b>마진</b><small>손익분기 달성 가능</small><em>구매팀 원가</em>
+        </div>
+        <span class="garr rv" style="--i:2">›</span>
+        <div class="gate rv" style="--i:3">
+          <svg class="gico" viewBox="0 0 40 40" aria-hidden="true"><path d="M20 5 33 10v9q0 10-13 16Q7 29 7 19v-9z" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"/><path d="m14 20 4 4 8-8" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <b>규정</b><small>웰컴 드링크 통과</small><em>법무팀</em>
+        </div>
+        <span class="garr rv" style="--i:3">›</span>
+        <div class="gate rv" style="--i:4">
+          <svg class="gico" viewBox="0 0 40 40" aria-hidden="true"><circle cx="14" cy="13" r="5" fill="none" stroke="currentColor" stroke-width="2.5"/><circle cx="27" cy="15" r="4" fill="none" stroke="currentColor" stroke-width="2.5"/><path d="M5 33q0-10 9-10t9 10M22 32q1-8 6-8t7 8" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>
+          <b>운영</b><small>인력 · 칠링 · 와인잔</small><em>업장 매니저</em>
+        </div>
+        <span class="garr rv" style="--i:4">›</span>
+        <div class="gate rv" style="--i:5">
+          <svg class="gico" viewBox="0 0 40 40" aria-hidden="true"><path d="M8 14h24v20H8z" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"/><path d="M8 14 12 6h16l4 8M17 20h6" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <b>수량</b><small>Premium 재고 확보</small><em>수입사</em>
+        </div>
+        <span class="garr rv" style="--i:5">›</span>
+        <div class="gate go rv" style="--i:6">
+          <svg class="gico" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="15" fill="none" stroke="currentColor" stroke-width="2.5"/><path d="m13 20 5 5 9-10" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <b>GO</b><small>11/16 결재</small><em>11/20 상품 등록</em>
+        </div>
+      </div>
+      <div class="gfail">
+        <div class="gf rv" style="--i:7"><span>미달 시</span>고정비 줄여 재계산<br>그래도 미달 → <b>미출시</b></div>
+        <span></span>
+        <div class="gf rv" style="--i:8"><span>미달 시</span><b>웰컴 제외</b>하고<br>판매 여부 재판단</div>
+        <span></span>
+        <div class="gf rv" style="--i:9"><span>미달 시</span><b>판매 수량 상한</b><br>또는 잔 판매 제외</div>
+        <span></span>
+        <div class="gf rv" style="--i:10"><span>미달 시</span>Premium 빼고<br><b>Classic만 출시</b></div>
+        <span></span>
+        <div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 9 Schedule -->
+  <section class="slide">
+    <div class="inner">
+      <div class="head"><p class="eyebrow rv">11 · SCHEDULE</p><h2 class="rv" style="--i:1">준비 일정 (안)</h2></div>
+      <div class="panel rv" style="--i:2">
+        <div class="lgrow">
+          <span class="lg"><i style="background:var(--spk)"></i>확인·검토</span>
+          <span class="lg"><i style="background:var(--accent)"></i>실행</span>
+          <span class="lg"><i style="background:var(--gold)"></i>판단·행사·리뷰</span>
+          <span class="lg"><i style="background:var(--gold); width:2px"></i>오늘 (10/29)</span>
+        </div>
+        <div id="gantt"></div>
+        <div class="gweeks"><span></span><div class="ticks" id="ganttTicks"></div></div>
+      </div>
+      <p class="foot rv" style="--i:3">11/13 Go/No-go 판단 · 11/16 사전 공지로 홍보 기간 확보 · 12/31 속보 리뷰 · 1/15 정산 확정 리뷰</p>
+    </div>
+  </section>
+
+  <!-- 10 Risk -->
+  <section class="slide">
+    <div class="inner">
+      <div class="head"><p class="eyebrow rv">12 · RISK</p><h2 class="rv" style="--i:1">리스크 · 대응 · 판단 시점</h2></div>
+      <div class="cols3">
+        <div class="rcol rv" style="--i:2">
+          <h3>고객 안전 · 법적</h3><p class="why">발생 시 행사 중단 수준</p>
+          <div class="ritem"><b>미성년자 음주</b><span>예약 시 성인 인원 확인 · 무알코올 웰컴</span><em class="trg">상시</em></div>
+          <div class="ritem"><b>웰컴 드링크 규정 위반</b><span>법무 검토 통과 전 판매 페이지 미게시</span><em class="trg">11/13</em></div>
+        </div>
+        <div class="rcol mid rv" style="--i:3">
+          <h3>매출</h3><p class="why">목표 미달 · 증분 없음</p>
+          <div class="ritem"><b>기존 와인 주문의 단순 이동</b><span>주 지표를 전체 와인 주문 테이블 비율로</span><em class="trg">사후 측정</em></div>
+          <div class="ritem"><b>판매 저조</b><span>예약 1주 차 판매율이 손익분기의 절반 미만이면 문구·채널 조정</span><em class="trg">11/27</em></div>
+          <div class="ritem"><b>하얏트 디너(평일 99,000원, 와인 1잔 + 생맥주 무제한)와 비교</b><span>"생맥주 무제한"이 아닌 "고른 와인 반 병 + 웰컴 스파클링"으로 메시지 차별화</span><em class="trg">문구 확정 11/13</em></div>
+          <div class="ritem"><b>Premium 재고 부담</b><span>수량 한정 · 예약 수 연동 발주</span><em class="trg">11/13</em></div>
+        </div>
+        <div class="rcol low rv" style="--i:4">
+          <h3>운영</h3><p class="why">고객 경험 저하</p>
+          <div class="ritem"><b>피크 시간 서비스 지연</b><span>예약 30분 단위 분산, 불가 시 웰컴 담당 1명 추가</span><em class="trg">11/6</em></div>
+          <div class="ritem"><b>메시지 카드 오류</b><span>12/21 예약 마감분만 12/22 출력 · 이후 예약은 현장 기본 카드</span><em class="trg">12/22</em></div>
+          <div class="ritem"><b>잔 판매 잔량 손실</b><span>2종 한정 · 당일 준비 수량 소진 시 잔 판매 종료</span><em class="trg">당일</em></div>
+        </div>
+      </div>
+      <p class="foot rv" style="--i:5">분류 기준: 발생 시 영향의 종류 (발생 가능성은 데이터가 없어 평가하지 않음)</p>
+    </div>
+  </section>
+
+  <!-- 11 KPI -->
+  <section class="slide">
+    <div class="inner">
+      <div class="head"><p class="eyebrow rv">13 · KPI</p><h2 class="rv" style="--i:1">성과 측정 · 판정 기준</h2></div>
+      <div class="cols">
+        <div class="panel rv" style="--i:2">
+          <p class="ptitle">지표 구조</p>
+          <div class="ktier">
+            <div class="krow main"><span class="kt">주 지표<small>성공 판정</small></span>
+              <div class="kblk"><i>①</i><b>와인 주문 테이블 비율</b><small>와인 주문 테이블 ÷ 전체 테이블</small></div>
+              <div class="kblk"><i>②</i><b>증분 이익</b><small>08 기대 효과 공식</small></div>
+            </div>
+            <div class="krow sub"><span class="kt">보조 지표<small>진행 점검</small></span>
+              <div class="kblk"><b>패키지 판매 수</b><small>등급별 · 인원별 · 예약 1주 차 점검</small></div>
+            </div>
+            <div class="krow ref"><span class="kt">참고 지표<small>해석용</small></span>
+              <div class="kblk"><b>패키지 vs 일반 고객</b><small>선택 편향이 있어 판정에 쓰지 않음</small></div>
+            </div>
+          </div>
+        </div>
+        <div class="panel rv" style="--i:3">
+          <p class="ptitle">① 판정 방식 <span class="ex">예시 도식 · 실제 값 아님</span></p>
+          <svg class="kchart" viewBox="0 0 420 230" role="img" aria-label="기준선 A, B 중 높은 값에 최소 개선폭을 더한 선을 12/24 결과가 넘으면 성공">
+            <line x1="30" x2="400" y1="190" y2="190" stroke="var(--axis)"/>
+            <rect class="kband" x="30" y="62" width="370" height="30"/>
+            <line x1="30" x2="400" y1="92" y2="92" stroke="var(--muted)" stroke-dasharray="4 4"/>
+            <line x1="30" x2="400" y1="62" y2="62" stroke="var(--gold)" stroke-width="1.5"/>
+            <text x="398" y="57" text-anchor="end" fill="var(--gold)" font-size="11" font-weight="700">성공선</text>
+            <text x="398" y="81" text-anchor="end" fill="var(--gold)" font-size="10">최소 개선폭</text>
+            <rect class="kbar" x="40" y="112" width="64" height="78" rx="4" fill="var(--buffet)" style="--d:0"/>
+            <rect class="kbar" x="135" y="92" width="64" height="98" rx="4" fill="var(--buffet)" style="--d:1"/>
+            <rect class="kbar" x="230" y="40" width="64" height="150" rx="4" fill="var(--accent)" style="--d:2"/>
+            <text x="72" y="207" text-anchor="middle" fill="var(--sub)" font-size="11" font-weight="700">기준선 A</text>
+            <text x="72" y="221" text-anchor="middle" fill="var(--muted)" font-size="11">작년 12/24(수)</text>
+            <text x="167" y="207" text-anchor="middle" fill="var(--sub)" font-size="11" font-weight="700">기준선 B</text>
+            <text x="167" y="221" text-anchor="middle" fill="var(--muted)" font-size="11">12월 목요일 평균</text>
+            <text x="262" y="207" text-anchor="middle" fill="var(--fg)" font-size="11" font-weight="700">12/24 결과</text>
+            <text x="262" y="221" text-anchor="middle" fill="var(--muted)" font-size="11">와인 주문 비율</text>
+          </svg>
+        </div>
+      </div>
+      <div class="kflow rv" style="--i:4">
+        <div class="kc"><i>①</i>와인 주문 비율 ≥ 성공선</div>
+        <span class="kop">AND</span>
+        <div class="kc"><i>②</i>증분 이익 &gt; 0</div>
+        <span class="kop">→</span>
+        <div class="kres ok">성공</div>
+        <div class="kres ng">하나라도 미달 → 실패 · 원인과 내년 개선안 보고 (12/31 속보 · 1/15 확정)</div>
+      </div>
+      <p class="foot rv" style="--i:5">성공선 = 기준선 A·B 중 높은 값 + 최소 개선폭(목요일 디너 와인 주문 비율의 주간 변동폭) · 날씨 등 외부 요인은 완전히 분리 불가</p>
+    </div>
+  </section>
+
+  <!-- 12 Action -->
+  <section class="slide">
+    <div class="inner">
+      <div class="head"><p class="eyebrow rv">14 · ACTION</p><h2 class="rv" style="--i:1">책임 · 확인 항목 · 기한</h2></div>
+      <div class="roles rv" style="--i:2">
+        <div class="role"><small>기획 · 총괄</small><b>제안자</b></div>
+        <div class="role"><small>승인</small><b>팀장</b></div>
+        <div class="role"><small>당일 현장 책임</small><b>업장 매니저</b><small>지정 요청</small></div>
+      </div>
+      <div class="panel rv scroll-x" style="--i:3">
+        <table class="tbl">
+          <tr><th>확인 항목</th><th>요청처</th><th>기한</th><th>바뀌는 것</th></tr>
+          <tr><td>와인별 원가 · 반품 가능 여부</td><td><span class="owner">구매팀</span></td><td class="due">11/6</td><td>08 원가율</td></tr>
+          <tr><td>디너 회전 수(4인 37 · 2인 15테이블, 178석) · 작년 12/24 · 목요일 디너 와인 데이터</td><td><span class="owner">재무 · POS</span></td><td class="due">11/6</td><td>08 패키지 수 · 기준선</td></tr>
+          <tr><td>카드·플랫폼 수수료율 · 인쇄 견적</td><td><span class="owner">재무 · 구매팀</span></td><td class="due">11/6</td><td>08 수수료 · 고정비</td></tr>
+          <tr><td>크리스마스 메뉴 · 와인 서비스 인력 · 칠링/잔 수량</td><td><span class="owner">셰프 · 업장 매니저</span></td><td class="due">11/6</td><td>Go/No-go ③</td></tr>
+          <tr><td>예약 30분 분산 · 메시지 입력란 · 아동 요금 · 취소</td><td><span class="owner">예약실</span></td><td class="due">11/6</td><td>예약 동선 · 약관</td></tr>
+          <tr><td>예약실 인터뷰 · 작년 이브 예약 구성 (부록 C)</td><td><span class="owner">예약실</span></td><td class="due">11/6</td><td>08 판매율 · Classic 비중</td></tr>
+          <tr><td>음료 서비스 종료 시간</td><td><span class="owner">업장 매니저</span></td><td class="due">11/6</td><td>운영 시간</td></tr>
+          <tr><td>경쟁 호텔 크리스마스 특선가 · 하얏트 포함 주류 조건(와인 잔 수·종류) · 잔 와인 가격</td><td><span class="owner">본인 조사</span></td><td class="due">11/11</td><td>잔 가격 · 경쟁력</td></tr>
+          <tr><td>12월 재고 · Premium 확보 수량</td><td><span class="owner">수입사 · 구매팀</span></td><td class="due">11/13</td><td>Go/No-go ④</td></tr>
+          <tr><td>웰컴 드링크 규정 · 판매 문구</td><td><span class="owner">법무팀 · 마케팅팀</span></td><td class="due">11/13</td><td>Go/No-go ②</td></tr>
+          <tr><td>페어링 시음</td><td><span class="owner">셰프 · 소믈리에</span></td><td class="due">11/13</td><td>페어링 카드</td></tr>
+        </table>
+      </div>
+      <p class="foot rv" style="--i:4">오늘 승인 요청: 행사 방향 · 11/13 Go/No-go 보고</p>
+    </div>
+  </section>
+
+  <!-- 13 Appendix A Pairing -->
+  <section class="slide">
+    <div class="inner">
+      <div class="head"><p class="eyebrow rv">APPENDIX A</p><h2 class="rv" style="--i:1">뷔페 섹션 × 와인 페어링 (초안)</h2></div>
+      <div class="rv" style="--i:2; overflow-x:auto"><table class="matrix" id="matrix"></table></div>
+      <p class="foot rv" style="--i:3">맞춤 페어링 카드의 원안 · 11/9~13 시음 후 확정 · 이브 당일 메뉴가 다르면 재작성</p>
+    </div>
+  </section>
+
+  <!-- 14 Appendix B Wine list -->
+  <section class="slide">
+    <div class="inner">
+      <div class="head"><p class="eyebrow rv">APPENDIX B</p><h2 class="rv" style="--i:1">보유 와인 · 판매 방식 편성</h2></div>
+      <div class="panel rv" style="--i:2">
+        <div class="lgrow">
+          <span class="lg"><i style="background:var(--red)"></i>레드</span>
+          <span class="lg"><i style="background:var(--white)"></i>화이트</span>
+          <span class="lg"><i style="background:var(--spk)"></i>스파클링</span>
+          <span class="lg"><i style="background:var(--sweet)"></i>스위트</span>
+          <span class="lg"><i style="background:var(--grid)"></i>흐린 막대 = 병 판매만</span>
+        </div>
+        <div class="hbar" id="wineChart"></div>
+        <div class="axis"><span></span><div class="ticks" id="wineTicks"></div></div>
+      </div>
+      <p class="foot rv" style="--i:3">떼땅져 품절 시 동급 대체 없이 판매 종료</p>
+    </div>
+  </section>
+
+  <!-- 14b Appendix C Demand -->
+  <section class="slide">
+    <div class="inner">
+      <div class="head"><p class="eyebrow rv">APPENDIX C</p><h2 class="rv" style="--i:1">고객 수요 확인 계획</h2></div>
+      <div class="cols">
+        <div class="panel rv" style="--i:2">
+          <p class="ptitle">예약실 인터뷰 (11/6까지 · 10분)</p>
+          <ol class="qlist">
+            <li>작년 이브 디너 예약은 <b>언제부터</b> 차기 시작했나?<small>→ 상품 등록 시점</small></li>
+            <li>예약 고객은 <b>커플 · 가족 · 단체</b> 중 어디가 많았나?<small>→ 2인 / 4인 구성 비중</small></li>
+            <li>예약 때 <b>와인 · 주류 문의</b>가 있었나?<small>→ 사전 예약 수요 근거</small></li>
+            <li>현장에서 와인을 시킨 테이블은 <b>어느 가격대</b>를 골랐나?<small>→ Classic / Premium 비중</small></li>
+            <li>다른 호텔과 <b>비교하는 문의</b>가 있었나?<small>→ 경쟁 메시지</small></li>
+            <li>작년에 <b>비슷한 와인 행사</b>를 한 적이 있나? 결과는?<small>→ 실패 원인 반영 · 중복 방지</small></li>
+          </ol>
+        </div>
+        <div class="panel rv" style="--i:3">
+          <p class="ptitle">함께 받을 데이터</p>
+          <div class="dlist">
+            <div><b>작년 12/24 테이블별 와인 주문</b><span>POS · 주 지표 기준선 A</span></div>
+            <div><b>12월 목요일 디너 와인 주문</b><span>POS · 기준선 B · 최소 개선폭</span></div>
+            <div><b>예약 경로 비율</b><span>플랫폼 / 전화 / 현장 · 수수료율 반영</span></div>
+            <div><b>리뷰 중 와인 · 기념일 언급</b><span>예약 플랫폼 리뷰 · 판매 문구 근거</span></div>
+          </div>
+        </div>
+      </div>
+      <p class="foot rv" style="--i:4">결과는 08 기대 효과 입력값(판매율 · Classic 비중 · 증분 비율)에 반영</p>
+    </div>
+  </section>
+
+  <!-- 15 End -->
+  <section class="slide cover">
+    <canvas class="snow" aria-hidden="true"></canvas>
+    <svg class="lights" viewBox="0 0 1200 90" preserveAspectRatio="none" aria-hidden="true">
+      <path d="M0 10 Q100 60 200 18 T400 18 T600 18 T800 18 T1000 18 T1200 10"/>
+      <circle cx="50" cy="30" r="4"/><circle cx="100" cy="40" r="4"/><circle cx="150" cy="34" r="4"/><circle cx="250" cy="30" r="4"/><circle cx="300" cy="40" r="4"/><circle cx="350" cy="34" r="4"/>
+      <circle cx="450" cy="30" r="4"/><circle cx="500" cy="40" r="4"/><circle cx="550" cy="34" r="4"/><circle cx="650" cy="30" r="4"/><circle cx="700" cy="40" r="4"/><circle cx="750" cy="34" r="4"/>
+      <circle cx="850" cy="30" r="4"/><circle cx="900" cy="40" r="4"/><circle cx="950" cy="34" r="4"/><circle cx="1050" cy="30" r="4"/><circle cx="1100" cy="40" r="4"/><circle cx="1150" cy="34" r="4"/>
+    </svg>
+    <div class="inner" style="text-align:center">
+      <p class="eyebrow rv">NEST HOTEL · PLATZ · CHRISTMAS EVE WINE NIGHT · 2026.12.24</p>
+      <h1 class="rv" style="--i:1">감사합니다</h1>
+    </div>
+  </section>
+
+</div>
+
+<script>
+(function () {
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var won = function (n) { return Math.round(n).toLocaleString('ko-KR'); };
+  var TYPE = { '레드':'var(--red)', '화이트':'var(--white)', '스파클링':'var(--spk)', '스위트':'var(--sweet)' };
+  var man = function (v) { return v ? (v / 10000) + '만' : '0'; };
+
+  function grid(max, step, scale) {
+    var h = '';
+    for (var v = step; v <= max; v += step) h += '<i class="gridbg" style="left:' + (v / max * 100 * scale) + '%"></i>';
+    return h;
+  }
+  function ticks(id, max, step, scale, fmt) {
+    var h = '';
+    for (var v = 0; v <= max; v += step) h += '<span style="left:' + (v / max * 100 * scale) + '%">' + fmt(v) + '</span>';
+    document.getElementById(id).innerHTML = h;
+  }
+
+  // glass pour
+  (function () {
+    var MAX = 16000, S = .78, rows = [['르 트리포터 루즈', '레드', 60000], ['르 트리포터 블랑', '화이트', 60000]];
+    document.getElementById('glassChart').innerHTML = rows.map(function (r) {
+      var base = Math.round(r[2] / 6);
+      return '<div class="hrow"><div class="lab"><b>' + r[0] + '</b></div><div class="track" style="height:22px">' +
+        '<div class="seg" style="background:' + TYPE[r[1]] + '" data-w="' + (base / MAX * 100 * S) + '" data-tip="' + r[0] + '<br>병 ' + won(r[2]) + '원 ÷ 6잔 = ' + won(base) + '원"></div>' +
+        '<div class="seg last" style="background:var(--glow)" data-w="' + (2000 / MAX * 100 * S) + '" data-tip="잔량 손실 보전 +2,000원"></div>' +
+        '<span class="val">' + won(base + 2000) + '원<small>병 ' + won(r[2]) + ' ÷ 6 + 2,000</small></span></div></div>';
+    }).join('');
+  })();
+
+  // market chart (per person, weekday dinner)
+  (function () {
+    var MAX = 250000, S = .7, rows = [
+      ['인스파이어', 180000, 0, 0, '인스파이어 셰프스 키친 · 석식 180,000 (요일 구분 없음)'],
+      ['파라다이스시티', 170000, 0, 0, '파라다이스시티 · 월~목 170,000 / 금~일 185,000'],
+      ['쉐라톤 그랜드 (송도)', 125000, 0, 0, '송도 · 평일 125,000 / 주말 155,000'],
+      ['그랜드 하얏트 인천', 99000, 0, 0, '평일 99,000 / 주말 130,000<br>웰컴 와인 1잔 + 생맥주 무제한 포함'],
+      ['네스트 디너', 88000, 0, 1, '12/24(목) 디너 88,000 · 사내 확인'],
+      ['네스트 + Classic', 88000, 30000, 1, '디너 88,000 + 와인 60,000 ÷ 2인'],
+      ['네스트 + Premium', 88000, 55000, 1, '디너 88,000 + 와인 110,000~250,000 ÷ 2인<br>1인 143,000~213,000', 70000]
+    ];
+    document.getElementById('mktChart').innerHTML = rows.map(function (r) {
+      var segs = '<div class="seg' + (r[2] ? '' : ' only') + '" style="background:' + (r[3] ? 'var(--sand)' : 'var(--buffet)') + '" data-w="' + (r[1] / MAX * 100 * S) + '" data-tip="' + r[4] + '"></div>';
+      if (r[2]) segs += '<div class="seg' + (r[5] ? '' : ' last') + '" style="background:var(--accent)" data-w="' + (r[2] / MAX * 100 * S) + '" data-tip="' + r[4] + '"></div>';
+      if (r[5]) segs += '<div class="seg last" style="background:var(--accent); opacity:.45" data-w="' + (r[5] / MAX * 100 * S) + '" data-tip="' + r[4] + '"></div>';
+      var total = r[1] + r[2], lbl = won(total) + (r[5] ? '~' + won(total + r[5]) : '');
+      if (/하얏트/.test(r[0])) lbl += '<small style="color:var(--gold)">와인 1잔 + 생맥주 무제한</small>';
+      return '<div class="hrow"><div class="lab">' + (r[3] ? '<b>' + r[0] + '</b>' : r[0]) + '</div><div class="track" style="height:22px">' + grid(MAX, 50000, S) + segs + '<span class="val">' + lbl + '</span></div></div>';
+    }).join('');
+    ticks('mktTicks', MAX, 50000, S, man);
+  })();
+
+  // value chart (per person)
+  (function () {
+    var MAX = 140000, S = .78, rows = [
+      ['하얏트 · 내는 돈', [[99000, 'var(--buffet)', '하얏트 평일 디너 99,000 · 웰컴 와인 1잔 + 생맥주 무제한']]],
+      ['Classic · 내는 돈', [[88000, 'var(--sand)', '디너 88,000'], [30000, 'var(--accent)', 'Classic 와인 60,000 ÷ 2인']]],
+      ['Classic · 받는 것', [[88000, 'var(--sand)', '디너 88,000'], [30000, 'var(--accent)', '고른 와인 반 병 (메뉴가 30,000)'], [8700, 'var(--glow)', '웰컴 스파클링 1잔 (52,000 ÷ 6)']]]
+    ];
+    document.getElementById('valChart').innerHTML = rows.map(function (r) {
+      var total = 0, segs = r[1].map(function (s, i) {
+        total += s[0];
+        var cls = r[1].length === 1 ? ' only' : (i === r[1].length - 1 ? ' last' : '');
+        return '<div class="seg' + cls + '" style="background:' + s[1] + '" data-w="' + (s[0] / MAX * 100 * S) + '" data-tip="' + s[2] + '"></div>';
+      }).join('');
+      return '<div class="hrow"><div class="lab"><b>' + r[0] + '</b></div><div class="track" style="height:30px">' + grid(MAX, 20000, S) + segs + '<span class="val">' + won(total) + '원</span></div></div>';
+    }).join('');
+    ticks('valTicks', MAX, 20000, S, man);
+  })();
+
+  // scenario model
+  var PREM_AVG = (110000 + 160000 + 250000) / 3, CAVA = 52000, DINNER = 88000;
+  function num(id) { return Math.max(0, parseFloat(document.getElementById(id).value) || 0); }
+  function inputs() {
+    return { T: num('iT'), R: num('iR') / 100, M: Math.min(num('iM'), 100) / 100, I: Math.min(num('iI'), 100) / 100,
+             C: num('iC') / 100, F: num('iF') / 100, X: num('iX'),
+             N: Math.min(num('iN'), 100) / 100, D: Math.min(num('iD'), 100) / 100,
+             L: num('iL'), G: num('iG') };
+  }
+  // Menu prices include 10% VAT: revenue and cost use the net price, card fees use the paid (gross) amount.
+  var VAT = 1.1;
+  function avgWine(p) { return p.M * 60000 + (1 - p.M) * PREM_AVG; }
+  function wineContrib(p) { var g = avgWine(p) * p.I; return g / VAT * (1 - p.C) - g * p.F; }
+  function welcomeCost(p) { return 2 / 6 * CAVA / VAT * p.C; }
+  // per-package dinner profit from customers who came only because of the package
+  function newDinner(p) { var g = p.N * 2 * DINNER; return g / VAT * (1 - p.D) - g * p.F; }
+  function perPkg(p) { return wineContrib(p) + newDinner(p) - welcomeCost(p); }
+  // glass sales: 12,000 incl. VAT, 1 bottle (60,000) = 6 glasses; only the incremental share counts
+  var GLASS = 12000;
+  function glassProfit(p) { return p.G * p.I * (GLASS / VAT - 60000 / VAT * p.C / 6 - GLASS * p.F); }
+  function fixedAll(p) { return p.X + p.L - glassProfit(p); }
+  function model(p, r) {
+    var n = p.T * r;
+    return { n: n, inc: n * avgWine(p) * p.I / VAT, dinner: n * newDinner(p), profit: n * perPkg(p) - fixedAll(p) };
+  }
+  function breakeven(p) {
+    var per = perPkg(p), need = fixedAll(p);
+    if (p.T <= 0) return null;
+    if (need <= 0) return 0;
+    if (per <= 0) return null;
+    return need / per / p.T;
+  }
+  function fmtWon(v) { return (v < 0 ? '−' : '') + won(Math.abs(v)) + '원'; }
+
+  // P&L + profit levers (linked to scenario inputs)
+  function renderPnl(p) {
+    var n = p.T * p.R, avg = avgWine(p);
+    var gross = n * avg, sub = gross * (1 - p.I), incG = gross - sub, incN = incG / VAT;
+    var cost = incN * p.C, fee = incG * p.F, wel = n * welcomeCost(p), din = n * newDinner(p);
+    var gl = glassProfit(p);
+    var prof = incN - cost - fee + din - wel + gl - p.X - p.L;
+    // column waterfall, read left to right: net sales → each cost → profit on the far right
+    var steps = [['순매출', incN, 'start', '부가세 제외']];
+    if (din > 0) steps.push(['신규 디너', din, 'up', '신규 고객']);
+    if (gl > 0) steps.push(['잔 판매', gl, 'up', Math.round(p.G) + '잔']);
+    steps.push(['와인 원가', -cost, 'down', '순매출 ' + Math.round(p.C * 100) + '%']);
+    steps.push(['수수료', -fee, 'down', '결제액 ' + (p.F * 100) + '%']);
+    steps.push(['웰컴', -wel, 'down', '1건 2잔']);
+    steps.push(['인쇄비', -p.X, 'down', '카드·POP']);
+    steps.push(['인건비', -p.L, 'down', '최저시급']);
+    var run = 0, pts = steps.map(function (s) { var a = s[2] === 'start' ? 0 : run; run = s[2] === 'start' ? s[1] : run + s[1]; return [a, run]; });
+    steps.push(['남는 돈', prof, 'total ' + (prof < 0 ? 'neg' : 'pos'), '증분 이익']);
+    pts.push([0, prof]);
+    var hi = Math.max.apply(null, pts.map(function (x) { return Math.max(x[0], x[1]); })), lo = Math.min(0, prof);
+    var pos = function (v) { return (v - lo) / (hi - lo) * 100; };
+    var tipStart = '패키지 와인 매출 ' + won(gross) + '원<br>− 원래 시켰을 몫 ' + won(sub) + '원<br>− 부가세 ' + won(incG - incN) + '원<br>= ' + won(incN) + '원';
+    var h = '<div class="wfc-grid" style="grid-template-columns:repeat(' + steps.length + ',1fr)">' + steps.map(function (s, i) {
+      var a = pts[i][0], b = pts[i][1], bot = pos(Math.min(a, b)), ht = Math.max(.8, Math.abs(pos(b) - pos(a)));
+      var isTotal = s[2].indexOf('total') === 0;
+      var val = isTotal ? fmtWon(s[1]) : (s[2] === 'start' ? '' : (s[1] < 0 ? '−' : '+')) + won(Math.abs(s[1]));
+      return '<div class="wfc ' + s[2] + '">' +
+        '<div class="wfc-t"><i class="wfc-z" style="bottom:' + pos(0) + '%"></i>' +
+        (i > 0 && !isTotal ? '<i class="wfc-link" style="bottom:' + pos(a) + '%"></i>' : '') +
+        '<i class="wfc-b" style="bottom:' + bot + '%;height:' + ht + '%" data-tip="' + (s[2] === 'start' ? tipStart : s[0] + '<br>' + val + '원') + '"></i>' +
+        '<span class="wfc-v" style="bottom:calc(' + (bot + ht) + '% + 4px)">' + val + '</span></div>' +
+        '<div class="wfc-l">' + s[0] + '<small>' + s[3] + '</small></div></div>';
+    }).join('') + '</div>';
+    document.getElementById('wf').innerHTML = h;
+    document.getElementById('wfSub').textContent = '패키지 ' + Math.round(n) + '건 판매 가정 · 단위 원';
+
+    // break-even tiles
+    var per = perPkg(p), be = breakeven(p);
+    var maxFixed = Math.max(0, n * per + gl - p.L);
+    var beN = be === null ? null : Math.ceil(be * p.T);
+    document.getElementById('beTiles').innerHTML =
+      '<div class="bt"><span>본전 판매량</span><b>' + (beN === null ? '불가' : beN + '건') + '</b><em>2인 기준 · 판매율 ' + (be === null ? '—' : (be * 100).toFixed(1) + '%') + '</em></div>' +
+      '<div class="bt ' + (prof < 0 ? 'neg' : 'pos') + '"><span>지금 가정 (' + Math.round(n) + '건)</span><b>' + fmtWon(prof) + '</b><em>판매율 ' + Math.round(p.R * 100) + '%일 때</em></div>' +
+      '<div class="bt"><span>인쇄 고정비 한도</span><b>' + won(maxFixed) + '원</b><em>이 금액 이하면 흑자</em></div>';
+
+    // levers: gain vs. current inputs, biggest first
+    function q(o) { var c = {}; for (var k in p) c[k] = p[k]; for (k in o) c[k] = o[k]; return model(c, c.R).profit; }
+    var lv = [
+      ['신규 고객 20% (집객)', q({ N: Math.max(p.N, .2) })],
+      ['인쇄 고정비 절반 (카드 디지털화)', q({ X: p.X * .5 })],
+      ['Premium 비중 +20%p', q({ M: Math.max(0, p.M - .2) })],
+      ['판매율 +5%p', q({ R: p.R + .05 })],
+      ['증분 비율 +10%p', q({ I: Math.min(1, p.I + .1) })]
+    ].map(function (l) { return [l[0], l[1] - prof]; }).sort(function (a, b) { return b[1] - a[1]; });
+    var mx = Math.max.apply(null, lv.map(function (l) { return Math.abs(l[1]); })) || 1;
+    document.getElementById('levers').innerHTML = lv.map(function (l) {
+      return '<div class="lv2"><span>' + l[0] + '</span><div class="lt2"><i style="width:' + (Math.abs(l[1]) / mx * 100) + '%" data-tip="' + l[0] + '<br>이익 ' + (l[1] < 0 ? '−' : '+') + won(Math.abs(l[1])) + '원"></i></div><b>' + (l[1] < 0 ? '−' : '+') + won(Math.abs(l[1])) + '</b></div>';
+    }).join('');
+  }
+
+  var curveDrawn = false;
+  function render() {
+    var p = inputs(), m = model(p, p.R), be = breakeven(p);
+    document.getElementById('oN').textContent = Math.round(m.n) + '건';
+    document.getElementById('oInc').textContent = won(m.inc) + '원';
+    var oP = document.getElementById('oP');
+    oP.textContent = fmtWon(m.profit); oP.className = 'v ' + (m.profit < 0 ? 'neg' : 'pos');
+    var beTxt = be === null ? '불가' : (be > 1 ? '100% 초과' : (be * 100).toFixed(1) + '%');
+    document.getElementById('oBe').textContent = beTxt;
+    document.getElementById('sumBe').textContent = beTxt;
+    var gp = function (r) { return Math.max(0, Math.min(100, r / .4 * 100)); };
+    document.getElementById('sgCur').style.width = gp(p.R) + '%';
+    document.getElementById('sgCur').className = m.profit < 0 ? 'neg' : 'pos';
+    var beOk = be !== null && be <= .4;
+    document.getElementById('sgBe').style.left = (beOk ? gp(be) : 100) + '%';
+    document.getElementById('sgCurL').style.left = gp(p.R) + '%';
+    document.getElementById('sgCurL').textContent = '현재 가정 ' + Math.round(p.R * 100) + '% · ' + fmtWon(m.profit);
+    document.getElementById('sgBeL').style.left = (beOk ? gp(be) : 100) + '%';
+    document.getElementById('sgBeL').textContent = '손익분기 ' + beTxt;
+
+    renderPnl(p);
+
+    // curve
+    var W = 640, H = 250, L = 64, Rr = 16, Tp = 16, B = 34, maxR = .4;
+    var pts = [], lo = 0, hi = 0;
+    for (var i = 0; i <= 40; i++) { var v = model(p, i / 100).profit; pts.push(v); lo = Math.min(lo, v); hi = Math.max(hi, v); }
+    var pad = (hi - lo) * .1 || 1; lo -= pad; hi += pad;
+    var x = function (r) { return L + r / maxR * (W - L - Rr); };
+    var y = function (v) { return Tp + (hi - v) / (hi - lo) * (H - Tp - B); };
+    var s = '';
+    for (var g = 0; g <= 4; g++) { var gv = lo + (hi - lo) * g / 4; s += '<line class="gl" x1="' + L + '" x2="' + (W - Rr) + '" y1="' + y(gv) + '" y2="' + y(gv) + '"/><text x="' + (L - 6) + '" y="' + (y(gv) + 4) + '" text-anchor="end">' + Math.round(gv / 10000) + '만</text>'; }
+    for (var t = 0; t <= 40; t += 10) s += '<text x="' + x(t / 100) + '" y="' + (H - 12) + '" text-anchor="middle">' + t + '%</text>';
+    s += '<text x="' + ((L + W - Rr) / 2) + '" y="' + (H - 0) + '" text-anchor="middle">패키지 판매율</text>';
+    s += '<line class="zero" x1="' + L + '" x2="' + (W - Rr) + '" y1="' + y(0) + '" y2="' + y(0) + '"/>';
+    var d = pts.map(function (v, i) { return (i ? 'L' : 'M') + x(i / 100).toFixed(1) + ' ' + y(v).toFixed(1); }).join(' ');
+    s += '<path class="ln" id="ln" d="' + d + '"/>';
+    if (be !== null && be <= maxR) s += '<line class="be" x1="' + x(be) + '" x2="' + x(be) + '" y1="' + Tp + '" y2="' + (H - B) + '"/><text class="lbl" x="' + (x(be) + 6) + '" y="' + (Tp + 12) + '" style="fill:var(--accent)">손익분기 ' + (be * 100).toFixed(1) + '%</text>';
+    [[.1, '보수'], [p.R, '기준'], [.3, '낙관']].forEach(function (sc) {
+      if (sc[0] > maxR) return;
+      var v = model(p, sc[0]).profit;
+      s += '<circle class="pt" cx="' + x(sc[0]) + '" cy="' + y(v) + '" r="6" fill="' + (v < 0 ? 'var(--accent)' : '#9cc79a') + '" data-tip="' + sc[1] + ' ' + Math.round(sc[0] * 100) + '%<br>증분 이익 ' + fmtWon(v) + '"/>' +
+           '<text class="lbl" x="' + x(sc[0]) + '" y="' + (y(v) - 12) + '" text-anchor="middle">' + sc[1] + '</text>';
+    });
+    var svg = document.getElementById('curve');
+    svg.innerHTML = s;
+    var ln = document.getElementById('ln'), len = ln.getTotalLength();
+    if (false) {
+      ln.style.strokeDasharray = len; ln.style.strokeDashoffset = len;
+      if (document.getElementById('curve').closest('.slide').classList.contains('on')) drawCurve();
+    }
+  }
+  function drawCurve() {
+    var ln = document.getElementById('ln'); if (!ln) return;
+    curveDrawn = true;
+    ln.style.transition = 'stroke-dashoffset 1.6s cubic-bezier(.2,.7,.2,1)';
+    requestAnimationFrame(function () { ln.style.strokeDashoffset = 0; });
+  }
+  ['iT','iR','iM','iI','iC','iF','iX','iL','iG','iN','iD'].forEach(function (id) { document.getElementById(id).addEventListener('input', function () { curveDrawn = true; render(); var ln = document.getElementById('ln'); ln.style.strokeDasharray = 'none'; }); });
+  render();
+
+  // wine chart
+  (function () {
+    var MAX = 250000, S = .74, wines = [
+      ['떼땅져 리저브 브뤼','스파클링',250000,'프랑스 샹파뉴','Premium'],
+      ['도멘 데 꺄트르 쎄종 샤블리','화이트',160000,'프랑스 부르고뉴','Premium'],
+      ['뛰느방, 배드 보이','레드',110000,'프랑스 보르도','Premium'],
+      ['아벤토','화이트',75000,'스페인 발렌시아',''],
+      ['이터 까베르네 쇼비뇽','레드',70000,'미국 나파밸리','Classic+'],
+      ['르 트리포터 루즈','레드',60000,'프랑스 론','Classic · 잔'],
+      ['르 트리포터 블랑','화이트',60000,'프랑스 론','Classic · 잔'],
+      ['퓨리타 모스카토 다스티','스위트',60000,'이탈리아 아스티',''],
+      ['레 그랑 슈망','레드',52000,'프랑스 랑그독',''],
+      ['콘데 데 카랄 브뤼','스파클링',52000,'스페인 페네데스','웰컴'],
+      ['아스코니 모스카토 로제','스위트',52000,'몰도바','']
+    ];
+    document.getElementById('wineChart').innerHTML = wines.map(function (w) {
+      return '<div class="hrow"><div class="lab" title="' + w[0] + '">' + w[0] + '</div><div class="track" style="height:20px">' + grid(MAX, 50000, S) +
+        '<div class="seg only" style="background:' + TYPE[w[1]] + (w[4] ? '' : ';opacity:.35') + '" data-w="' + (w[2] / MAX * 100 * S) + '" data-tip="' + w[0] + '<br>' + w[1] + ' · ' + w[3] + '<br><b>' + won(w[2]) + '원</b> · ' + (w[4] || '병 판매만') + '"></div>' +
+        '<span class="val">' + won(w[2]) + '<small>' + (w[4] || '병 판매') + '</small></span></div></div>';
+    }).join('');
+    ticks('wineTicks', MAX, 50000, S, man);
+  })();
+
+  // pairing matrix
+  (function () {
+    var cols = ['레드','화이트','스파클링','스위트'];
+    var rows = [
+      ['LIVE · 육류','양갈비, 로스트 비프, LA갈비', { '레드':['배드 보이','이터 까베르네 쇼비뇽','트리포터 루즈'] }],
+      ['LIVE · 랍스터','랍스터 베샤멜', { '화이트':['샤블리'], '스파클링':['떼땅져'] }],
+      ['일식','초밥, 단새우, 방어', { '화이트':['샤블리','트리포터 블랑'] }],
+      ['치즈 · 햄','치즈 4종, 햄 4종', { '레드':['트리포터 루즈'], '스파클링':['떼땅져'] }],
+      ['COLD · HOT','훈제연어, 튀김, 커리', { '화이트':['트리포터 블랑'] }],
+      ['디저트','케이크, 마카롱, 초콜릿', { '스위트':['모스카토 다스티'] }]
+    ];
+    var d = 0;
+    var h = '<tr><th></th>' + cols.map(function (c) { return '<th><span class="lg"><i style="background:' + TYPE[c] + '"></i></span>' + c + '</th>'; }).join('') + '</tr>';
+    h += rows.map(function (r) {
+      return '<tr><th class="rowh">' + r[0] + '<small>' + r[1] + '</small></th>' + cols.map(function (c) {
+        var w = r[2][c];
+        if (!w) return '<td></td>';
+        d++;
+        return '<td><div class="dot" style="background:' + TYPE[c] + ';--d:' + d + '" data-tip="' + r[0] + ' × ' + c + '<br><b>' + w.join(', ') + '</b>">' + w.length + '</div><span class="cellname">' + w[0] + (w.length > 1 ? ' 외' : '') + '</span></td>';
+      }).join('') + '</tr>';
+    }).join('');
+    document.getElementById('matrix').innerHTML = h;
+  })();
+
+  // gantt
+  (function () {
+    var start = new Date(2026, 9, 26), end = new Date(2027, 0, 18), span = end - start;
+    function pos(dt) { return (dt - start) / span * 100; }
+    function D(y, m, d) { return new Date(y, m - 1, d); }
+    var tasks = [
+      ['원가·데이터·견적', D(2026,11,2), D(2026,11,7), 'chk'],
+      ['메뉴·인력·예약 확인', D(2026,11,2), D(2026,11,7), 'chk'],
+      ['경쟁사·잔 가격 조사', D(2026,11,4), D(2026,11,12), 'chk'],
+      ['재고·법무·문구 검토', D(2026,11,2), D(2026,11,14), 'chk'],
+      ['페어링 시음', D(2026,11,9), D(2026,11,14), 'chk'],
+      ['Go/No-go 보고', D(2026,11,13), D(2026,11,14), 'ev'],
+      ['결재', D(2026,11,16), D(2026,11,20), ''],
+      ['상품 등록·홍보', D(2026,11,20), D(2026,12,24), ''],
+      ['사전 공지 (오픈 예정)', D(2026,11,16), D(2026,11,20), ''],
+      ['카드·POP 제작', D(2026,11,30), D(2026,12,12), ''],
+      ['메시지 카드 출력', D(2026,12,21), D(2026,12,23), ''],
+      ['직원 브리핑', D(2026,12,14), D(2026,12,24), ''],
+      ['행사 당일', D(2026,12,24), D(2026,12,25), 'ev'],
+      ['속보 리뷰', D(2026,12,28), D(2027,1,1), 'ev'],
+      ['정산 확정 리뷰', D(2027,1,11), D(2027,1,16), 'ev']
+    ];
+    var lines = '';
+    for (var w = 0; w <= 12; w++) lines += '<i class="gline" style="left:' + pos(new Date(2026, 9, 26 + w * 7)) + '%"></i>';
+    var today = '<i class="today" style="left:' + pos(D(2026,10,29)) + '%"></i>';
+    document.getElementById('gantt').innerHTML = tasks.map(function (t, i) {
+      var e = new Date(t[2] - 864e5), one = (t[2] - t[1]) <= 864e5;
+      var lab = (t[1].getMonth() + 1) + '/' + t[1].getDate() + (one ? '' : ' ~ ' + (e.getMonth() + 1) + '/' + e.getDate());
+      return '<div class="grow"><div class="lab">' + t[0] + '</div><div class="gtrack">' + lines + today +
+        '<div class="gbar ' + t[3] + '" style="left:' + pos(t[1]) + '%; transition-delay:' + (i * 80) + 'ms" data-w="' + (pos(t[2]) - pos(t[1])) + '" data-tip="' + t[0] + '<br>' + lab + '"></div></div></div>';
+    }).join('');
+    var tk = '';
+    for (var k = 0; k < 12; k++) {
+      var dt = new Date(2026, 9, 26 + k * 7);
+      tk += '<span style="left:' + pos(dt) + '%">' + (dt.getMonth() + 1) + '/' + dt.getDate() + '</span>';
+    }
+    document.getElementById('ganttTicks').innerHTML = tk;
+  })();
+
+  // tooltip
+  var tip = document.getElementById('tip');
+  document.addEventListener('mouseover', function (e) {
+    var t = e.target.closest('[data-tip]');
+    if (t) { tip.innerHTML = t.dataset.tip; tip.classList.add('show'); } else tip.classList.remove('show');
+  });
+  document.addEventListener('mousemove', function (e) {
+    var x = e.clientX + 14, y = e.clientY + 14;
+    if (x + tip.offsetWidth > innerWidth - 8) x = e.clientX - tip.offsetWidth - 14;
+    if (y + tip.offsetHeight > innerHeight - 8) y = e.clientY - tip.offsetHeight - 14;
+    tip.style.left = x + 'px'; tip.style.top = y + 'px';
+  });
+
+  // slides
+  var deck = document.getElementById('deck');
+  var slides = Array.prototype.slice.call(document.querySelectorAll('.slide'));
+  var dots = document.getElementById('dots');
+  slides.forEach(function (s, i) {
+    var b = document.createElement('button');
+    b.setAttribute('aria-label', (i + 1) + '번 슬라이드');
+    b.onclick = function () { slides[i].scrollIntoView(); };
+    dots.appendChild(b);
+  });
+  var dotBtns = dots.querySelectorAll('button'), cur = 0;
+
+  function countUp(el) {
+    var target = +el.dataset.count;
+    if (reduce) { el.textContent = won(target); return; }
+    var t0 = null;
+    (function step(t) {
+      if (!t0) t0 = t;
+      var p = Math.min((t - t0) / 1300, 1);
+      el.textContent = won(target * (1 - Math.pow(1 - p, 3)));
+      if (p < 1) requestAnimationFrame(step);
+    })(performance.now());
+  }
+
+  function activate(s) {
+    if (s.classList.contains('on')) return;
+    s.classList.add('on');
+    s.querySelectorAll('[data-count]').forEach(countUp);
+    s.querySelectorAll('.seg[data-w], .gbar[data-w]').forEach(function (b) {
+      setTimeout(function () { b.style.width = b.dataset.w + '%'; }, reduce ? 0 : 250);
+    });
+    if (s.querySelector('#curve') && !curveDrawn) setTimeout(drawCurve, reduce ? 0 : 400);
+  }
+
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (!e.isIntersecting) return;
+      activate(e.target);
+      cur = slides.indexOf(e.target);
+      dotBtns.forEach(function (d, i) { d.classList.toggle('act', i === cur); });
+      document.getElementById('pageno').textContent = (cur + 1) + ' / ' + slides.length;
+      document.getElementById('progress').style.width = ((cur + 1) / slides.length * 100) + '%';
+    });
+  }, { root: deck, threshold: 0.3 });
+  slides.forEach(function (s) { io.observe(s); });
+
+  // print: show every slide in its finished state
+  window.addEventListener('beforeprint', function () {
+    slides.forEach(function (s) { s.classList.add('on'); });
+    document.querySelectorAll('.seg[data-w], .split div[data-w], .gbar[data-w]').forEach(function (b) { b.style.transition = 'none'; b.style.width = b.dataset.w + '%'; });
+    document.querySelectorAll('[data-count]').forEach(function (el) { el.textContent = won(+el.dataset.count); });
+    var ln = document.getElementById('ln'); if (ln) { ln.style.strokeDasharray = 'none'; ln.style.strokeDashoffset = 0; }
+  });
+
+  document.addEventListener('keydown', function (e) {
+    if (e.target.tagName === 'INPUT') return;
+    var k = e.key, n = null;
+    if (k === 'ArrowDown' || k === 'PageDown' || k === 'ArrowRight' || k === ' ') n = cur + 1;
+    if (k === 'ArrowUp' || k === 'PageUp' || k === 'ArrowLeft') n = cur - 1;
+    if (k === 'Home') n = 0;
+    if (k === 'End') n = slides.length - 1;
+    if (n !== null) { e.preventDefault(); slides[Math.max(0, Math.min(slides.length - 1, n))].scrollIntoView(); }
+  });
+
+  if (!reduce) document.querySelectorAll('canvas.snow').forEach(function (c) {
+    var ctx = c.getContext('2d'), flakes = [], w, h;
+    function size() {
+      var r = window.devicePixelRatio || 1;
+      w = c.clientWidth; h = c.clientHeight;
+      c.width = w * r; c.height = h * r; ctx.setTransform(r, 0, 0, r, 0, 0);
+    }
+    size(); addEventListener('resize', size);
+    for (var i = 0; i < 80; i++) flakes.push({ x: Math.random() * w, y: Math.random() * h, r: Math.random() * 2 + .5, s: Math.random() * .5 + .25, d: Math.random() * 6.28 });
+    (function loop() {
+      ctx.clearRect(0, 0, w, h);
+      ctx.fillStyle = 'rgba(255,240,224,.75)';
+      flakes.forEach(function (f) {
+        f.y += f.s; f.d += .01; f.x += Math.sin(f.d) * .35;
+        if (f.y > h) { f.y = -5; f.x = Math.random() * w; }
+        ctx.beginPath(); ctx.arc(f.x, f.y, f.r, 0, 6.283); ctx.fill();
+      });
+      requestAnimationFrame(loop);
+    })();
+  });
+})();
+</script>
+</body>
+</html>

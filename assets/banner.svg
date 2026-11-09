@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="360" viewBox="0 0 1200 360">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0f0c29"/><stop offset=".55" stop-color="#302b63"/><stop offset="1" stop-color="#24243e"/>
+    </linearGradient>
+    <radialGradient id="b1" cx=".82" cy=".2" r=".5"><stop offset="0" stop-color="#ff7ab6" stop-opacity=".55"/><stop offset="1" stop-color="#ff7ab6" stop-opacity="0"/></radialGradient>
+    <radialGradient id="b2" cx=".12" cy=".95" r=".55"><stop offset="0" stop-color="#5ee7df" stop-opacity=".45"/><stop offset="1" stop-color="#5ee7df" stop-opacity="0"/></radialGradient>
+    <linearGradient id="t" x1="0" x2="1"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#c9b8ff"/></linearGradient>
+  </defs>
+  <rect width="1200" height="360" rx="28" fill="url(#g)"/>
+  <rect width="1200" height="360" rx="28" fill="url(#b1)"/>
+  <rect width="1200" height="360" rx="28" fill="url(#b2)"/>
+  <g fill="none" stroke="#ffffff" stroke-opacity=".07">
+    <path d="M0 90H1200M0 180H1200M0 270H1200M300 0V360M600 0V360M900 0V360"/>
+  </g>
+  <text x="80" y="118" font-family="Pretendard, 'Apple SD Gothic Neo', 'Malgun Gothic', 'Noto Sans KR', sans-serif" font-size="22" letter-spacing="6" fill="#a5f3fc" font-weight="600">MY AI WORKS · 2026</text>
+  <text x="76" y="212" font-family="Pretendard, 'Apple SD Gothic Neo', 'Malgun Gothic', 'Noto Sans KR', sans-serif" font-size="86" font-weight="800" fill="url(#t)">내 AI 작업</text>
+  <text x="80" y="270" font-family="Pretendard, 'Apple SD Gothic Neo', 'Malgun Gothic', 'Noto Sans KR', sans-serif" font-size="26" fill="#e2e8f0" fill-opacity=".85">Claude와 함께 기획하고 만든 프로젝트 모음</text>
+</svg>
