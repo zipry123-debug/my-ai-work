@@ -20,6 +20,9 @@
   <a href="베버%20제안서/"><img src="assets/cards/wine1.png" alt="크리스마스 와인 제안서" width="49%"></a>
   <a href="베버%20제안서%202/"><img src="assets/cards/wine2.png" alt="와인 제안서 2차" width="49%"></a>
 </p>
+<p align="center">
+  <a href="식품확인/"><img src="assets/cards/foodcheck.png" alt="건강기능식품 조회 서비스" width="49%"></a>
+</p>
 <!-- PROJECTS:END -->
 
 <br>
@@ -27,5 +30,6 @@
 ## 업데이트
 
 <!-- UPDATES:START -->
+- **2026-11-10** · 건강기능식품 조회 서비스 추가
 - **2026-11-09** · 저장소 시작, 프로젝트 6개 추가
 <!-- UPDATES:END -->

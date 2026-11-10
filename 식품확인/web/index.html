@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>식품확인 - 건강기능식품 신고정보 조회</title>
+  <meta name="description" content="제품명이나 원료명으로 건강기능식품과 일반식품의 식약처 신고 내용을 조회합니다.">
+  <meta name="theme-color" content="#ffffff">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip" href="#main">본문 바로가기</a>
+
+  <header class="hd">
+    <div class="wrap hd__in">
+      <a class="hd__logo" href="#/">식품확인</a>
+      <span class="hd__desc">건강기능식품 신고정보 조회</span>
+    </div>
+  </header>
+
+  <main id="main">
+    <div class="sch-area">
+      <div class="wrap">
+        <h1 class="home-title" id="homeTitle">건강기능식품 조회</h1>
+        <p class="home-sub" id="homeSub">제품명이나 원료명으로 식약처에 신고된 내용을 찾습니다.</p>
+
+        <form class="sch" id="searchForm" role="search" autocomplete="off">
+          <div class="sch__mode" role="radiogroup" aria-label="검색 기준">
+            <button type="button" role="radio" data-mode="product" aria-checked="true">제품명</button>
+            <button type="button" role="radio" data-mode="ingredient" aria-checked="false">원료명</button>
+          </div>
+          <div class="sch__box">
+            <label class="sr" for="q">검색어</label>
+            <input id="q" name="q" type="search" enterkeyhint="search" placeholder="제품명 입력">
+            <button class="sch__btn" type="submit">검색</button>
+          </div>
+        </form>
+
+        <p class="sch__ex" id="examples"></p>
+      </div>
+    </div>
+
+    <div id="view" aria-live="polite"></div>
+  </main>
+
+  <footer class="ft">
+    <div class="wrap">
+      <p>자료: 식품의약품안전처 식품안전나라 공공데이터 (<span id="fetchedAt">-</span> 기준) · <a href="#/about">데이터 출처 보기</a></p>
+      <p>신고된 내용을 옮겨 보여주는 서비스이며, 제품의 효능이나 안전성을 보증하지 않습니다.</p>
+      <p><a href="https://www.foodsafetykorea.go.kr" target="_blank" rel="noopener">식품안전나라</a></p>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
